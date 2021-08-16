@@ -1,0 +1,97 @@
+.order-row{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 3px;
+}
+
+.order-row > {
+    flex-grow: 1;
+}
+
+.label{
+    width: 8rem;
+    text-align: left;
+    font-weight: bold;
+    color: #636e72;
+}
+
+.value{
+    min-width: 10rem;
+    text-align: left;
+    white-space: pre-line;
+}
+
+.order-col{
+    display: flex;
+    margin-left: 4px;
+    margin-right: 4px;
+    flex-direction: column;
+}
+
+.label{
+    margin-right: 1rem;
+}
+
+.divider{
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.order-details > {
+    flex-grow: 1;
+}
+
+.material{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.material-partnumber{
+    color: #227999;
+}
+
+.order-details {
+    display: flex;
+    flex-direction: row;
+}
+
+.interaction{
+    margin-bottom: 1rem;
+}
+
+.interaction-header{
+    display: flex;
+    flex-direction: row;
+    background-color: #dddddd;
+}
+
+.interaction-author{
+    flex-grow: 1;
+    text-align: left;
+}
+.interaction-date{
+    flex-grow: 3;
+    text-align: right;
+}
+
+.interaction-message{
+    text-align: left;
+}
+
+.sv-spinner{
+    font-size: 48px;
+    color: #74b9ff;
+    margin: 1rem;
+}
+
+.single-line{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.error{
+    margin: 1rem;
+    color: #ff0000;
+    white-space: pre-line;
+}

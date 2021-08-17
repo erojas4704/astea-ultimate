@@ -1,5 +1,6 @@
 import { Redirect, Route } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
+import SearchView from './SearchView';
 
 /**A route that requires an Astea login. Here we validate that we are logged in.*/
 const AsteaRoute = ({ children, ...rest }) => {

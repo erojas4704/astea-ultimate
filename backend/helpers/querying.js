@@ -3,6 +3,23 @@ function generateSearchQuery(criteria) {
     //Generates an Astea search query
     let conditions = [];
     let secondaryConditions = []; //I don't know why astea has a secondary condition, but it does.
+    let catchAll = [];
+    let catchAllSecondary = [];
+    let catchAllAppendix = "";
+    let catchAllAppendixSecondary = "";
+    
+    if(criteria['all']){
+        ["actionGroup", "id", "name"].forEach( key => {
+            const asteaKey = translateToAsteaKey(key, false);
+            catchAll.push(`${asteaKey} LIKE '%${criteria['all']}%'`);
+            const secondaryKey = translateToAsteaKey(key, true);
+            catchAllSecondary.push(`${secondaryKey} LIKE '%${criteria['all']}%'`);
+        });
+        catchAllAppendix = ` AND (${catchAll.join(" OR ")})`;
+        catchAllAppendixSecondary = ` AND (${catchAllSecondary.join(" OR ")})`;
+        delete criteria['all'];
+    }
+
     for (let key in criteria) {
         //Generate a query based on that key.
         const asteaKey = translateToAsteaKey(key, false);
@@ -16,8 +33,8 @@ function generateSearchQuery(criteria) {
     let query = `
         <Find sort_column_alias="open_date" sort_direction="-" force_sort="true" entity_name="order_locator" query_name="order_locator_scrl" getRecordCount="true"
         a_fco_serv_bull_arg1="1=1" a_fco_serv_bull_arg2="1=1" a_order_type="1=1" a_c_order_type="1=1"
-        where_cond1="${conditions.join(" AND ")}"
-        where_cond2="${secondaryConditions.join(" AND ")}">
+        where_cond1="${conditions.join(" AND ")} ${catchAllAppendix}"
+        where_cond2="${secondaryConditions.join(" AND ")} ${catchAllAppendixSecondary}">
             <operators values="${"=;".repeat(6)}" />
             <types values="${"argument;".repeat(6)}" />
             <is_replace_alias values="${"Y;".repeat(6)}" />
@@ -56,16 +73,16 @@ function encodeToAsteaGibberish(string){
     string = string.replace(/'/g, "&apos;");     //Replace single quotes with Astea's XML-safe version
     string = string.replace(/</g, "&lt;");       //Replace <
     string = string.replace(/>/g, "&gt;");       //Replace >
-    string = string.replace(/\n/g, "\n");          //Remove redundant newlines
-    string = string.replace(/\s+/g, " ");         //Remove redundant whitespace
+    string = string.replace(/\n/g, "\n");        //Remove redundant newlines
+    string = string.replace(/\s+/g, " ");        //Remove redundant whitespace
     return string;
 }
 
 function decodeFromAsteaGibberish(string){
-    string = string.replace(/&apos;/g, "'");     //Replace Astea's XML-safe version of single quotes with a single quote
-    string = string.replace(/&lt;/g, "<");       //Replace Astea's XML-safe version of <
-    string = string.replace(/&gt;/g, ">");       //Replace Astea's XML-safe version of >
-    string = string.replace(/\n/g, "\n");          //Replace Astea's XML-safe version of newlines
+    string = string.replace(/&apos;/g, "'");      //Replace Astea's XML-safe version of single quotes with a single quote
+    string = string.replace(/&lt;/g, "<");        //Replace Astea's XML-safe version of <
+    string = string.replace(/&gt;/g, ">");        //Replace Astea's XML-safe version of >
+    string = string.replace(/\n/g, "\n");         //Replace Astea's XML-safe version of newlines
     string = string.replace(/\s+/g, " ");         //Replace Astea's XML-safe version of whitespace
     return string;
 }

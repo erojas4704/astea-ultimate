@@ -5,10 +5,12 @@ import AsteaRoute from './AsteaRoute';
 import HomeView from './HomeView';
 import LoginView from './LoginView';
 import QuickView from './QuickView';
+import SearchView from './SearchView';
 
 function App() {
   return (
     <div className="App">
+      <SearchView />
       <Router>
         <Switch>
           <Route exact path="/">

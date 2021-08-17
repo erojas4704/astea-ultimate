@@ -14,9 +14,12 @@ const fields = {
     "is_in_history": "isInHistory",
     "cc_cust_company_descr": "customer.name",
     "cc_cust_company_id": "customer.id",
+    "cust_id": "customer.id",
+    "company_descr": "customer.name",
     "caller_person_id": "caller.id",
     "caller_name": "caller.name",
     "sa_person_id": "technician.id",
+    "sa_person_descr": "technician.name",
     "cc_sa_descr": "technician.name"
 }
 
@@ -28,7 +31,6 @@ function parseServiceOrderData(data) {
         let fieldName = fields[key];
         if (fieldName) {
             let value = data[key][0]._;
-            console.log(fieldName, value);
             if (fieldName.split(".").length > 1) { //If it has a dot in it, it's a nested object
                 let parentField = fieldName.split(".")[0];
                 let obj = destructureStringToObject(fieldName, value);

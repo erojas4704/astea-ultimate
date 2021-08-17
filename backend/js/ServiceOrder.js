@@ -2,52 +2,30 @@ const { parseServiceOrderData } = require("../helpers/serviceOrderParsing");
 
 class ServiceOrder {
     constructor(data) {
-        data = data.root;
-        if (Number(data.$.totalRows) > 1) {
-            throw new Error(`Service Order data has more than one record`);
-        }
-        const svData = data.main[0].row[0];
+        const svData = data; //data.main[0].row[0];
         const parsedData = ServiceOrder.parseServiceOrderJson(svData);
 
-        ServiceOrder.mergeNewDataIntoServiceOrder(this, parsedData);
+        this.mergeNewDataIntoServiceOrder(parsedData);
         this.createdAt = new Date();
     }
 
     static parseServiceOrderJson(svData) {
         return parseServiceOrderData(svData);
-        return {
-            id: svData.order_id[0]._,
-            requestID: svData.request_id[0]._,
-            type: svData.callt_id[0]._,
-            actionGroup: svData.cc_actgr_descr[0]._,
-            status: svData.order_stat_descr[0]._,
-            statusID: svData.order_stat_uniq_id[0]._,
-            problem: svData.problem_desc[0]._,
-            product: svData.prod_descr[0]._,
-            serialNumber: svData.serial_no[0]._,
-            openDate: new Date(svData.open_date[0]._),
-            customer: {
-                name: svData.cc_cust_company_descr[0]._,
-                id: svData.cust_company_id[0]._
-            },
-            warehouse: svData.warehouse_id[0]._,
-            caller: {
-                id: svData.caller_person_id[0]._,
-                name: svData.caller_name[0]._
-            },
-            technician: {
-                id: svData.sa_person_id[0]._,
-                name: svData.cc_sa_descr[0]._
-            }
-        }
     }
 
     /**Using new raw data, we update any fields the data includes into this order.*/
     update(rawData) {
     }
 
-    static mergeNewDataIntoServiceOrder(serviceOrder, data) {
-        serviceOrder = { ...serviceOrder, ...data };
+    mergeNewDataIntoServiceOrder(data) {
+        for (let key in data) {
+            //If it's an object, merge those too
+            if (this[key] && data[key] instanceof Object) {
+                this[key] = { ...this[key], ...data[key] };
+            } else {
+                this[key] = data[key];
+            }
+        }
     }
 
     parseMaterials(data) {

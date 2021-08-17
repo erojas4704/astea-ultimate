@@ -67,8 +67,7 @@ function formatSearchBody(sessionID, criteria) {
 }
 
 async function orderLocatorSearch(session, criteria) {
-    const searchBody = formatSearchBody("488ef03e-4032-47c4-b43a-0f731daa8d66Prod", criteria);
-    console.log("This is our search body", searchBody);
+    const searchBody = formatSearchBody(session.sessionID, criteria);
     const resp = await axios.post(URLSearch, searchBody,
         {
             headers: {
@@ -85,12 +84,17 @@ async function orderLocatorSearch(session, criteria) {
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const resultsJSON = await parseXMLToJSON(resultsXML);
     const serviceOrders = await extractFromResults(resultsJSON);
-    return resultsJSON;
+    return serviceOrders;
+    //TODO this function needs error handling
 }
 
 async function extractFromResults(results) {
     const serviceOrders = [];
     //TODO make loop work concurrently?
+    if(!results.root.row){
+        return []; //Found nothing
+    }
+
     results.root.row.forEach(async svRawData => {
         const id = svRawData.order_id;
         let serviceOrder = await Database.getServiceOrder(id);
@@ -102,6 +106,8 @@ async function extractFromResults(results) {
         Database.setServiceOrder(serviceOrder);
         serviceOrders.push(serviceOrder);
     });
+
+    return serviceOrders;
 }
 
 async function retrieveSV(id, session) {
@@ -127,7 +133,7 @@ async function retrieveSV(id, session) {
     const respInteractions = await getInteractions(stateID, hostName, sessionID);
     const respMaterials = await getMaterials(stateID, hostName, sessionID);
 
-    const serviceOrder = new ServiceOrder(json);
+    const serviceOrder = new ServiceOrder(json.root.main[0].row[0]);
     serviceOrder.parseInteractions(respInteractions);
     serviceOrder.parseMaterials(respMaterials);
 

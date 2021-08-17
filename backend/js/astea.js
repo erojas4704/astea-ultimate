@@ -2,17 +2,21 @@
 const URLCommandBase = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/`;
 const URLExecuteMacro = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/ExecMacroUIExt`;
 const URLInteractWithServer = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
+const URLSearch = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/DataViewMgr.svc/dotnet`;
+
 const axios = require("axios");
 const xml2js = require("xml2js");
 const Database = require("../database/db");
 const { parseErrorCode } = require("../helpers/errorParser");
+const { generateSearchQuery, decodeFromAsteaGibberish } = require("../helpers/querying");
+const { parseXMLToJSON } = require("../helpers/xml");
 const { AsteaError } = require("./AsteaError");
 const ServiceOrder = require("./ServiceOrder");
 
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Accept": "application/json, text/javascript, */*; q=0.01",
-   // "CurrentProfile": "Prod"
+    // "CurrentProfile": "Prod"
 }
 
 function formatExecuteMacroBody(macroName, sessionID, ...params) {
@@ -45,15 +49,66 @@ function formatCommandBody(stateID, sessionID, command) {
     }
 }
 
-function formatSearchBody(sessionID){
-    return `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Header><currentprofile xmlns="http://www.astea.com">Prod</currentprofile></s:Header><s:Body><RetrieveXMLExt xmlns="http://astea.services.wcf/"><sessionID>6d8f436f-4a27-4851-9b37-83ac4ce1b268Prod</sessionID><XMLCriteria>&lt;Find sort_column_alias="open_date" sort_direction="-" force_sort="true" entity_name="order_locator" query_name="order_locator_scrl" getRecordCount="true" a_fco_serv_bull_arg1="1=1" a_fco_serv_bull_arg2="1=1" a_order_type="1=1" a_c_order_type="1=1" where_cond1="( order_line.request_id like &amp;apos;%SV210%&amp;apos; ) AND ( actgr.descr like &amp;apos;%QNTech%&amp;apos; ) AND ( order_line.open_date &amp;gt;= &amp;apos;20210301 00:00:00&amp;apos; )" where_cond2="( c_order_line.request_id like &amp;apos;%SV210%&amp;apos; ) AND ( actgr.descr like &amp;apos;%QNTech%&amp;apos; ) AND ( c_order_line.open_date &amp;gt;= &amp;apos;20210301 00:00:00&amp;apos; )"&gt;&lt;operators values="=;=;=;=;=;=;" /&gt;&lt;types values="argument;argument;argument;argument;argument;argument;" /&gt;&lt;is_replace_alias values="Y;Y;Y;Y;N;N;" /&gt;&lt;is_translatable_alias values="N;N;N;N;N;N;" /&gt;&lt;/Find&gt;</XMLCriteria></RetrieveXMLExt></s:Body></s:Envelope>`;
+function formatSearchBody(sessionID, criteria) {
+    return `
+    <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+        <s:Header>
+            <currentprofile xmlns="http://www.astea.com">Prod</currentprofile>
+        </s:Header>
+        <s:Body>
+            <RetrieveXMLExt xmlns="http://astea.services.wcf/">
+                <sessionID>${sessionID}</sessionID>
+                <XMLCriteria>
+                    ${generateSearchQuery(criteria)}
+                </XMLCriteria>
+            </RetrieveXMLExt>
+        </s:Body>
+    </s:Envelope>`;
+}
+
+async function orderLocatorSearch(session, criteria) {
+    const searchBody = formatSearchBody("488ef03e-4032-47c4-b43a-0f731daa8d66Prod", criteria);
+    console.log("This is our search body", searchBody);
+    const resp = await axios.post(URLSearch, searchBody,
+        {
+            headers: {
+                //...headers,
+                "Content-Type": "text/xml; charset=utf-8",
+                "currentprofile": "Prod",
+                "SOAPAction": "\"http://astea.services.wcf/IDataViewMgrContract/RetrieveXMLExt\""
+            }
+        }
+    );
+
+    const json = await parseXMLToJSON(resp.data);
+    const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
+    const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
+    const resultsJSON = await parseXMLToJSON(resultsXML);
+    const serviceOrders = await extractFromResults(resultsJSON);
+    return resultsJSON;
+}
+
+async function extractFromResults(results) {
+    const serviceOrders = [];
+    //TODO make loop work concurrently?
+    results.root.row.forEach(async svRawData => {
+        const id = svRawData.order_id;
+        let serviceOrder = await Database.getServiceOrder(id);
+        if (!serviceOrder) {
+            serviceOrder = new ServiceOrder(svRawData);
+        } else {
+            serviceOrder.update(svRawData);
+        }
+        Database.setServiceOrder(serviceOrder);
+        serviceOrders.push(serviceOrder);
+    });
 }
 
 async function retrieveSV(id, session) {
     const cached = await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     const sessionID = session.sessionID;
 
-    if(cached && (Date.now() - cached.createdAt) < 60000000) {
+    if (cached && (Date.now() - cached.createdAt) < 60000000) {
         return { serviceOrder: cached };
     }
 
@@ -61,15 +116,15 @@ async function retrieveSV(id, session) {
         URLExecuteMacro,
         formatExecuteMacroBody("retrieve", sessionID, id)
     ); //Execute Astea Macro retrieve
-    
+
     if (resp.data.ExceptionDetail) {
         const error = await parseErrorMessage(resp.data);
         throw new AsteaError(resp.data.ExceptionDetail.Type, error?.status || 500, error?.message || `[${id}]: Astea threw an exception. \n ${resp.data.ExceptionDetail.Type}`);
     }
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const { stateID, hostName } = getOrderMetadata(json); //Get state-id from the JSON
-    
-    const respInteractions = await getInteractions(stateID, hostName, sessionID); 
+
+    const respInteractions = await getInteractions(stateID, hostName, sessionID);
     const respMaterials = await getMaterials(stateID, hostName, sessionID);
 
     const serviceOrder = new ServiceOrder(json);
@@ -81,10 +136,10 @@ async function retrieveSV(id, session) {
     return { serviceOrder, json, respInteractions };
 }
 
-async function parseErrorMessage(data){
-    const messageJSON = await new Promise( (resolve, reject) => {
+async function parseErrorMessage(data) {
+    const messageJSON = await new Promise((resolve, reject) => {
         xml2js.parseString(data.ExceptionDetail.Message, (err, result) => {
-            if(err) {
+            if (err) {
                 reject(err);
             }
             resolve(result);
@@ -149,4 +204,4 @@ function getOrderMetadata(json) {
     }
 }
 
-module.exports = { retrieveSV };
+module.exports = { retrieveSV, orderLocatorSearch };

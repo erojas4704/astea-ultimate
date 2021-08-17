@@ -1,7 +1,7 @@
 "use strict";
 require("dotenv").config();
 const express = require("express");
-const svRoutes = require("./routes/sv.js");
+const svRoutes = require("./routes/ServiceOrderRoutes.js");
 const authRoutes = require("./routes/auth.js");
 const cookieParser = require('cookie-parser')
 

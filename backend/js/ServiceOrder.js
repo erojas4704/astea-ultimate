@@ -1,55 +1,65 @@
+const { parseServiceOrderData } = require("../helpers/serviceOrderParsing");
+
 class ServiceOrder {
     constructor(data) {
-        this.parseServiceOrderJson(data);
-        this.createdAt = new Date();
-    }
-
-    parseServiceOrderJson(data) {
         data = data.root;
         if (Number(data.$.totalRows) > 1) {
             throw new Error(`Service Order data has more than one record`);
         }
-
         const svData = data.main[0].row[0];
-        this.id = svData.order_id[0]._;
-        this.requestID = svData.request_id[0]._;
-        this.type = svData.callt_id[0]._;
-        this.actionGroup = svData.cc_actgr_descr[0]._;
-        this.status = svData.order_stat_descr[0]._;
-        this.statusID = svData.order_stat_uniq_id[0]._;
-        this.problem = svData.problem_desc[0]._;
-        this.product = svData.prod_descr[0]._;
-        this.serialNumber = svData.serial_no[0]._;
-        this.openDate = new Date(svData.open_date[0]._);
+        const parsedData = ServiceOrder.parseServiceOrderJson(svData);
 
-        this.customer = {
-            name: svData.cc_cust_company_descr[0]._,
-            id: svData.cust_company_id[0]._
-        };
-        this.warehouse = svData.warehouse_id[0]._;
-        this.caller = {
-            id: svData.caller_person_id[0]._,
-            name: svData.caller_name[0]._
+        ServiceOrder.mergeNewDataIntoServiceOrder(this, parsedData);
+        this.createdAt = new Date();
+    }
+
+    static parseServiceOrderJson(svData) {
+        return parseServiceOrderData(svData);
+        return {
+            id: svData.order_id[0]._,
+            requestID: svData.request_id[0]._,
+            type: svData.callt_id[0]._,
+            actionGroup: svData.cc_actgr_descr[0]._,
+            status: svData.order_stat_descr[0]._,
+            statusID: svData.order_stat_uniq_id[0]._,
+            problem: svData.problem_desc[0]._,
+            product: svData.prod_descr[0]._,
+            serialNumber: svData.serial_no[0]._,
+            openDate: new Date(svData.open_date[0]._),
+            customer: {
+                name: svData.cc_cust_company_descr[0]._,
+                id: svData.cust_company_id[0]._
+            },
+            warehouse: svData.warehouse_id[0]._,
+            caller: {
+                id: svData.caller_person_id[0]._,
+                name: svData.caller_name[0]._
+            },
+            technician: {
+                id: svData.sa_person_id[0]._,
+                name: svData.cc_sa_descr[0]._
+            }
         }
-        this.technician = {
-            id: svData.sa_person_id[0]._,
-            name: svData.cc_sa_descr[0]._
-        }
+    }
+
+    /**Using new raw data, we update any fields the data includes into this order.*/
+    update(rawData) {
+    }
+
+    static mergeNewDataIntoServiceOrder(serviceOrder, data) {
+        serviceOrder = { ...serviceOrder, ...data };
     }
 
     parseMaterials(data) {
         data = data.root;
-        //this.materials = data;
-        //console.log(data);
-        //return;
         const rawMaterialArray = data.demand_material[0].row;
-        if(!rawMaterialArray){
+        if (!rawMaterialArray) {
             this.materials = [];
             return;
         }
 
         this.materials = rawMaterialArray.map(material => {
-            return{
+            return {
                 id: material.bpart_id[0]._,
                 name: material.bpart_descr[0]._,
                 warehouse: material.fr_warehouse_id[0]._,

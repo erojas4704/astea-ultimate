@@ -49,7 +49,9 @@ const SearchView = () => {
                     </thead>
                     <tbody>
                         {results.map(result => <tr key={result.id}>
-                            <td><Link to={`/ServiceOrder?id=${result.id}`}>{result.id}</Link></td>
+                            <td>
+                                <Link to={{ pathname: `/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
+                            </td>
                             <td>{result.technician?.name || "Unassigned"}</td>
                             <td>{result.customer?.name || result.caller?.name || result.company?.name || ""}</td>
                             <td>{moment(result.openDate).format("MM/DD/yy")}</td>

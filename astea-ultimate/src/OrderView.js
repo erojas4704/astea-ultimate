@@ -57,7 +57,7 @@ const OrderView = ({ id, isLoading, serviceOrder, error }) => {
                         </div>
                         <div className="divider" />
                         <div className="label">Materials</div>
-                        {serviceOrder.materials.map(material => (
+                        {serviceOrder.materials && serviceOrder.materials.map(material => (
                             <div className="material" key={uuid()}>
                                 <div className="material-partnumber">
                                     {material.sourceDocument ? <Link to={`/Product?id=${material.id}`}>{material.id} </Link> : <span>{material.id}</span>}
@@ -75,7 +75,7 @@ const OrderView = ({ id, isLoading, serviceOrder, error }) => {
                         </div>
                         <div className="divider" />
                         <div className="label">Interactions</div>
-                        {serviceOrder.interactions.map(interaction => (
+                        {serviceOrder.interactions && serviceOrder.interactions.map(interaction => (
                             <div className="interaction" key={uuid()}>
                                 <div className="interaction-header">
                                     <div className="interaction-author">{interaction.author}</div>

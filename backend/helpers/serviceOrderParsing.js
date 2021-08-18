@@ -20,7 +20,9 @@ const fields = {
     "caller_name": "caller.name",
     "sa_person_id": "technician.id",
     "sa_person_descr": "technician.name",
-    "cc_sa_descr": "technician.name"
+    "cc_sa_descr": "technician.name",
+    "tagno": "tag",
+    "is_in_history": "inHistory"
 }
 
 function parseServiceOrderData(data) {

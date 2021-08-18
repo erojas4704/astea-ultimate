@@ -5,7 +5,7 @@ import AsteaRoute from './AsteaRoute';
 import HomeView from './HomeView';
 import useAuth from './hooks/useAuth';
 import LoginView from './LoginView';
-import QuickView from './QuickView';
+import ServiceOrder from './ServiceOrder';
 
 function App() {
   const auth = useAuth();
@@ -15,7 +15,7 @@ function App() {
       <Router>
         {auth && auth.success && <HomeView />}
         <Switch>
-          <AsteaRoute path="/ServiceOrder" component={QuickView} />
+          <AsteaRoute path="/ServiceOrder/:id" component={ServiceOrder} />
           <Route path="/login" component={LoginView} />
         </Switch>
       </Router>

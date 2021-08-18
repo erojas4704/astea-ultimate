@@ -7,10 +7,6 @@ const SECRET_KEY = process.env.SECRET_KEY;
 async function hasAsteaCredentials(req, res, next) {
     //Request headers must have a token with a session-id
     try {
-        // req.session = {
-        //    sessionID: '8c7d2eca-dbd6-4608-8f3c-5aec35347e4aProd'
-        // }
-        // return next();
         if(!req.cookies['astea-session']) throw new AsteaError("No session ID.", 403, "You must be logged in to do that.");
         const sessionCookie = String(req.cookies['astea-session']).replace(/['"]+/g, '');
         const token = jwt.verify(sessionCookie, SECRET_KEY);

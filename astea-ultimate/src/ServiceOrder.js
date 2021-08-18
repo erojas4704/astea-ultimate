@@ -1,14 +1,28 @@
 import axios from "axios";
-import { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Redirect, useParams } from "react-router-dom";
 import Lookup from "./Lookup"
 import OrderView from "./OrderView";
 
-const QuickView = ( {data} ) => {
+const ServiceOrder = (props) => {
     const [orderID, setOrderID] = useState("");
-    const [serviceOrder, setServiceOrder] = useState(null);
+    const [serviceOrder, setServiceOrder] = useState();
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const params = useParams();
+    console.log(params);
+
+    useEffect(() => {
+        if (props.location.state) {
+            if (serviceOrder == null || (serviceOrder && serviceOrder.id != props.location.state.data.id)) {
+                //TODO workaround until i can figure out how to use params from the router.
+                loadServiceOrder(props.location.state.data.id);
+            }
+            setServiceOrder(props.location.state.data); 
+        }
+    });
+
+    //console.log("Rendered Service Order", props.location.state);
 
     const loadServiceOrder = async id => {
         setIsLoading(true);
@@ -34,17 +48,16 @@ const QuickView = ( {data} ) => {
         return <Redirect to={{ pathname: "/login", state: { error } }} />;
     }
 
-    const searchSubmit = (form) => {
-        setOrderID(form.id);
-        loadServiceOrder(form.id);
-    }
+    // const searchSubmit = (form) => {
+    //     setOrderID(form.id);
+    //     loadServiceOrder(form.id);
+    // }
 
     return (
         <div>
-            <Lookup handleSubmit={searchSubmit} />
             <OrderView id={orderID} isLoading={isLoading} serviceOrder={serviceOrder} error={error?.message} />
         </div>
     )
 }
 
-export default QuickView;
+export default ServiceOrder;

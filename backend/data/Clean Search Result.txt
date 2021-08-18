@@ -1,0 +1,2338 @@
+[
+  {
+    "id": "SV2108180145@@1",
+    "requestID": "SV2108180145",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096928-145",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180129@@1",
+    "requestID": "SV2108180129",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "Rebecca Pinard",
+      "id": "CUST2108181839"
+    },
+    "problem": "Issue: Not turning on Data Backup Option: Backup declined ",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "SA on Site",
+    "actionGroup": "QNTech",
+    "statusID": "400",
+    "customer": {
+      "id": "CUST2108181839",
+      "name": "Rebecca Pinard"
+    },
+    "serialNumber": "QP0330BPDNN",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180324@@1",
+    "requestID": "SV2108180324",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "Symptom: Bad battery Password: user Approved Services (Pri",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Technician Assigned",
+    "actionGroup": "QNTech",
+    "statusID": "200",
+    "customer": {
+      "id": "CUST2108184362",
+      "name": "SHANE MILLER"
+    },
+    "serialNumber": "D92FD6M3DH2G",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180608@@1",
+    "requestID": "SV2108180608",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096988-145",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180343@@1",
+    "requestID": "SV2108180343",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "NEERAJ KAKRIA",
+      "id": "CUST21022610331"
+    },
+    "problem": "Customer states Cha_Fan2 doesn't work and top fan on front o",
+    "technician": {},
+    "status": "Waiting for product",
+    "actionGroup": "QNTech",
+    "statusID": "100",
+    "customer": {
+      "id": "CUST21022610331",
+      "name": "NEERAJ KAKRIA"
+    },
+    "serialNumber": "G9000221430572",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180703@@1",
+    "requestID": "SV2108180703",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "BESHOY BOSHRA",
+      "id": "CUST1703253059"
+    },
+    "problem": "Scratched/cracked screen, GC generated due to non repair",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1703253059",
+      "name": "AUSTIN MEDICAL ASSISTANT TRAINING"
+    },
+    "serialNumber": "082868302153",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180157@@1",
+    "requestID": "SV2108180157",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096744-145",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180268@@1",
+    "requestID": "SV2108180268",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "Symptom: Charger works? but unit doesnt power on Password: ",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 4 - Waiting on customer approval/response",
+    "actionGroup": "QNTech",
+    "statusID": "208",
+    "customer": {
+      "id": "CUST2108183424",
+      "name": "Bernard Saks"
+    },
+    "serialNumber": "c02whes7j1wk",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180293@@1",
+    "requestID": "SV2108180293",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "SP-661-02361B Symptom:only works when plugged in / turns of",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 4 - Waiting on customer approval/response",
+    "actionGroup": "QNTech",
+    "statusID": "208",
+    "customer": {
+      "id": "CUST2108183736",
+      "name": "lucas arzan"
+    },
+    "serialNumber": "C17QL1RVFVH3",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180481@@1",
+    "requestID": "SV2108180481",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "CLEUDY ALMONTE",
+      "id": "CUST1711247639"
+    },
+    "problem": "Symptom:NEW ATTEMPTED BUILD / NO POWER Approved Services (P",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST1711247639",
+      "name": "CLEUDY ALMONTE"
+    },
+    "serialNumber": "CUST1711247639",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180107@@1",
+    "requestID": "SV2108180107",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "Unit recently diaged/picked up user exper. IRQL BSOD erro",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST2108114027",
+      "name": "MIRZA CHADMUM"
+    },
+    "serialNumber": "3472832522",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180247@@1",
+    "requestID": "SV2108180247",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "VINCENT RAMPINO",
+      "id": "CUST1509110997"
+    },
+    "problem": "Symptom: Fan making loud noises / performance after fan issu",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST1509110997",
+      "name": "VINCENT RAMPINO"
+    },
+    "serialNumber": "6d219376q",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180224@@1",
+    "requestID": "SV2108180224",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096860-145",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180363@@1",
+    "requestID": "SV2108180363",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "JOSEF GOTSCH",
+      "id": "CUST1701162800"
+    },
+    "problem": "Needs to reset IPAD Phone: 6467098932 KE: achiarelli $40",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1701162800",
+      "name": "JOSEF GOTSCH"
+    },
+    "serialNumber": "F9FZGJ9BMDG1",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180172@@1",
+    "requestID": "SV2108180172",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {},
+    "problem": "Symptom: No longer powers on / responsds to smc reset Passw",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST2108182186",
+      "name": "Srividhya Sharma"
+    },
+    "serialNumber": "sC02PR2GDFVH8",
+    "createdAt": "2021-08-18T22:38:54.817Z"
+  },
+  {
+    "id": "SV2108180421@@1",
+    "requestID": "SV2108180421",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-18T00:00:00",
+    "caller": {
+      "name": "JUAN PEREZ",
+      "id": "CUST1502280609"
+    },
+    "problem": "Symptom: power outage - no longer loads into OS Password: C",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1502280609",
+      "name": "JUAN PEREZ"
+    },
+    "serialNumber": "6465846440",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170761@@1",
+    "requestID": "SV2108170761",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "MOHAMMED KHALEQUE",
+      "id": "CUST1802283302"
+    },
+    "problem": "Symptom: Tear down/rebuild w/ new parts - new case Approved",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1802283302",
+      "name": "MOHAMMED KHALEQUE"
+    },
+    "serialNumber": "CUST1802283302",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170232@@1",
+    "requestID": "SV2108170232",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "MICHAEL TRANDELLA",
+      "id": "CUST2106231112"
+    },
+    "problem": "Symptom: New build - windows cannot be installed - error Ap",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2106231112",
+      "name": "MICHAEL TRANDELLA"
+    },
+    "serialNumber": "CUST2106231112",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170478@@1",
+    "requestID": "SV2108170478",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "CECIL MCGEACHY",
+      "id": "CUST1904082790"
+    },
+    "problem": "145-1869829-1-1 Shattered screen 299.99$ SVK145-1869829-3",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1904082790",
+      "name": "CECIL MCGEACHY"
+    },
+    "serialNumber": "SDMQCT9BMMF3P",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170161@@1",
+    "requestID": "SV2108170161",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096912-145",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170101@@1",
+    "requestID": "SV2108170101",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096887-145",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170106@@1",
+    "requestID": "SV2108170106",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096926-145",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170647@@1",
+    "requestID": "SV2108170647",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "Symptom: power button broken Password: 1523 Approved Servi",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST2108175967",
+      "name": "Robert Kandler"
+    },
+    "serialNumber": "BC3Y703",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170605@@1",
+    "requestID": "SV2108170605",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "XING WANG",
+      "id": "CUST2010207164"
+    },
+    "problem": "SERVICE TAG INCORRECT, SN: GRTLR33 Symptom: no POST. does n",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST2010207164",
+      "name": "XING WANG"
+    },
+    "serialNumber": "JGPV3FG113",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170420@@1",
+    "requestID": "SV2108170420",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "MIGUEL PEREZ",
+      "id": "CUST1003263224"
+    },
+    "problem": "Symptom: headphone jack doesnt work ( broken) / only turns o",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST1003263224",
+      "name": "MIGUEL PEREZ"
+    },
+    "serialNumber": "j7nrcv00c15929a",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170656@@1",
+    "requestID": "SV2108170656",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "TALHA JAMIL",
+      "id": "CUST2108155362"
+    },
+    "problem": "Symptom: doesnt turn on. recently changed psu Password: 078",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST2108155362",
+      "name": "TALHA JAMIL"
+    },
+    "serialNumber": "9293383572",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170658@@1",
+    "requestID": "SV2108170658",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "Symptom: doesnt turn on Password: 0606 / Benjamin0606 Appr",
+    "technician": {},
+    "status": "Received in Shop - Unassigned",
+    "actionGroup": "QNTech",
+    "statusID": "101",
+    "customer": {
+      "id": "CUST2108176092",
+      "name": "claudio flores"
+    },
+    "serialNumber": "5619083201",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170174@@1",
+    "requestID": "SV2108170174",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096930-145",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170156@@1",
+    "requestID": "SV2108170156",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "IGOR KUSAYEV",
+      "id": "CUST1512061560"
+    },
+    "problem": "Symptom: hard drive not installed message / takes a long ti",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1512061560",
+      "name": "IGOR KUSAYEV"
+    },
+    "serialNumber": "CZSF8L2",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170649@@1",
+    "requestID": "SV2108170649",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "RUTH MCARDLE",
+      "id": "CUST1901153453"
+    },
+    "problem": "Ruth 2125292529 Windows search non operable, quick access ",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST1901153453",
+      "name": "MCARDLE CONSULTING"
+    },
+    "serialNumber": "8tbfwb2",
+    "createdAt": "2021-08-18T22:38:54.818Z"
+  },
+  {
+    "id": "SV2108170429@@1",
+    "requestID": "SV2108170429",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "MATE KRUZIC",
+      "id": "CUST1407241825"
+    },
+    "problem": "Symptom: unit is acting slow. Lots of ads, possible viruses ",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST1407241825",
+      "name": "MATE KRUZIC"
+    },
+    "serialNumber": "1XV3N22",
+    "createdAt": "2021-08-18T22:38:54.819Z"
+  },
+  {
+    "id": "SV2108170134@@1",
+    "requestID": "SV2108170134",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "Symptom: DBU to provided drive Password:Furball1 Date of L",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2108171330",
+      "name": "carol goldberg"
+    },
+    "serialNumber": "C02H171ZDV7M",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170699@@1",
+    "requestID": "SV2108170699",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096950-145",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170676@@1",
+    "requestID": "SV2108170676",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "SHAHRIAR DAVARAN",
+      "id": "CUST20110417120"
+    },
+    "problem": "Drive install",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST20110417120",
+      "name": "SHAHRIAR DAVARAN"
+    },
+    "serialNumber": "G3590621310370",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170418@@1",
+    "requestID": "SV2108170418",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "EMMANUEL LOPEZ",
+      "id": "CUST1807134410"
+    },
+    "problem": "Symptom: freezes during photoshop. Tried to backup data but ",
+    "technician": {},
+    "status": "Waiting for product",
+    "actionGroup": "QNTech",
+    "statusID": "100",
+    "customer": {
+      "id": "CUST1807134410",
+      "name": "EMMANUEL LOPEZ"
+    },
+    "serialNumber": "9292334071",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170396@@1",
+    "requestID": "SV2108170396",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "Symptom: Screen not working. Works on second monitor Passwo",
+    "technician": {},
+    "status": "Waiting for product",
+    "actionGroup": "QNTech",
+    "statusID": "100",
+    "customer": {
+      "id": "CUST2108173341",
+      "name": "Ilich Predrag"
+    },
+    "serialNumber": "5CD7253LK1",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170271@@1",
+    "requestID": "SV2108170271",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "BRUCE GROSSBERG",
+      "id": "CUST1805292653"
+    },
+    "problem": "Symptom: wants to repair screen / also has problems with the",
+    "technician": {},
+    "status": "Waiting for product",
+    "actionGroup": "QNTech",
+    "statusID": "100",
+    "customer": {
+      "id": "CUST1805292653",
+      "name": "BRUCE GROSSBERG"
+    },
+    "serialNumber": "SPF2GRQFB",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170183@@1",
+    "requestID": "SV2108170183",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096910-145",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170350@@1",
+    "requestID": "SV2108170350",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "SP-661-10356 679.99$ + 100$ Labor Display replacement requ",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 2 - Part ordered; waiting on delivery",
+    "actionGroup": "QNTech",
+    "statusID": "205",
+    "customer": {
+      "id": "CUST2108173003",
+      "name": "Ray Bascom"
+    },
+    "serialNumber": "sC02YG0C9JGH8",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170109@@1",
+    "requestID": "SV2108170109",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "ASNA KAMINETZKY",
+      "id": "CUST1910231188"
+    },
+    "problem": "145-1742859-1-1 179.99$ SVK145-1742859-2-1",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1910231188",
+      "name": "ASNA KAMINETZKY"
+    },
+    "serialNumber": "TH9544804T",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170463@@1",
+    "requestID": "SV2108170463",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "BINBIN LIN",
+      "id": "CUST2009147271"
+    },
+    "problem": "Symptom: camera and mic dont work Password: 1988 Approved ",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Technician Assigned",
+    "actionGroup": "QNTech",
+    "statusID": "200",
+    "customer": {
+      "id": "CUST2009147271",
+      "name": "BINBIN LIN"
+    },
+    "serialNumber": "3RB8B43",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170863@@1",
+    "requestID": "SV2108170863",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "LEE HIRSCH",
+      "id": "CUST1906301188"
+    },
+    "problem": "Symptom: unit had recent repair. Still overheating and crash",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Technician Assigned",
+    "actionGroup": "QNTech",
+    "statusID": "200",
+    "customer": {
+      "id": "CUST1906301188",
+      "name": "LEE HIRSCH"
+    },
+    "serialNumber": "K1909N0092277",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170072@@1",
+    "requestID": "SV2108170072",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "GORDON WHITAKER",
+      "id": "CUST0712191031118"
+    },
+    "problem": "Symptom: very dim display Password: unknown Approved Servi",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Technician Assigned",
+    "actionGroup": "QNTech",
+    "statusID": "200",
+    "customer": {
+      "id": "CUST0712191031118",
+      "name": "GORDON WHITAKER"
+    },
+    "serialNumber": "5CD0431QNW",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170022@@1",
+    "requestID": "SV2108170022",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "Akshay Ramhit",
+      "id": "CUST2108170315"
+    },
+    "problem": "Additional Info: I am purchasing a battery replacement for m",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Technician Assigned",
+    "actionGroup": "QNTech",
+    "statusID": "200",
+    "customer": {
+      "id": "CUST2108170315",
+      "name": "Akshay Ramhit"
+    },
+    "serialNumber": "DPHJNH2",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170170@@1",
+    "requestID": "SV2108170170",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "ANGEL RIVERA",
+      "id": "CUST2108171488"
+    },
+    "problem": "After approx 20 min of use within the OS unit turns off. Da",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Technician Assigned",
+    "actionGroup": "QNTech",
+    "statusID": "200",
+    "customer": {
+      "id": "CUST2108171488",
+      "name": "ANGEL RIVERA"
+    },
+    "serialNumber": "CMVHW106F4MC",
+    "createdAt": "2021-08-18T22:38:54.820Z"
+  },
+  {
+    "id": "SV2108170107@@1",
+    "requestID": "SV2108170107",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096844-145",
+    "createdAt": "2021-08-18T22:38:54.821Z"
+  },
+  {
+    "id": "SV2108170680@@1",
+    "requestID": "SV2108170680",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "HSU LEE",
+      "id": "CUST1705281488"
+    },
+    "problem": "Courtesy ESET install after exchange",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1705281488",
+      "name": "HSU LEE"
+    },
+    "serialNumber": "NXA7YAA0011181657B7600",
+    "createdAt": "2021-08-18T22:38:54.821Z"
+  },
+  {
+    "id": "SV2108170201@@1",
+    "requestID": "SV2108170201",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {
+      "name": "SALWA HANNA",
+      "id": "CUST1405175378"
+    },
+    "problem": "8.99 defective SVK145-1876353-4-1",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1405175378",
+      "name": "SALWA HANNA"
+    },
+    "createdAt": "2021-08-18T22:38:54.821Z"
+  },
+  {
+    "id": "SV2108170113@@1",
+    "requestID": "SV2108170113",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-17T00:00:00",
+    "caller": {},
+    "problem": "ss",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096876-145",
+    "createdAt": "2021-08-18T22:38:54.821Z"
+  },
+  {
+    "id": "SV2108160740@@1",
+    "requestID": "SV2108160740",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "ROQIA MAYAN",
+      "id": "CUST1405022936"
+    },
+    "problem": "289,99 buyout approved",
+    "technician": {
+      "id": "gmanolas1",
+      "name": "George Manolas"
+    },
+    "status": "Completed",
+    "actionGroup": "QNTech",
+    "statusID": "700",
+    "customer": {
+      "id": "CUST1405022936",
+      "name": "ROQIA MAYAN"
+    },
+    "serialNumber": "SH99FDLFSQ1GC",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160155@@1",
+    "requestID": "SV2108160155",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "store stock",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096901-145",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160362@@1",
+    "requestID": "SV2108160362",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "MONETE HERRING",
+      "id": "CUST2108155151"
+    },
+    "problem": "Symptom: Data migration from old HP (5CD4442Q4N) to new HP t",
+    "technician": {
+      "id": "paviles",
+      "name": "Peter Aviles"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2108155151",
+      "name": "MONETE HERRING"
+    },
+    "serialNumber": "5CD4442Q4N",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160240@@1",
+    "requestID": "SV2108160240",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "store stock",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096875-145",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108161013@@1",
+    "requestID": "SV2108161013",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "JONG LIM",
+      "id": "CUST1409012888"
+    },
+    "problem": "Jong 7182250348 $100 OS cleanout due to scam/virus + $100 ",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1409012888",
+      "name": "JONG LIM"
+    },
+    "serialNumber": "7182250348",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160327@@1",
+    "requestID": "SV2108160327",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "mic does not work phone: 917 561 0256 text KE: achiarelli ",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2108162925",
+      "name": "Matthew Landau"
+    },
+    "serialNumber": "H0TDH73CLX2Y",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160626@@1",
+    "requestID": "SV2108160626",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "ISRAEL HACOHEN",
+      "id": "CUST1406301939"
+    },
+    "problem": "Symptom: NO POWER Password: unknown Approved Services (Pri",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 2 - Part ordered; waiting on delivery",
+    "actionGroup": "QNTech",
+    "statusID": "205",
+    "customer": {
+      "id": "CUST1406301939",
+      "name": "ISRAEL HACOHEN"
+    },
+    "serialNumber": "PF1LBKQM",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160869@@1",
+    "requestID": "SV2108160869",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "MELISSA JOYCE",
+      "id": "CUST20090110484"
+    },
+    "problem": "Symptom: no display. Password: 0828 Approved Services (Pr",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 2 - Part ordered; waiting on delivery",
+    "actionGroup": "QNTech",
+    "statusID": "205",
+    "customer": {
+      "id": "CUST20090110484",
+      "name": "MELISSA JOYCE"
+    },
+    "serialNumber": "SR90YJ2MJ",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160246@@1",
+    "requestID": "SV2108160246",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "store stock",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096902-145",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160085@@1",
+    "requestID": "SV2108160085",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "LUIS HERNANDEZ",
+      "id": "CUST20120510607"
+    },
+    "problem": "TV Isn't working. LED turns on but no display. Refurbished m",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST20120510607",
+      "name": "LUIS HERNANDEZ"
+    },
+    "serialNumber": "FI000006869252",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160098@@1",
+    "requestID": "SV2108160098",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "robert tran",
+      "id": "CUST2010074674"
+    },
+    "problem": "Symptom: Unit powers off after a few seconds, user had a exp",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2010074674",
+      "name": "ROBERT TRAN"
+    },
+    "serialNumber": "9175258474",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160186@@1",
+    "requestID": "SV2108160186",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "store stock",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096861-145",
+    "createdAt": "2021-08-18T22:38:54.822Z"
+  },
+  {
+    "id": "SV2108160624@@1",
+    "requestID": "SV2108160624",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "LEONARDO GOMEZ",
+      "id": "CUST1605010995"
+    },
+    "problem": "Symptom: System runs slow, Task Manager states all component",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST1605010995",
+      "name": "LEONARDO GOMEZ"
+    },
+    "serialNumber": "7187103426",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160592@@1",
+    "requestID": "SV2108160592",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "Symptom: no display. screen works fine when using hdmi monit",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST2108165369",
+      "name": "andres sanabria"
+    },
+    "serialNumber": "5CG0233YVL",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160696@@1",
+    "requestID": "SV2108160696",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "NASRIN AKTER",
+      "id": "CUST0905164925"
+    },
+    "problem": "Customer name: Nahian Islam Symptom: turns on but no displa",
+    "technician": {
+      "id": "dpalanza",
+      "name": "Daniel Palanza"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST0905164925",
+      "name": "NASRIN AKTER"
+    },
+    "serialNumber": "CFXD003",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160455@@1",
+    "requestID": "SV2108160455",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "damaged port and screen apple care plus, deductible is $49.",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST2108164217",
+      "name": "Kimora Bland"
+    },
+    "serialNumber": "F9FYPVBHLMPD",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108161024@@1",
+    "requestID": "SV2108161024",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "NICHOLAS HO",
+      "id": "CUST21081610225"
+    },
+    "problem": "Nicholas 9179020427 Customer forgot password and wishes to",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST21081610225",
+      "name": "NICHOLAS HO"
+    },
+    "serialNumber": "9179020427",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160821@@1",
+    "requestID": "SV2108160821",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "JORGE VEGA",
+      "id": "CUST2107267055"
+    },
+    "problem": "Jorge 9173242651 New build, does not post, checking in for",
+    "technician": {
+      "id": "mdigier",
+      "name": "Morris Digier"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2107267055",
+      "name": "JORGE VEGA"
+    },
+    "serialNumber": "9173242651",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160547@@1",
+    "requestID": "SV2108160547",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "Symptom: turns off after 10 mins Password: Ilovemw2 Approv",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2108164967",
+      "name": "jesse petrone"
+    },
+    "serialNumber": "3473030872",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160266@@1",
+    "requestID": "SV2108160266",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "store stock",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "serialNumber": "Invalid-CL0096903-145",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160192@@1",
+    "requestID": "SV2108160192",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "store stock",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1310101752",
+      "name": "145-STORE STOCK"
+    },
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160603@@1",
+    "requestID": "SV2108160603",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {},
+    "problem": "Symptom: computer doesnt turn on / when power button is pres",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST2108165487",
+      "name": "val fera"
+    },
+    "serialNumber": "3474172527",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160683@@1",
+    "requestID": "SV2108160683",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "MARIA MARTINEZ",
+      "id": "CUST1404220253"
+    },
+    "problem": "Symptom: customer changed fans and now system does not displ",
+    "technician": {
+      "id": "pflaherty",
+      "name": "Patrick Flaherty"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1404220253",
+      "name": "JOEL CRUZ"
+    },
+    "serialNumber": "3475136017",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160748@@1",
+    "requestID": "SV2108160748",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "WALLY REYES",
+      "id": "CUST1304121368"
+    },
+    "problem": "Wally 3474631120 Problem turning on, problem shutting down",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1304121368",
+      "name": "WALLY REYES"
+    },
+    "serialNumber": "MP1ZMN83",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108160067@@1",
+    "requestID": "SV2108160067",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-16T00:00:00",
+    "caller": {
+      "name": "DANYELLE MOORE",
+      "id": "CUST1811191367"
+    },
+    "problem": "Symptom: yellow blinking light. PSU was changed by customer ",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1811191367",
+      "name": "DANYELLE MOORE"
+    },
+    "serialNumber": "9DK17Y1",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108150158@@1",
+    "requestID": "SV2108150158",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "SAMSON JANGA",
+      "id": "CUST1301271622"
+    },
+    "problem": "Hinge / Topcase Issue. Customer was informed the repair wou",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST1301271622",
+      "name": "SAMSON JANGA"
+    },
+    "serialNumber": "SMP1QACS9",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108150190@@1",
+    "requestID": "SV2108150190",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "NASREEN AHMED",
+      "id": "CUST2006294943"
+    },
+    "problem": "075-WP-6269747 3Yr Protection Plan",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST2006294943",
+      "name": "NASREEN AHMED"
+    },
+    "serialNumber": "F9FCMP94MF3M",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108150153@@1",
+    "requestID": "SV2108150153",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "VICKY VARGAS",
+      "id": "CUST2108151690"
+    },
+    "problem": "Issue: Running slowly Data Backup Option: Backup declined ",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST2108151690",
+      "name": "VICKY VARGAS"
+    },
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108150232@@1",
+    "requestID": "SV2108150232",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {},
+    "problem": "Symptom: screen cracked Password: Mp94 Approved Services (",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Resolved",
+    "actionGroup": "QNTech",
+    "statusID": "500",
+    "customer": {
+      "id": "CUST2108153206",
+      "name": "Michael Pagan"
+    },
+    "serialNumber": "C02Z908CLVCF",
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108150051@@1",
+    "requestID": "SV2108150051",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "GEORGE MANOLAS",
+      "id": "CUST1403251511"
+    },
+    "problem": "inconsistent actuation with the switches",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1403251511",
+      "name": "GEORGE MANOLAS"
+    },
+    "createdAt": "2021-08-18T22:38:54.823Z"
+  },
+  {
+    "id": "SV2108150292@@1",
+    "requestID": "SV2108150292",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "JUSTIN O'GRADY",
+      "id": "CUST1305300871"
+    },
+    "problem": "ipad mini 4 screen damage Depot 347 374 0345",
+    "technician": {},
+    "status": "Canceled",
+    "actionGroup": "QNTech",
+    "statusID": "2000",
+    "customer": {
+      "id": "CUST1305300871",
+      "name": "JUSTIN O'GRADY"
+    },
+    "serialNumber": "sF9FV3Q9PGHKJ",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150045@@1",
+    "requestID": "SV2108150045",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "GEORGE MANOLAS",
+      "id": "CUST1403251511"
+    },
+    "problem": "85.05 screen image is washed out. some shades of blue are b",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1403251511",
+      "name": "GEORGE MANOLAS"
+    },
+    "serialNumber": "617499051X104USPJVN",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150250@@1",
+    "requestID": "SV2108150250",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "DEREK MCCREESH",
+      "id": "CUST2101139346"
+    },
+    "problem": "Symptom: black screen sometimes / taskbar keeps blinking Pa",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2101139346",
+      "name": "DEREK MCCREESH"
+    },
+    "serialNumber": "9178371458",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150236@@1",
+    "requestID": "SV2108150236",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "ALEX CHALCO",
+      "id": "CUST1601120877"
+    },
+    "problem": "69.99 rubber protector is coming off",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1601120877",
+      "name": "ALEX CHALCO"
+    },
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150484@@1",
+    "requestID": "SV2108150484",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "JONATHAN BELALCAZAR",
+      "id": "CUST1711102593"
+    },
+    "problem": "Symptom: battery gets depleted very fast Password: n/a App",
+    "technician": {},
+    "status": "Canceled",
+    "actionGroup": "QNTech",
+    "statusID": "2000",
+    "customer": {
+      "id": "CUST1711102593",
+      "name": "JONATHAN BELALCAZAR"
+    },
+    "serialNumber": "gg7c241rmf3p",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150194@@1",
+    "requestID": "SV2108150194",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "STANLEY WONG",
+      "id": "CUST1406032264"
+    },
+    "problem": "Symptom: overheats even when laptop is closed / keeps runnin",
+    "technician": {},
+    "status": "Canceled",
+    "actionGroup": "QNTech",
+    "statusID": "2000",
+    "customer": {
+      "id": "CUST1406032264",
+      "name": "STANLEY WONG"
+    },
+    "serialNumber": "MP1WDADG",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150206@@1",
+    "requestID": "SV2108150206",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {},
+    "problem": "Symptom: overheats even when laptop is closed / keeps runnin",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST2108152795",
+      "name": "stanley wong"
+    },
+    "serialNumber": "smp1wdadg",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150600@@1",
+    "requestID": "SV2108150600",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "MD ISLAM",
+      "id": "CUST20112712543"
+    },
+    "problem": "MD 3474761429 The computer wont turn on, diags $40 3 to5 ",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST20112712543",
+      "name": "MD ISLAM"
+    },
+    "serialNumber": "3474761429",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150240@@1",
+    "requestID": "SV2108150240",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "ADRIAN PERSAUD",
+      "id": "CUST2009050617"
+    },
+    "problem": "Symptom: freezes randomly, requires hard reset. sometimes ta",
+    "technician": {
+      "id": "pflaherty",
+      "name": "Patrick Flaherty"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST2009050617",
+      "name": "ADRIAN PERSAUD"
+    },
+    "serialNumber": "G434072055192",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150102@@1",
+    "requestID": "SV2108150102",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "SM FARZANA",
+      "id": "CUST20112721687"
+    },
+    "problem": "Symptom: no display on screen Password: Milliamaire#7112 A",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST20112721687",
+      "name": "SM FARZANA"
+    },
+    "serialNumber": "5GGXZZ2",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150203@@1",
+    "requestID": "SV2108150203",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "STANLEY WONG",
+      "id": "CUST1406032264"
+    },
+    "problem": "Symptom: overheats even when laptop is closed / keeps runnin",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 1 - Tech bench; diagnostics in progress",
+    "actionGroup": "QNTech",
+    "statusID": "201",
+    "customer": {
+      "id": "CUST1406032264",
+      "name": "STANLEY WONG"
+    },
+    "serialNumber": "MP1WDADG",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150496@@1",
+    "requestID": "SV2108150496",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "ARNOLD ORELLANA",
+      "id": "CUST1705091125"
+    },
+    "problem": "299.99 right speakers dont work",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1705091125",
+      "name": "ARNOLD ORELLANA"
+    },
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150199@@1",
+    "requestID": "SV2108150199",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "Stanley Wong",
+      "id": "CUST1712280093"
+    },
+    "technician": {},
+    "status": "Canceled",
+    "actionGroup": "QNTech",
+    "statusID": "2000",
+    "customer": {
+      "id": "CUST1712280093",
+      "name": "Stanley Wong"
+    },
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150340@@1",
+    "requestID": "SV2108150340",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "WARD DENNIS",
+      "id": "CUST1909211044"
+    },
+    "problem": "Symptom: charging port not working / doesnt turn on Passwor",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 2 - Part ordered; waiting on delivery",
+    "actionGroup": "QNTech",
+    "statusID": "205",
+    "customer": {
+      "id": "CUST1909211044",
+      "name": "HIGGINS QUASEBARTH & PARTNERS"
+    },
+    "serialNumber": "M4NRCX01K56915D",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150471@@1",
+    "requestID": "SV2108150471",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "MARINA ZAVULUNOVA",
+      "id": "CUST1512302924"
+    },
+    "problem": "Symptom: battery depletes quickly. Unit crashes in the middl",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 2 - Part ordered; waiting on delivery",
+    "actionGroup": "QNTech",
+    "statusID": "205",
+    "customer": {
+      "id": "CUST1512302924",
+      "name": "MARINA ZAVULUNOVA"
+    },
+    "serialNumber": "5CD0332DYV",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150251@@1",
+    "requestID": "SV2108150251",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "Ashley Varela",
+      "id": "CUST2108153466"
+    },
+    "problem": "laptop does not boot up completely. reboots after lenovo scr",
+    "technician": {
+      "id": "tadams1",
+      "name": "Travis Adams"
+    },
+    "status": "Stat 2 - Part ordered; waiting on delivery",
+    "actionGroup": "QNTech",
+    "statusID": "205",
+    "customer": {
+      "id": "CUST2108153466",
+      "name": "Ashley Varela"
+    },
+    "serialNumber": "sr910q6sl",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150050@@1",
+    "requestID": "SV2108150050",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "JEREMY DUTAN",
+      "id": "CUST1910154514"
+    },
+    "problem": "Symptom: cracked screen Password: leomessi30 Approved Serv",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1910154514",
+      "name": "JEREMY DUTAN"
+    },
+    "serialNumber": "SFVFZNFQVLYWL",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150492@@1",
+    "requestID": "SV2108150492",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {},
+    "problem": "Symptom: battery gets depleted very fast Password: n/a App",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 3 - Shipped to depot",
+    "actionGroup": "QNTech",
+    "statusID": "207",
+    "customer": {
+      "id": "CUST2108158164",
+      "name": "JONATHAN BELALCAZAR"
+    },
+    "serialNumber": "sgg7c241rmf3p",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150299@@1",
+    "requestID": "SV2108150299",
+    "orderType": "service_order",
+    "isInHistory": "N",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "JUSTIN OGRADY",
+      "id": "CUST1403310797"
+    },
+    "problem": "ipad mini 4 347 374 0345 depot screen damage",
+    "technician": {
+      "id": "sinshiqaq",
+      "name": "Sandor Inshiqaq"
+    },
+    "status": "Stat 3 - Shipped to depot",
+    "actionGroup": "QNTech",
+    "statusID": "207",
+    "customer": {
+      "id": "CUST1403310797",
+      "name": "JUSTIN OGRADY"
+    },
+    "serialNumber": "1F9FV3Q9PGHKJ",
+    "createdAt": "2021-08-18T22:38:54.824Z"
+  },
+  {
+    "id": "SV2108150212@@1",
+    "requestID": "SV2108150212",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "IJZAS BAKSH",
+      "id": "CUST1901192243"
+    },
+    "problem": "damaged screen 749.99",
+    "technician": {
+      "id": "achiarelli",
+      "name": "Angelo Chiarelli"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1901192243",
+      "name": "IJZAS BAKSH"
+    },
+    "serialNumber": "Invalid-145-1476915-1-1",
+    "createdAt": "2021-08-18T22:38:54.825Z"
+  },
+  {
+    "id": "SV2108150297@@1",
+    "requestID": "SV2108150297",
+    "orderType": "service_order",
+    "isInHistory": "Y",
+    "openDate": "2021-08-15T00:00:00",
+    "caller": {
+      "name": "STEPHANIE PERALTA",
+      "id": "CUST1906157609"
+    },
+    "problem": "Symptom: customer's son forgot password / wants to reinstall",
+    "technician": {
+      "id": "fpolorovira",
+      "name": "Felipe Polo Rovira"
+    },
+    "status": "Invoiced",
+    "actionGroup": "QNTech",
+    "statusID": "900",
+    "customer": {
+      "id": "CUST1906157609",
+      "name": "STEPHANIE PERALTA"
+    },
+    "serialNumber": "5CD046HZ4B",
+    "createdAt": "2021-08-18T22:38:54.825Z"
+  }
+]

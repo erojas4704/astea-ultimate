@@ -1,4 +1,5 @@
 const LOGIN_URL = 'https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/SecurityManager.svc/dotnet';
+const VALIDATE_URL = 'https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/DataViewMgr.svc/dotnet';
 const axios = require('axios');
 const xml2js = require('xml2js');
 const { parseError } = require('../helpers/errorParser');
@@ -30,6 +31,43 @@ async function loginToAstea(username, password, forceKick = false) {
     );
     const json = await parseLoginResponseXML(resp.data);
     return json;
+}
+
+
+async function validateSessionID(sessionID) {
+    const resp = await axios.post(
+        VALIDATE_URL,
+        formatValidateSessionBody(sessionID),
+        {
+            headers: {
+                "Content-Type": "text/xml; charset=utf-8",
+                "SOAPAction": "http://astea.services.wcf/IDataViewMgrContract/RetrieveScalarValueExt",
+            }
+        }
+    );
+    const json = await parseXMLToJSON(resp.data);
+    if (json['s:Envelope']['s:Body'][0]['RetrieveScalarValueExtResponse']) {
+        return { success: true };
+    }
+
+    return { success: false };
+}
+
+function formatValidateSessionBody(sessionID) {
+    return `
+        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+            <s:Header>
+                <currentprofile xmlns="http://www.astea.com">Prod</currentprofile>
+            </s:Header>
+            <s:Body>
+                <RetrieveScalarValueExt xmlns="http://astea.services.wcf/">
+                    <sessionID>${sessionID}</sessionID>
+                    <entityName>call_center</entityName>
+                    <queryName>my_incident_managment_count</queryName>
+                </RetrieveScalarValueExt>
+            </s:Body>
+        </s:Envelope>
+    `;
 }
 
 function formatLoginBody2(username, password, forceKick = false) {
@@ -77,4 +115,4 @@ function getErrorFromLoginResponse(resp) {
     return resp['s:Envelope']['s:Body'][0]['s:Fault'];
 }
 
-module.exports = { loginToAstea };
+module.exports = { loginToAstea, validateSessionID };

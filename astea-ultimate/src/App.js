@@ -3,21 +3,19 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import './App.css';
 import AsteaRoute from './AsteaRoute';
 import HomeView from './HomeView';
+import useAuth from './hooks/useAuth';
 import LoginView from './LoginView';
 import QuickView from './QuickView';
-import SearchView from './SearchView';
 
 function App() {
+  const auth = useAuth();
+
   return (
-    <div className="App">
-      <SearchView />
+    <div className="App app-container">
       <Router>
+        {auth && auth.success && <HomeView />}
         <Switch>
-          <Route exact path="/">
-            <AsteaRoute component={HomeView} />
-          </Route>
-          <AsteaRoute path="/home" component={HomeView} />
-          <AsteaRoute path="/lookup" component={QuickView} />
+          <AsteaRoute path="/ServiceOrder" component={QuickView} />
           <Route path="/login" component={LoginView} />
         </Switch>
       </Router>

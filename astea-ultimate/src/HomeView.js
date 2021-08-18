@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom"
+import SearchView from "./SearchView";
+import "./HomeView.css";
 
 const HomeView = () => {
     return (
-        <div>
-            <div>You are logged in good job king</div>
-            <Link to="/lookup" >Look up</Link>
+        <div className="homeview">
+            <SearchView />
         </div>
     );
 };

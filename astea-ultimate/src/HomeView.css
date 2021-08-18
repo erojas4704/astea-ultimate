@@ -1,0 +1,7 @@
+.homeview{
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    width: 37vh;
+    height: 100vh;
+}

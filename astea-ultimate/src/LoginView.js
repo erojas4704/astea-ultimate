@@ -1,20 +1,25 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import useAuth from "./hooks/useAuth";
 import LoginForm from "./LoginForm";
 
 const LoginView = (props) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [error, setError] = useState(props.location.state?.error);
     const auth = useAuth();
+
+    useEffect(() => {
+        setIsLoggedIn(auth && auth.success);
+    }, [auth]);
 
     const handleSubmit = async form => {
         setIsLoading(true);
         try {
             const resp = await axios.post(`/auth/login`, { ...form, forceKick: true });
-            if (resp.body === "success") {
-                return <Redirect to="/home" />
+            if (resp.data === "success") {
+                setIsLoggedIn(true);
             }
         }
         catch (err) {
@@ -23,9 +28,10 @@ const LoginView = (props) => {
         }
         setIsLoading(false);
     }
+
     return (
         <div>
-            {auth && <Redirect to="/home" />}
+            {isLoggedIn && <Redirect to="/" />}
             <h3>Login</h3>
             <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
             {error && <div className="error">{error.message}</div>}

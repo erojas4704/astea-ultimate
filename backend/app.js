@@ -17,6 +17,7 @@ app.use(cookieParser());
 //Routes
 app.use("/ServiceOrder", svRoutes);
 app.use("/auth", authRoutes);
+
 /** Unauthorized error handler; We clear sessions here. */
 app.use( (err, req, res, next) => {
     const status = err.status;

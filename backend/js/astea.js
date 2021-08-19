@@ -12,6 +12,7 @@ const { generateSearchQuery, decodeFromAsteaGibberish } = require("../helpers/qu
 const { parseXMLToJSON } = require("../helpers/xml");
 const { AsteaError } = require("./AsteaError");
 const ServiceOrder = require("./ServiceOrder");
+const Search = require("../helpers/Search");
 
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
@@ -67,6 +68,9 @@ function formatSearchBody(sessionID, criteria) {
 }
 
 async function orderLocatorSearch(session, criteria) {
+    const precached = await Search.get(criteria);
+    if(precached) return precached.results;
+
     const searchBody = formatSearchBody(session.sessionID, criteria);
     const resp = await axios.post(URLSearch, searchBody,
         {
@@ -84,37 +88,35 @@ async function orderLocatorSearch(session, criteria) {
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const resultsJSON = await parseXMLToJSON(resultsXML);
     const serviceOrders = await extractFromResults(resultsJSON);
+    Search.create(criteria, serviceOrders);
+    
     return serviceOrders;
     //TODO this function needs error handling
 }
 
 async function extractFromResults(results) {
     const serviceOrders = [];
-    //TODO make loop work concurrently?
     if(!results.root.row){
         return []; //Found nothing
     }
 
-    results.root.row.forEach(async svRawData => {
-        const id = svRawData.order_id;
-        let serviceOrder = await Database.getServiceOrder(id);
-        if (!serviceOrder) {
-            serviceOrder = new ServiceOrder(svRawData);
-        } else {
-            serviceOrder.update(svRawData);
-        }
-        Database.setServiceOrder(serviceOrder);
-        serviceOrders.push(serviceOrder);
-    });
+    const promises = results.root.row.map(async svRawData => {
+        const id = svRawData.order_id[0]._;
+        return new Promise(async (resolve, reject) => {
+            const serviceOrder = await ServiceOrder.retrieve(svRawData, 1);
+            Database.setServiceOrder(id, serviceOrder);
+            resolve(serviceOrder);
+        });
+    }); 
 
-    return serviceOrders;
+    return await Promise.all(promises);
 }
 
 async function retrieveSV(id, session) {
     const cached = await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     const sessionID = session.sessionID;
 
-    if (cached && (Date.now() - cached.createdAt) < 60000000) {
+    if (cached && (Date.now() - cached.createdAt) < 60000000 && cached.completeness > 2) {
         return { serviceOrder: cached };
     }
 
@@ -133,7 +135,8 @@ async function retrieveSV(id, session) {
     const respInteractions = await getInteractions(stateID, hostName, sessionID);
     const respMaterials = await getMaterials(stateID, hostName, sessionID);
 
-    const serviceOrder = new ServiceOrder(json.root.main[0].row[0]);
+    const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 3); //3 has interactions, materials and proper SV data
+
     serviceOrder.parseInteractions(respInteractions);
     serviceOrder.parseMaterials(respMaterials);
 

@@ -1,10 +1,13 @@
+const Database = require("../database/db");
 const { parseServiceOrderData } = require("../helpers/serviceOrderParsing");
+const Search = require("../helpers/search");
 
 class ServiceOrder {
-    constructor(data) {
+    constructor(data, completeness) {
         const svData = data; //data.main[0].row[0];
         const parsedData = ServiceOrder.parseServiceOrderJson(svData);
 
+        this.completeness = completeness;
         this.mergeNewDataIntoServiceOrder(parsedData);
         this.createdAt = new Date();
     }
@@ -13,12 +16,32 @@ class ServiceOrder {
         return parseServiceOrderData(svData);
     }
 
+    /**Checks the database for an existing work order, if it doesn't exist.
+     * If it does exist, it returns the existing work order.
+     * If it doesn't exist, it creates a new work order and returns it.
+     * data: Raw data from the service order.
+     * completionFactor: How complete the data is. Data is considered complete if it contains all the necessary fields. 
+     * Order with a higher completion factor will overwrite an existing order.
+    */
+    static async retrieve(data, completeness){
+        const id = data.order_id[0]._;
+        const current = await Database.getServiceOrder(id);
+        if (current && completeness > current.completionFactor) {
+            current.completeness = completeness;
+            current.mergeNewDataIntoServiceOrder(data, true);
+            return current;
+        }else{
+            return new ServiceOrder(data, completeness);
+        }
+    }
+
     /**Using new raw data, we update any fields the data includes into this order.*/
     update(rawData) {
     }
 
-    mergeNewDataIntoServiceOrder(data) {
+    mergeNewDataIntoServiceOrder(data, overwrite) {
         for (let key in data) {
+            if(this[key] && !overwrite) continue; //Skip if we're not overwriting and the key already exists
             //If it's an object, merge those too
             if (this[key] && data[key] instanceof Object) {
                 this[key] = { ...this[key], ...data[key] };
@@ -26,6 +49,8 @@ class ServiceOrder {
                 this[key] = data[key];
             }
         }
+
+        Search.markDirty(this);
     }
 
     parseMaterials(data) {

@@ -1,5 +1,5 @@
 
-function generateSearchQuery(criteria) {
+function generateSearchQuery(criteria, page=1) {
     //Generates an Astea search query
     let conditions = [];
     let secondaryConditions = []; //I don't know why astea has a secondary condition, but it does.
@@ -18,10 +18,10 @@ function generateSearchQuery(criteria) {
         });
         catchAllAppendix = ` AND (${catchAll.join(" OR ")})`;
         catchAllAppendixSecondary = ` AND (${catchAllSecondary.join(" OR ")})`;
-        delete criteria['all'];
     }
 
     for (let key in criteria) {
+        if(key === "all") continue;
         //Generate a query based on that key.
         const asteaKey = translateToAsteaKey(key, false);
         conditions.push(`( ${asteaKey} LIKE '%${criteria[key]}%' )`);
@@ -33,7 +33,7 @@ function generateSearchQuery(criteria) {
 
     let query = `
         <Find sort_column_alias="open_date" sort_direction="-" force_sort="true" entity_name="order_locator" query_name="order_locator_scrl" getRecordCount="true"
-        a_fco_serv_bull_arg1="1=1" a_fco_serv_bull_arg2="1=1" a_order_type="1=1" a_c_order_type="1=1"
+        a_fco_serv_bull_arg1="1=1" a_fco_serv_bull_arg2="1=1" a_order_type="1=1" a_c_order_type="1=1" pageNumber="${page}"
         where_cond1="${conditions.join(" AND ")} ${catchAllAppendix}"
         where_cond2="${secondaryConditions.join(" AND ")} ${catchAllAppendixSecondary}">
             <operators values="${"=;".repeat(6)}" />

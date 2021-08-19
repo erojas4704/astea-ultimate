@@ -33,7 +33,6 @@ router.get("/", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
     const criteria = req.query;
-    console.log(req.query);
     try{
         return res.send( await orderLocatorSearch( req.session, criteria ) );
     }catch (e) {

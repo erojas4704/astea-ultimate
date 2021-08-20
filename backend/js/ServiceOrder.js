@@ -20,17 +20,21 @@ class ServiceOrder {
      * If it does exist, it returns the existing work order.
      * If it doesn't exist, it creates a new work order and returns it.
      * data: Raw data from the service order.
-     * completionFactor: How complete the data is. Data is considered complete if it contains all the necessary fields. 
+     * completeness: How complete the data is. Data is considered complete if it contains all the necessary fields. 
      * Order with a higher completion factor will overwrite an existing order.
     */
-    static async retrieve(data, completeness){
+    static async retrieve(data, completeness) { //TODO examine this function and document how it works.
         const id = data.order_id[0]._;
         const current = await Database.getServiceOrder(id);
-        if (current && completeness > current.completionFactor) {
+        if (current && completeness > current.completeness) {
             current.completeness = completeness;
-            current.mergeNewDataIntoServiceOrder(data, true);
+            const parsedData = ServiceOrder.parseServiceOrderJson(data);
+            //TODO this code is duplicated in the constructor.
+    
+            this.completeness = completeness;
+            current.mergeNewDataIntoServiceOrder(parsedData, true);
             return current;
-        }else{
+        } else {
             return new ServiceOrder(data, completeness);
         }
     }
@@ -41,7 +45,9 @@ class ServiceOrder {
 
     mergeNewDataIntoServiceOrder(data, overwrite) {
         for (let key in data) {
-            if(this[key] && !overwrite) continue; //Skip if we're not overwriting and the key already exists
+            if (this[key] && !overwrite) continue; //Skip if we're not overwriting and the key already exists
+
+
             //If it's an object, merge those too
             if (this[key] && data[key] instanceof Object) {
                 this[key] = { ...this[key], ...data[key] };
@@ -86,6 +92,10 @@ class ServiceOrder {
                 message: interaction.comment_text[0]._
             }
         });
+    }
+
+    getAgeInMinutes() {
+        return Math.floor((new Date() - new Date(this.createdAt)) / 60000);
     }
 }
 

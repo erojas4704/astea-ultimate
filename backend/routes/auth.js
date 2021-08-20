@@ -10,7 +10,6 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 router.get('/ValidateSession', hasAsteaCredentials, async (req, res, next) => {
     try {
-        console.log(req.session);
         const sessionID = req.query.sessionID || req.session?.sessionID;
         if (!sessionID) {
             console.log("Logging user out. Missing session ID");
@@ -18,7 +17,8 @@ router.get('/ValidateSession', hasAsteaCredentials, async (req, res, next) => {
             return res.json({ success: false });
         }
         const resp = await validateSessionID(sessionID);
-        return res.json({ success: resp });
+        if(!resp.success) res.clearCookie("astea-session");
+        return res.json( resp );
     } catch (e) {
         return next(e);
     }

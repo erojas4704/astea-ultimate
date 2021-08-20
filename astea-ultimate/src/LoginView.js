@@ -31,7 +31,7 @@ const LoginView = (props) => {
 
     return (
         <div>
-            {isLoggedIn && <Redirect to="/" />}
+            {isLoggedIn && <Redirect to="/astea" />}
             <h3>Login</h3>
             <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
             {error && <div className="error">{error.message}</div>}

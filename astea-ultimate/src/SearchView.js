@@ -3,6 +3,7 @@ import moment from "moment";
 import "./SearchView.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { capitalizeNames, nameToInitials } from "./Helpers/StringUtils";
 
 const SearchView = () => {
     const [results, setResults] = useState([]);
@@ -26,7 +27,6 @@ const SearchView = () => {
                 actionGroup: "QNTech"
             }
         });
-        console.log(resp.data);
         setResults(resp.data);
         setSearching(false);
     }
@@ -39,21 +39,27 @@ const SearchView = () => {
             </form>
             <div className="results">
                 <table className="results-table">
+                    <colgroup>
+                        <col />
+                        <col />
+                        <col className="col-name"/>
+                        <col/>
+                    </colgroup>  
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Technician</th>
-                            <th>Customer</th>
-                            <th>Open Date</th>
+                            <th>Tech</th>
+                            <th className="col-name">Customer</th>
+                            <th>Opened</th>
                         </tr>
                     </thead>
                     <tbody>
                         {results.map(result => <tr key={result.id}>
                             <td>
-                                <Link to={{ pathname: `/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
+                                <Link to={{ pathname: `/astea/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
                             </td>
-                            <td>{result.technician?.name || "Unassigned"}</td>
-                            <td>{result.customer?.name || result.caller?.name || result.company?.name || ""}</td>
+                            <td>{nameToInitials(result.technician?.name) || ""}</td>
+                            <td className="col-name">{capitalizeNames(result.customer?.name) || capitalizeNames(result.caller?.name) || capitalizeNames(result.company?.name) || ""}</td>
                             <td>{moment(result.openDate).format("MM/DD/yy")}</td>
                         </tr>)}
                     </tbody>

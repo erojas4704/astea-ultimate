@@ -79,9 +79,9 @@
 }
 
 .sv-spinner{
-    font-size: 48px;
+    font-size: 14px;
     color: #74b9ff;
-    margin: 1rem;
+    /* margin: 1rem; */
 }
 
 .single-line{

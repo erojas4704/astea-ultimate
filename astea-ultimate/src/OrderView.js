@@ -10,15 +10,12 @@ const OrderView = ({ id, isLoading, serviceOrder, error }) => {
     if (error)
         return <div className="error">{error}</div>
 
-    if (isLoading)
-        return <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />;
-
     if (!serviceOrder)
         return <></>;
 
     return (
         <div style={{ marginTop: "14px" }}>
-            <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id}</div>
+            <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading? <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} /> : ''}</div>
             {serviceOrder && (
                 <div className="order-details">
                     <div className="order-col" style={{ flexGrow: "1", marginBottom: "2px" }}>

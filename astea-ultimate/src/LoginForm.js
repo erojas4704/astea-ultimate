@@ -14,7 +14,6 @@ const LoginForm = ({ onSubmit, isLoading }) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(onSubmit);
         onSubmit(form);
     }
 

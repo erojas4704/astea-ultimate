@@ -1,8 +1,18 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
-import Lookup from "./Lookup"
 import OrderView from "./OrderView";
+
+const shouldLoadServiceOrder = (currentID, props, orderID, localOrder) => {
+    if(localOrder && localOrder.completeness > 2 && new Date() - new Date(localOrder.retrievedAt) < 300000) return false;
+
+    if (props.location.state && props.location.state.data) {
+        const data = props.location.state.data;
+        if( data.id !== currentID || data.completeness < 3) return true;
+        return false;
+    }
+    return true;
+}
 
 const ServiceOrder = (props) => {
     const [orderID, setOrderID] = useState("");
@@ -10,17 +20,25 @@ const ServiceOrder = (props) => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const params = useParams();
-    console.log(params);
+
+    //setOrderID(props.location.state.data.id);
 
     useEffect(() => {
-        if (props.location.state) {
-            if (serviceOrder == null || (serviceOrder && serviceOrder.id != props.location.state.data.id)) {
-                //TODO workaround until i can figure out how to use params from the router.
-                loadServiceOrder(props.location.state.data.id);
-            }
-            setServiceOrder(props.location.state.data); 
+        const id = params.id;
+        if(props.location?.state?.data) setServiceOrder(props.location.state.data); //Set data from history. This will most likely be incomplete.
+
+        let localString = localStorage.getItem(`serviceOrder-${id}`);
+        let local = localString ? JSON.parse(localString) : undefined;
+        if(local) setServiceOrder(local);
+        
+        let forceLoad = shouldLoadServiceOrder(orderID, props, params.id, local);
+        setOrderID(id);
+
+        
+        if(forceLoad) {
+            loadServiceOrder(params.id);
         }
-    });
+    }, [params]);
 
     //console.log("Rendered Service Order", props.location.state);
 
@@ -32,12 +50,12 @@ const ServiceOrder = (props) => {
                 `/ServiceOrder`,
                 { params: { id } }
             );
+            resp.data.retrievedAt = new Date();
+            localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(resp.data));
             setServiceOrder(resp.data);
         } catch (err) {
             const errorResponse = err.response.data.error;
-            if (err.response) {
-                setError(errorResponse);
-            }
+            if (err.response) setError(errorResponse);
             setServiceOrder(null);
         }
         setIsLoading(false);
@@ -47,11 +65,6 @@ const ServiceOrder = (props) => {
         //Log me out
         return <Redirect to={{ pathname: "/login", state: { error } }} />;
     }
-
-    // const searchSubmit = (form) => {
-    //     setOrderID(form.id);
-    //     loadServiceOrder(form.id);
-    // }
 
     return (
         <div>

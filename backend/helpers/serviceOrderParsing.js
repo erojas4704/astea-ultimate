@@ -73,20 +73,4 @@ function destructureStringToObject(string, value) {
     return obj;
 }
 
-/*
-let test = parseServiceOrderData({
-    "actgr_descr": "qntech",
-    "is_in_history": "yes",
-    "cc_cust_company_descr": "asshole mcghee",
-    "cc_cust_company_id": "121241412515",
-    "caller_person_id": "asschole mcgee",
-    "caller_name": "asschole",
-    "sa_person_id": "mx",
-    "cc_sa_descr": "megaman x"
-});
-
-console.log(destructureStringToObject("a.b.c", "d"));
-console.log(test);
-*/
-
 module.exports = { parseServiceOrderData };

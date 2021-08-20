@@ -1,22 +1,21 @@
 
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import './App.css';
-import AsteaRoute from './AsteaRoute';
-import HomeView from './HomeView';
-import useAuth from './hooks/useAuth';
+import Authenticator from './Authenticator';
+import LoggedInView from './LoggedInView';
 import LoginView from './LoginView';
+import HomeView from './HomeView';
 import ServiceOrder from './ServiceOrder';
 
 function App() {
-  const auth = useAuth();
-
   return (
     <div className="App app-container">
       <Router>
-        {auth && auth.success && <HomeView />}
+        <Route path="/" component={Authenticator} />
+        <Route path="/astea" component={HomeView} />
         <Switch>
-          <AsteaRoute path="/ServiceOrder/:id" component={ServiceOrder} />
-          <Route path="/login" component={LoginView} />
+          <Route exact path="/login" component={LoginView} />
+          <Route path="/astea/ServiceOrder/:id"  component={ServiceOrder} />
         </Switch>
       </Router>
     </div>

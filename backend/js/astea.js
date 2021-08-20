@@ -1,4 +1,5 @@
 "use strict";
+require("dotenv").config();
 const URLCommandBase = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/`;
 const URLExecuteMacro = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/ExecMacroUIExt`;
 const URLInteractWithServer = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
@@ -13,6 +14,7 @@ const { parseXMLToJSON } = require("../helpers/xml");
 const { AsteaError } = require("./AsteaError");
 const ServiceOrder = require("./ServiceOrder");
 const Search = require("../helpers/Search");
+const { ORDERS_EXPIRE_IN_MINUTES } = process.env;
 
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
@@ -20,19 +22,57 @@ const headers = {
     // "CurrentProfile": "Prod"
 }
 
-function formatExecuteMacroBody(macroName, sessionID, ...params) {
+function formatExecuteMacroBody(macroName, isInHistory, sessionID, ...params) {
     return {
         "macroName": macroName,
-        "bcName": "Service_Order",
+        "bcName": isInHistory ? "Service_Order_History" : "Service_Order",
         "boAlias": "main",
         "macroParameters": `<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'>${params[0]}</value></array></xml>`,
         "sessionId": sessionID,
         "stateId": -1,
         "saveState": false,
         "closeState": false,
-        "xmlRequest": "<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='service_request_maint' stateID='-1'><BO alias='main'></BO><BO alias='address_xref'></BO><BO alias='demand_labor'></BO><BO alias='demand_availability'></BO><BO alias='order_general_xref'></BO><BO alias='demand_link_xref_on_order'></BO><BO alias='access_hours'></BO><BO alias='checklist_for_order_hdr'></BO><BO alias='checklist_for_order_goods'></BO><BO alias='checklist_for_order_items'></BO><BO alias='checklist_for_order_services'></BO></GetCurrentState></root>",
+        "xmlRequest": formatXmlRequest(isInHistory),
         "moduleName": "service_order_maint"
     };
+}
+
+function formatXmlRequest(isInHistory) {
+    if (isInHistory) {
+        return `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'>
+            <GetCurrentState pageName='service_request_history_maint' stateID='-1'>
+                <BO alias='main'></BO>
+                <BO alias='pcode_order_xref'></BO>
+                <BO alias='cause_order_xref'></BO>
+                <BO alias='rcode_order_xref'></BO>
+                <BO alias='address_xref'></BO>
+                <BO alias='demand_labor_history'></BO>
+                <BO alias='demand_material_history'></BO>
+                <BO alias='order_items'></BO>
+                <BO alias='demand_service_history'></BO>
+                <BO alias='checklist_for_order_hdr'></BO>
+                <BO alias='checklist_for_order_goods'></BO>
+                <BO alias='checklist_for_order_items'></BO>
+                <BO alias='checklist_for_order_services'></BO>
+            </GetCurrentState>
+        </root>`;
+    }
+    return `
+    <root xmlns:dt='urn:schemas-microsoft-com:datatypes'>
+        <GetCurrentState pageName='service_request_maint' stateID='-1'>
+            <BO alias='main'></BO>
+            <BO alias='address_xref'></BO>
+            <BO alias='demand_labor'></BO>
+            <BO alias='demand_availability'></BO>
+            <BO alias='order_general_xref'></BO>
+            <BO alias='demand_link_xref_on_order'></BO>
+            <BO alias='access_hours'></BO>
+            <BO alias='checklist_for_order_hdr'></BO>
+            <BO alias='checklist_for_order_goods'></BO>
+            <BO alias='checklist_for_order_items'></BO>
+            <BO alias='checklist_for_order_services'></BO>
+        </GetCurrentState>
+    </root>`;
 }
 
 function formatCommandBody(stateID, sessionID, command) {
@@ -69,7 +109,7 @@ function formatSearchBody(sessionID, criteria) {
 
 async function orderLocatorSearch(session, criteria) {
     const precached = await Search.get(criteria);
-    if(precached) return precached.results;
+    if (precached) return precached.results;
 
     const searchBody = formatSearchBody(session.sessionID, criteria);
     const resp = await axios.post(URLSearch, searchBody,
@@ -89,14 +129,14 @@ async function orderLocatorSearch(session, criteria) {
     const resultsJSON = await parseXMLToJSON(resultsXML);
     const serviceOrders = await extractFromResults(resultsJSON);
     Search.create(criteria, serviceOrders);
-    
+
     return serviceOrders;
     //TODO this function needs error handling
 }
 
 async function extractFromResults(results) {
     const serviceOrders = [];
-    if(!results.root.row){
+    if (!results.root.row) {
         return []; //Found nothing
     }
 
@@ -107,28 +147,38 @@ async function extractFromResults(results) {
             Database.setServiceOrder(id, serviceOrder);
             resolve(serviceOrder);
         });
-    }); 
+    });
 
     return await Promise.all(promises);
 }
 
-async function retrieveSV(id, session) {
+async function retrieveSV(id, isInHistory, session) {
     const cached = await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
+    if (cached) {
+        console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
+
+    }
     const sessionID = session.sessionID;
 
-    if (cached && (Date.now() - cached.createdAt) < 60000000 && cached.completeness > 2) {
+    if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
+        console.log("Returning cached");
         return { serviceOrder: cached };
     }
 
     const resp = await axios.post(
         URLExecuteMacro,
-        formatExecuteMacroBody("retrieve", sessionID, id)
+        formatExecuteMacroBody("retrieve", isInHistory, sessionID, id)
     ); //Execute Astea Macro retrieve
 
     if (resp.data.ExceptionDetail) {
-        const error = await parseErrorMessage(resp.data);
-        throw new AsteaError(resp.data.ExceptionDetail.Type, error?.status || 500, error?.message || `[${id}]: Astea threw an exception. \n ${resp.data.ExceptionDetail.Type}`);
+        if (isInHistory) {
+            const error = await parseErrorMessage(resp.data);
+            throw new AsteaError(resp.data.ExceptionDetail.Type, error?.status || 500, error?.message || `[${id}]: Astea threw an exception. \n ${resp.data.ExceptionDetail.Type}`);
+        } else {
+            return await retrieveSV(id, true, session);
+        }
     }
+
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const { stateID, hostName } = getOrderMetadata(json); //Get state-id from the JSON
 

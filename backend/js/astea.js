@@ -1,9 +1,10 @@
 "use strict";
 require("dotenv").config();
-const URLCommandBase = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/`;
-const URLExecuteMacro = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/ExecMacroUIExt`;
-const URLInteractWithServer = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
-const URLSearch = `https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/DataViewMgr.svc/dotnet`;
+const ASTEA_BASE_URL = process.env.ASTEA_BASE_URL;
+const URLCommandBase = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/`;
+const URLExecuteMacro = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/ExecMacroUIExt`;
+const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
+const URLSearch = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
 
 const axios = require("axios");
 const xml2js = require("xml2js");
@@ -152,12 +153,12 @@ async function extractFromResults(results) {
     return await Promise.all(promises);
 }
 
-async function retrieveSV(id, isInHistory, session) {
+async function retrieveSV(id, isInHistory, session) { //TODO function is too long
     const cached = await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     if (cached) {
         console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
-
     }
+
     const sessionID = session.sessionID;
 
     if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
@@ -179,7 +180,7 @@ async function retrieveSV(id, isInHistory, session) {
         }
     }
 
-    const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
+    const json = await interpretMacroResponse(resp.data['   d']); //Convert XML response to Json\
     const { stateID, hostName } = getOrderMetadata(json); //Get state-id from the JSON
 
     const respInteractions = await getInteractions(stateID, hostName, sessionID);

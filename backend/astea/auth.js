@@ -1,5 +1,8 @@
-const LOGIN_URL = 'https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/SecurityManager.svc/dotnet';
-const VALIDATE_URL = 'https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/DataViewMgr.svc/dotnet';
+
+require("dotenv").config();
+const ASTEA_BASE_URL = process.env.ASTEA_BASE_URL;
+const LOGIN_URL = `${ASTEA_BASE_URL}/Web_Framework/SecurityManager.svc/dotnet`;
+const VALIDATE_URL = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
 const axios = require('axios');
 const xml2js = require('xml2js');
 const { parseError } = require('../helpers/errorParser');

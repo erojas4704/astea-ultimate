@@ -1,0 +1,3 @@
+function getTechniciansFromData(data) {
+    
+}

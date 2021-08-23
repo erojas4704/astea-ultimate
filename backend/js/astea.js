@@ -5,6 +5,7 @@ const URLCommandBase = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/`;
 const URLExecuteMacro = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/ExecMacroUIExt`;
 const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
 const URLSearch = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
+const URLRetrieveXML = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/RetrieveXMLExt`
 
 const axios = require("axios");
 const xml2js = require("xml2js");
@@ -15,6 +16,7 @@ const { parseXMLToJSON } = require("../helpers/xml");
 const { AsteaError } = require("./AsteaError");
 const ServiceOrder = require("./ServiceOrder");
 const Search = require("../helpers/Search");
+const Technician = require("./Technician");
 const { ORDERS_EXPIRE_IN_MINUTES } = process.env;
 
 const headers = {
@@ -76,14 +78,14 @@ function formatXmlRequest(isInHistory) {
     </root>`;
 }
 
-function formatCommandBody(stateID, sessionID, command) {
+function formatCommandBody(stateID, sessionID, command, isInHistory = false) {
     return {
         "stateId": stateID,
         "sessionId": sessionID,
-        "bcName": "Service_Order",
+        "bcName": isInHistory ? "Service_Order_History" : "Service_Order",
         "xmlRequest":
             `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'>
-                <GetCurrentState pageName='service_request_maint' stateID='${stateID}'>
+                <GetCurrentState pageName='${isInHistory ? 'service_request_history_maint' : 'service_request_maint'}' stateID='${stateID}'>
                 <BO alias='${command}'></BO>
                 </GetCurrentState>
             </root>`,
@@ -106,6 +108,18 @@ function formatSearchBody(sessionID, criteria) {
             </RetrieveXMLExt>
         </s:Body>
     </s:Envelope>`;
+}
+
+function formatTechniciansRequestBody(sessionID, actionGroupID = "Queens") {
+    return {
+        "sessionID": sessionID,
+        "XMLCriteria": `
+        <Find sort_column_alias='sa_person_id' sort_direction='+' force_sort='false' entity_name='sa' query_name='sa_lookup'  pageNumber='1'  getLookupRecordCount='true' actgr_id=\"${actionGroupID}\" where_is_emp=\"person.is_employee = &apos;Y&apos;\" >
+            <operators values='like;;'/>
+            <types values='string;argument;'/>
+            <is_replace_alias values='Y;Y;'/>
+        </Find>`
+    }
 }
 
 async function orderLocatorSearch(session, criteria) {
@@ -158,7 +172,7 @@ async function retrieveSV(id, isInHistory, session) { //TODO function is too lon
     if (cached) {
         console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
     }
-    
+
     const sessionID = session.sessionID;
 
     if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
@@ -182,18 +196,32 @@ async function retrieveSV(id, isInHistory, session) { //TODO function is too lon
 
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const { stateID, hostName } = getOrderMetadata(json); //Get state-id from the JSON
-
-    const respInteractions = await getInteractions(stateID, hostName, sessionID);
-    const respMaterials = await getMaterials(stateID, hostName, sessionID);
-
+    
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 3); //3 has interactions, materials and proper SV data
 
+    const respInteractions = await getInteractions(stateID, hostName, sessionID, isInHistory);
     serviceOrder.parseInteractions(respInteractions);
-    serviceOrder.parseMaterials(respMaterials);
+
+    if (!isInHistory) { //TODO seperate these out into seperate API calls. Also find a way to get materials from history.
+        const respMaterials = await getMaterials(stateID, hostName, sessionID);
+        serviceOrder.parseMaterials(respMaterials);
+    }
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache
 
     return { serviceOrder, json, respInteractions };
+}
+
+async function getTechniciansInActionGroup(sessionID, actionGroupID) {
+    const resp = await axios.post(
+        URLRetrieveXML,
+        formatTechniciansRequestBody(sessionID, actionGroupID),
+        { headers }
+    )
+
+    const json = await parseXMLToJSON(resp.data['d']);
+    const techs = json.root.row.map( tech => new Technician(tech));
+    return techs;
 }
 
 async function parseErrorMessage(data) {
@@ -209,10 +237,11 @@ async function parseErrorMessage(data) {
     return parseErrorCode(messageJSON.root.MessageAsteaCode);
 }
 
-async function getInteractions(stateID, hostName, sessionID) {
+async function getInteractions(stateID, hostName, sessionID, isInHistory = false) {
+    const command = isInHistory ? "customer_authorization_history" : "customer_authorization";
     const resp = await axios.post(
         `${URLCommandBase}/GetStateUIExt?${hostName}`,
-        formatCommandBody(stateID, sessionID, "customer_authorization"),
+        formatCommandBody(stateID, sessionID, command, isInHistory),
         { headers }
     );
 
@@ -221,10 +250,11 @@ async function getInteractions(stateID, hostName, sessionID) {
     return json;
 }
 
-async function getMaterials(stateID, hostName, sessionID) {
+async function getMaterials(stateID, hostName, sessionID, isInHistory = false) {
+    const command = isInHistory ? "material_history" : "demand_material";
     const resp = await axios.post(
         `${URLCommandBase}/GetStateUIExt?${hostName}`,
-        formatCommandBody(stateID, sessionID, "demand_material"),
+        formatCommandBody(stateID, sessionID, "demand_material", isInHistory),
         { headers }
     );
 
@@ -244,7 +274,7 @@ async function getSVPage(stateID, hostName) {
     return json;
 }
 
-async function interpretMacroResponse(data) {
+async function interpretMacroResponse(data) { //TODO function is redundant and does the same thing as parseXMLToJSON
     const json = await new Promise((resolve, reject) => {
         xml2js.parseString(data, (err, result) => {
             if (err) {
@@ -264,4 +294,4 @@ function getOrderMetadata(json) {
     }
 }
 
-module.exports = { retrieveSV, orderLocatorSearch };
+module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup };

@@ -13,3 +13,11 @@ table{
     width: 20px;
     text-overflow: ellipsis;
 }
+
+.in-history{
+    color: #999;
+}
+
+.order-selected{
+    background-color: #fff1db;
+}

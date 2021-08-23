@@ -68,7 +68,7 @@ const ServiceOrder = (props) => {
 
     return (
         <div>
-            <OrderView id={orderID} isLoading={isLoading} serviceOrder={serviceOrder} error={error?.message} />
+            <OrderView className="order-view" id={orderID} isLoading={isLoading} serviceOrder={serviceOrder} error={error?.message} />
         </div>
     )
 }

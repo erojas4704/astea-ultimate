@@ -9,6 +9,7 @@ const SearchView = () => {
     const [results, setResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searching, setSearching] = useState(false);
+    const [selected, setSelected] = useState(null);
 
     const changeHandler = evt => {
         setSearchTerm(evt.target.value);
@@ -34,11 +35,11 @@ const SearchView = () => {
     return (
         <div className="search-view">
             <form onSubmit={handleSubmit}>
-                <label htmlFor="search" className="search-label">Search</label>
+                <label htmlFor="search" className="search-label">Search: </label>
                 <input type="text" name="search" id="search" placeholder="Search for Service Order" onChange={changeHandler} disabled={searching} />
             </form>
             <div className="results">
-                <table className="results-table">
+                <table className="results-table table table-hover table-sm">
                     <colgroup>
                         <col />
                         <col />
@@ -54,9 +55,12 @@ const SearchView = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {results.map(result => <tr key={result.id}>
+                        {results.map(result => 
+                        <tr key={result.id}
+                            className={result.inHistory==="Y"?'in-history':''}
+                            style={selected===result.id?{backgroundColor: '#fff1db'}:null}>
                             <td>
-                                <Link to={{ pathname: `/astea/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
+                                <Link onClick={() => setSelected(result.id)} to={{ pathname: `/astea/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
                             </td>
                             <td>{nameToInitials(result.technician?.name) || ""}</td>
                             <td className="col-name">{capitalizeNames(result.customer?.name) || capitalizeNames(result.caller?.name) || capitalizeNames(result.company?.name) || ""}</td>

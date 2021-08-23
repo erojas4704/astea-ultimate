@@ -4,8 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from "uuid";
 import { Link } from "react-router-dom";
+import useTechnicians from "./hooks/useTechnicians";
+import { capitalizeNames } from "./Helpers/StringUtils";
 
 const OrderView = ({ id, isLoading, serviceOrder, error }) => {
+    const { technicians, isLoadingTechnicians } = useTechnicians();
+
+    console.log(technicians);
 
     if (error)
         return <div className="error">{error}</div>
@@ -20,6 +25,9 @@ const OrderView = ({ id, isLoading, serviceOrder, error }) => {
                 <div className="order-details">
                     <div className="order-col" style={{ flexGrow: "1", marginBottom: "2px" }}>
                         <div className="order-row">
+                            <h4 className="customer-name">{capitalizeNames(serviceOrder.caller?.name || serviceOrder.customer?.name)}</h4>
+                        </div>
+                        <div className="order-row">
                             <div className="label action-group">Action Group</div>
                             <div className="value">{serviceOrder.actionGroup}</div>
                         </div>
@@ -27,15 +35,15 @@ const OrderView = ({ id, isLoading, serviceOrder, error }) => {
                             <div className="label">Warehouse</div>
                             <div className="value">{serviceOrder.warehouse}</div>
                         </div>
-                        <div className="order-row">
-                            <div className="label">Technician</div>
-                            <div className="value">{serviceOrder.technician?.name || "Unassigned"}</div>
+                        <div className="order-row form-inline">
+                            <div className="form-group">
+                                <label htmlFor="select-tech" className="label">Technician</label>
+                                <select id="select-tech" className="form-control form-select form-select-sm" disabled={isLoadingTechnicians}>
+                                    {technicians && technicians.map(technician => <option key={technician.id} value={technician.id} selected={technician.id === serviceOrder.technician.id}>{technician.name}</option>)}
+                                </select>
+                            </div>
                         </div>
                         <div className="divider" />
-                        <div className="order-row">
-                            <div className="label">Customer</div>
-                            <div className="value">{serviceOrder.caller?.name || serviceOrder.customer?.name}</div>
-                        </div>
                         <div className="order-row">
                             <div className="label">Status</div>
                             <div className="value single-line">{serviceOrder.status}</div>

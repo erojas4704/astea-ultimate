@@ -1,3 +1,12 @@
+.customer-name{
+    font-size:18px;
+    color: #74b9ff;
+}
+.order-view{
+    height: 100vh;
+    overflow-y: scroll;
+}
+
 .order-row{
     display: flex;
     flex-direction: row;

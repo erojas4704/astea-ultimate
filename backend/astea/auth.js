@@ -25,6 +25,7 @@ const headers = {
  * @returns {Promise<Object>} A promise that resolves to the sessionID and encryptedSessionID of the login, as well as the username.
 */
 async function loginToAstea(username, password, forceKick = false) {
+    console.log(LOGIN_URL);
     const resp = await axios.post(
         LOGIN_URL,
         formatLoginBody2(username, password, forceKick),
@@ -79,14 +80,13 @@ function formatLoginBody2(username, password, forceKick = false) {
 
 async function parseLoginResponseXML(xml) {
     const resp = await parseXMLToJSON(xml);
-    if (getErrorFromLoginResponse(resp)) {
+    if (getErrorFromLoginResponse(resp)) {//TODO, invert the logic. It should fail by default.
         const xmlMessage = resp['s:Envelope']['s:Body'][0]['s:Fault'][0]['faultstring'][0]._;
         const jsonMessage = await parseXMLToJSON(xmlMessage);
         const error = {
             message: parseError(jsonMessage.root.Message),
             code: jsonMessage.root.Code
         }
-        console.log(jsonMessage);
         throw new AsteaError(error, 401, error.message);
     } else {
         const jsonMessage = await getClientVarsFromLoginResponse(resp);

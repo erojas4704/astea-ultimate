@@ -1,0 +1,15 @@
+<s:Envelope>
+    <s:Body>
+        <LoginExtendedlExtResponse>
+            <LoginExtendedlExtResult>
+                <a:ClientVars>
+                    &lt;ClientVars&gt;
+                        &lt;Variable Name="SessionID"&gt;1324-15-153vdj-23199&lt;/Variable&gt;
+                        &lt;Variable Name="EncryptedSessionID"&gt;0000000-00000-0000-00&lt;/Variable&gt;
+                        &lt;Variable Name="PortalUserLogin"&gt;FakeAstea&lt;/Variable&gt;
+                    &lt;/ClientVars&gt;
+                </a:ClientVars>
+            </LoginExtendedlExtResult>
+        </LoginExtendedlExtResponse>
+    </s:Body>
+</s:Envelope>

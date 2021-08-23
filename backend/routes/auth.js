@@ -41,7 +41,6 @@ router.post('/login', async (req, res, next) => {
         }
 
         //TODO validate against our own local database of users. 
-
         const resp = await loginToAstea(username, password, forceKick);
 
         const token = jwt.sign({

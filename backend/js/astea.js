@@ -158,7 +158,7 @@ async function retrieveSV(id, isInHistory, session) { //TODO function is too lon
     if (cached) {
         console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
     }
-
+    
     const sessionID = session.sessionID;
 
     if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
@@ -180,7 +180,7 @@ async function retrieveSV(id, isInHistory, session) { //TODO function is too lon
         }
     }
 
-    const json = await interpretMacroResponse(resp.data['   d']); //Convert XML response to Json\
+    const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const { stateID, hostName } = getOrderMetadata(json); //Get state-id from the JSON
 
     const respInteractions = await getInteractions(stateID, hostName, sessionID);

@@ -1,0 +1,12 @@
+<s:Envelope>
+    <s:Body>
+        <s:Fault>
+            <faultstring id="string">
+                &lt;root&gt;
+                    &lt;Message&gt;We caused the login to fail arbitrarily.&lt;/Message&gt;
+                    &lt;Code&gt;403&lt;/Code&gt;
+                &lt;/root&gt;
+            </faultstring>
+        </s:Fault>
+    </s:Body>
+</s:Envelope>

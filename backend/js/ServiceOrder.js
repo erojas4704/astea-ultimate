@@ -1,5 +1,5 @@
 const Database = require("../database/db");
-const { parseServiceOrderData } = require("../helpers/serviceOrderParsing");
+const { parseServiceOrderData, sanitizeData } = require("../helpers/serviceOrderParsing");
 const Search = require("../helpers/search");
 
 class ServiceOrder {
@@ -79,7 +79,8 @@ class ServiceOrder {
     }
 
     parseInteractions(data) {
-        data = data.root;
+        data = sanitizeData(data.root);
+
         const rawInteractionArray = data.customer_authorization[0].row;
         if (!rawInteractionArray) {
             this.interactions = [];
@@ -88,7 +89,7 @@ class ServiceOrder {
         this.interactions = rawInteractionArray.map(interaction => {
             return {
                 author: interaction.created_by_descr[0]._,
-                date: new Date(`${interaction.actual_dt[0]._} ${interaction.actual_tm[0]._}`),
+                date: new Date(`${interaction.creation_datetime[0]._}`),
                 message: interaction.comment_text[0]._
             }
         });

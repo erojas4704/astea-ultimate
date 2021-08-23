@@ -51,6 +51,17 @@ function parseServiceOrderData(data) {
     return result;
 }
 
+/* Removes all references to history objects from data. 
+So that in history and out of history data have similar formatting. */
+function sanitizeData(data){
+    const newData = {};
+    for(const key in data){
+        const newKey = key.replace("_history", "");
+        newData[newKey] = data[key];
+    }
+    return newData;
+}
+
 /* Perform a shallow merge of two objects */
 function merge(obj1, obj2) {
     for (let key in obj2) {
@@ -73,4 +84,4 @@ function destructureStringToObject(string, value) {
     return obj;
 }
 
-module.exports = { parseServiceOrderData };
+module.exports = { parseServiceOrderData, sanitizeData };

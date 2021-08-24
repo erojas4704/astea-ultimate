@@ -8,6 +8,7 @@ import useTechnicians from "./hooks/useTechnicians";
 import { v4 as uuid } from "uuid";
 import { Link } from "react-router-dom";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import InteractionsView from "./InteractionsView";
 
 const ServiceOrder = (props) => {
     const params = useParams();
@@ -79,18 +80,7 @@ const ServiceOrder = (props) => {
                         </div>
                         <div className="divider" />
 
-                        <div className="label">Interactions</div>
-                        {serviceOrder.interactions && serviceOrder.interactions.map(interaction => (
-                            <div className="interaction" key={uuid()}>
-                                <div className="interaction-header">
-                                    <div className="interaction-author">{interaction.author}</div>
-                                    <div className="interaction-date">{moment(interaction.date).format('MM/DD/yyyy  h:mm a')}</div>
-                                </div>
-                                <div className="interaction-message">
-                                    {interaction.message}
-                                </div>
-                            </div>
-                        ))}
+                        <InteractionsView serviceOrder={serviceOrder}/>
                     </div>
                 </div>
             )

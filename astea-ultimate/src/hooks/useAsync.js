@@ -9,7 +9,6 @@ const useAsync = (callback) => {
         setLoading(true);
         setResponse(null);
         setError(null);
-        console.log("Checking login status");
 
         return callback()
             .then(resp => {

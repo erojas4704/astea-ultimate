@@ -172,7 +172,6 @@ async function retrieveSV(id, isInHistory, session) { //TODO function is too lon
     if (cached) {
         console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
     }
-
     const sessionID = session.sessionID;
 
     if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
@@ -195,21 +194,12 @@ async function retrieveSV(id, isInHistory, session) { //TODO function is too lon
     }
 
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
-    const { stateID, hostName } = getOrderMetadata(json); //Get state-id from the JSON
-    
-    const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 3); //3 has interactions, materials and proper SV data
+    const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //2 Has just proper SV and metadata. 3 has interactions, materials and proper SV data
 
-    const respInteractions = await getInteractions(stateID, hostName, sessionID, isInHistory);
-    serviceOrder.parseInteractions(respInteractions);
-
-    if (!isInHistory) { //TODO seperate these out into seperate API calls. Also find a way to get materials from history.
-        const respMaterials = await getMaterials(stateID, hostName, sessionID);
-        serviceOrder.parseMaterials(respMaterials);
-    }
+    serviceOrder.metadata = getOrderMetadata(json); //Get state-id from the JSON
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache
-
-    return { serviceOrder, json, respInteractions };
+    return { serviceOrder, json };
 }
 
 async function getTechniciansInActionGroup(sessionID, actionGroupID) {
@@ -237,41 +227,56 @@ async function parseErrorMessage(data) {
     return parseErrorCode(messageJSON.root.MessageAsteaCode);
 }
 
-async function getInteractions(stateID, hostName, sessionID, isInHistory = false) {
+async function getInteractions(id, session, isInHistory = false) {
+    let serviceOrder = await Database.getServiceOrder(id);
+    if(!serviceOrder || serviceOrder.completeness < 3) {
+        const svResp = await retrieveSV(id, isInHistory, session);
+        serviceOrder = svResp.serviceOrder;
+    }
+
+    const {stateID, hostName} = serviceOrder.metadata;
+
     const command = isInHistory ? "customer_authorization_history" : "customer_authorization";
     const resp = await axios.post(
         `${URLCommandBase}/GetStateUIExt?${hostName}`,
-        formatCommandBody(stateID, sessionID, command, isInHistory),
+        formatCommandBody(stateID, session.sessionID, command, isInHistory),
         { headers }
     );
 
     //Convert XML to Json
     const json = await interpretMacroResponse(resp.data['d']);
-    return json;
+    serviceOrder.parseInteractions(json);
+    serviceOrder.calculateCompleteness(); //Call this instead of setting it
+
+    Database.setServiceOrder(id, serviceOrder); //Update the cache
+
+    return serviceOrder.interactions;
 }
 
-async function getMaterials(stateID, hostName, sessionID, isInHistory = false) {
+async function getMaterials(id, session, isInHistory = false) {
+    let serviceOrder = await Database.getServiceOrder(id);
+    if(!serviceOrder || serviceOrder.completeness < 3) {
+        const svResp = await retrieveSV(id, isInHistory, session);
+        serviceOrder = svResp.serviceOrder;
+    }
+
+    
+    const {stateID, hostName} = serviceOrder.metadata;
+
     const command = isInHistory ? "material_history" : "demand_material";
     const resp = await axios.post(
         `${URLCommandBase}/GetStateUIExt?${hostName}`,
-        formatCommandBody(stateID, sessionID, "demand_material", isInHistory),
+        formatCommandBody(stateID, session.sessionID, command, isInHistory),
         { headers }
     );
 
     //Convert XML to Json
     const json = await interpretMacroResponse(resp.data['d']);
-    return json;
-}
+    serviceOrder.parseMaterials(json);
+    serviceOrder.calculateCompleteness(); //Call this instead of setting it
+    Database.setServiceOrder(id, serviceOrder); //Update the cache
 
-async function getSVPage(stateID, hostName) {
-    //Execute Interact With Server
-    const resp = await axios.post(
-        `${URLInteractWithServer}?${hostName}`,
-        formatCommandBody(stateID, hostName)
-    );
-    //Convert XML to Json
-    const json = await interpretMacroResponse(resp.data['d']);
-    return json;
+    return serviceOrder.materials;
 }
 
 async function interpretMacroResponse(data) { //TODO function is redundant and does the same thing as parseXMLToJSON
@@ -294,4 +299,4 @@ function getOrderMetadata(json) {
     }
 }
 
-module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup };
+module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup, getInteractions, getMaterials };

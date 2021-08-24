@@ -39,6 +39,15 @@ class ServiceOrder {
         }
     }
 
+    calculateCompleteness() {
+        let completeness = 0;
+        if(this.actionGroup || this.warehouse || this.status) completeness ++; //Gotten from a search engine
+        if(this.problem.length > 60 || this.metadata) completeness ++; //retrieved properly
+        if(this.interactions) completeness ++;
+        if(this.materials) completeness ++;
+        this.completeness = completeness;
+    }
+
     /**Using new raw data, we update any fields the data includes into this order.*/
     update(rawData) {
     }

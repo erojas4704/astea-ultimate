@@ -1,3 +1,4 @@
+//TODO Sometimes orders overwrite the wrong order in localStorage. This is really bad.
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import useAsync from "./useAsync";
@@ -16,7 +17,7 @@ const useServiceOrder = (id, props) => {
         }
     );
 
-    const serviceOrder = response? response.data: getLocalServiceOrder(local, props);
+    const serviceOrder = response? response.data: getLocalServiceOrder(local, props, id);
     if(response){
         localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response.data));
     }
@@ -33,12 +34,12 @@ const useServiceOrder = (id, props) => {
 }
 
 const shouldLoadServiceOrder = (serviceOrder, id, local) => {
-    if(local && local.completeness > 2) return false; //TODO force an update after a certain age
+    if(local && local.completeness > 2 && local.id === id) return false; //TODO force an update after a certain age
     return !serviceOrder || serviceOrder.id !== id || serviceOrder.completeness < 3;
 }
 
-const getLocalServiceOrder = (local, props) => {
-    if(local && local.completeness > 1) return local; //TODO make sure the local one isn't outdated.
+const getLocalServiceOrder = (local, props, id) => {
+    if(local && local.id === id && local.completeness > 1) return local; //TODO make sure the local one isn't outdated.
     if (props.location && props.location.state) {
         return props.location.state.data;
     } else {

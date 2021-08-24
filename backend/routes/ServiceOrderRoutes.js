@@ -3,7 +3,7 @@ const express = require("express");
 const axios = require("axios");
 
 const router = new express.Router();
-const { retrieveSV, orderLocatorSearch } = require("../js/astea.js");
+const { retrieveSV, orderLocatorSearch, getInteractions, getMaterials } = require("../js/astea.js");
 const { hasAsteaCredentials } = require("../middleware/asteaAuthentication.js");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -31,11 +31,33 @@ router.get("/", async (req, res, next) => {
     }
 });
 
+router.get("/interactions", async (req, res, next) => {
+    const { id, history } = req.query;
+    try {
+        const interactions = await getInteractions(id, req.session, history === "y");
+        return res.send(interactions);
+    } catch (e) {
+        console.error(e);
+        return next(e);
+    }
+});
+
+router.get("/materials", async (req, res, next) => {
+    const { id, history } = req.query;
+    try {
+        const materials = await getMaterials(id, req.session, history === "y");
+        return res.send(materials);
+    } catch (e) {
+        console.error(e);
+        return next(e);
+    }
+});
+
 router.get("/search", async (req, res, next) => {
     const criteria = req.query;
-    try{
-        return res.send( await orderLocatorSearch( req.session, criteria ) );
-    }catch (e) {
+    try {
+        return res.send(await orderLocatorSearch(req.session, criteria));
+    } catch (e) {
         return next(e);
     }
 });

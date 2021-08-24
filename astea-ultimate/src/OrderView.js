@@ -36,9 +36,10 @@ const OrderView = ({ id, isLoading, serviceOrder, error }) => {
                             <div className="value">{serviceOrder.warehouse}</div>
                         </div>
                         <div className="order-row form-inline">
-                            <div className="form-group">
+                            <div className="form-group form-inline">
                                 <label htmlFor="select-tech" className="label">Technician</label>
-                                <select id="select-tech" className="form-control form-select form-select-sm" disabled={isLoadingTechnicians}>
+                                <select id="select-tech" className="form-control form-select form-select-sm" defaultValue="" disabled={isLoadingTechnicians}>
+                                    <option value="">Unassigned</option>
                                     {technicians && technicians.map(technician => <option key={technician.id} value={technician.id} selected={technician.id === serviceOrder.technician.id}>{technician.name}</option>)}
                                 </select>
                             </div>

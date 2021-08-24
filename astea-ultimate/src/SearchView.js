@@ -35,7 +35,7 @@ const SearchView = () => {
     return (
         <div className="search-view">
             <form onSubmit={handleSubmit}>
-                <label htmlFor="search" className="search-label">Search: </label>
+                <label htmlFor="search" className="search-label mr-2">Search: </label>
                 <input type="text" name="search" id="search" placeholder="Search for Service Order" onChange={changeHandler} disabled={searching} />
             </form>
             <div className="results">

@@ -9,7 +9,7 @@ const useAsync = (callback) => {
         setLoading(true);
         setResponse(null);
         setError(null);
-
+        
         return callback()
             .then(resp => {
                 setResponse(resp);

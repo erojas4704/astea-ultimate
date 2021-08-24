@@ -1,76 +1,102 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Redirect, useParams } from "react-router-dom";
-import OrderView from "./OrderView";
-
-const shouldLoadServiceOrder = (currentID, props, orderID, localOrder) => {
-    if(localOrder && localOrder.completeness > 2 && new Date() - new Date(localOrder.retrievedAt) < 300000) return false;
-
-    if (props.location.state && props.location.state.data) {
-        const data = props.location.state.data;
-        if( data.id !== currentID || data.completeness < 3) return true;
-        return false;
-    }
-    return true;
-}
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./OrderView.css";
+import moment from "moment";
+import { useParams } from "react-router-dom";
+import { capitalizeNames } from "./Helpers/StringUtils";
+import { useServiceOrder } from "./hooks/serviceOrderHooks";
+import useTechnicians from "./hooks/useTechnicians";
+import { v4 as uuid } from "uuid";
+import { Link } from "react-router-dom";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 const ServiceOrder = (props) => {
-    const [orderID, setOrderID] = useState("");
-    const [serviceOrder, setServiceOrder] = useState();
-    const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
     const params = useParams();
+    const id = params.id;
+    const { technicians, isLoadingTechnicians } = useTechnicians();
+    const { serviceOrder, isLoading, error } = useServiceOrder(id, props);
 
-    //setOrderID(props.location.state.data.id);
-
-    useEffect(() => {
-        const id = params.id;
-        if(props.location?.state?.data) setServiceOrder(props.location.state.data); //Set data from history. This will most likely be incomplete.
-
-        let localString = localStorage.getItem(`serviceOrder-${id}`);
-        let local = localString ? JSON.parse(localString) : undefined;
-        if(local) setServiceOrder(local);
-        
-        let forceLoad = shouldLoadServiceOrder(orderID, props, params.id, local);
-        setOrderID(id);
-
-        
-        if(forceLoad) {
-            loadServiceOrder(params.id);
-        }
-    }, [params]);
-
-    //console.log("Rendered Service Order", props.location.state);
-
-    const loadServiceOrder = async id => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const resp = await axios.get(
-                `/ServiceOrder`,
-                { params: { id } }
-            );
-            resp.data.retrievedAt = new Date();
-            localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(resp.data));
-            setServiceOrder(resp.data);
-        } catch (err) {
-            const errorResponse = err.response.data.error;
-            if (err.response) setError(errorResponse);
-            setServiceOrder(null);
-        }
-        setIsLoading(false);
-    }
-
-    if (error && error.status > 400 && error.status < 404) {
-        //Log me out
-        return <Redirect to={{ pathname: "/login", state: { error } }} />;
-    }
 
     return (
-        <div>
-            <OrderView className="order-view" id={orderID} isLoading={isLoading} serviceOrder={serviceOrder} error={error?.message} />
-        </div>
-    )
+        <div className="sv-view" style={{ paddingTop: "14px" }}>
+            <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading ? <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} /> : ''}</div>
+            {serviceOrder && (
+                <div className="order-details">
+                    <div className="order-col" style={{ flexGrow: "1", marginBottom: "2px" }}>
+                        <div className="order-row">
+                            <h4 className="customer-name">{capitalizeNames(serviceOrder.caller?.name || serviceOrder.customer?.name)}</h4>
+                        </div>
+                        <div className="order-row">
+                            <div className="label action-group">Action Group</div>
+                            <div className="value">{serviceOrder.actionGroup}</div>
+                        </div>
+                        <div className="order-row">
+                            <div className="label">Warehouse</div>
+                            <div className="value">{serviceOrder.warehouse}</div>
+                        </div>
+                        <div className="order-row form-inline">
+                            <div className="form-group form-inline">
+                                <label htmlFor="select-tech" className="label">Technician</label>
+                                <select id="select-tech" className="" defaultValue="" disabled={isLoadingTechnicians}>
+                                    <option value="">Unassigned</option>
+                                    {technicians && technicians.map(technician => <option key={technician.id} value={technician.id} selected={technician.id === serviceOrder.technician.id}>{technician.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="divider" />
+                        <div className="order-row">
+                            <div className="label">Status</div>
+                            <div className="value single-line">{serviceOrder.status}</div>
+                        </div>
+                        <div className="order-row">
+                            <div className="label">Equipment</div>
+                            <div className="value">{serviceOrder.product}</div>
+                        </div>
+                        <div className="order-row">
+                            <div className="label">Serial Number</div>
+                            <div className="value">{serviceOrder.serialNumber}</div>
+                        </div>
+                        <div className="order-row">
+                            <div className="label">Type</div>
+                            <div className="value">{serviceOrder.type}</div>
+                        </div>
+                        <div className="divider" />
+                        <div className="label">Materials</div>
+                        {serviceOrder.materials && serviceOrder.materials.map(material => (
+                            <div className="material" key={uuid()}>
+                                <div className="material-partnumber">
+                                    {material.sourceDocument ? <Link to={`/Product?id=${material.id}`}>{material.id} </Link> : <span>{material.id}</span>}
+                                </div>
+                                <div className="material-name">{material.name}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="order-col" style={{ flexGrow: "3" }}>
+                        <div className="label">Issue</div>
+                        <div className="value">{serviceOrder.problem}</div>
+                        <div className="order-row">
+                            <div className="label">Open Date</div>
+                            <div className="value">{moment(serviceOrder.openDate).format('MM/DD/yyyy')}</div>
+                        </div>
+                        <div className="divider" />
+
+                        <div className="label">Interactions</div>
+                        {serviceOrder.interactions && serviceOrder.interactions.map(interaction => (
+                            <div className="interaction" key={uuid()}>
+                                <div className="interaction-header">
+                                    <div className="interaction-author">{interaction.author}</div>
+                                    <div className="interaction-date">{moment(interaction.date).format('MM/DD/yyyy  h:mm a')}</div>
+                                </div>
+                                <div className="interaction-message">
+                                    {interaction.message}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )
+            }
+        </div >
+    );
 }
 
 export default ServiceOrder;

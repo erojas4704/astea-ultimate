@@ -1,3 +1,4 @@
+//TODO if a new search lines up with a previous search, mark previous search as dirty.
 const hash = require("object-hash");
 const Database = require("../database/db");
 require("dotenv").config();
@@ -16,7 +17,7 @@ class Search {
         //if (search) console.log("FOUND SEARCH ", search, key);
         //else return;
 
-        if (search.dirty || Date.now() - search.createdAt < (1000 * 60) * SEARCHES_EXPIRE_IN_MINUTES) {  //Check if search is expired
+        if (search.dirty || search.getAgeInMinutes() < SEARCHES_EXPIRE_IN_MINUTES) {  //Check if search is expired
             Database.dropSearch(key);
             return;
         }
@@ -53,8 +54,13 @@ class Search {
         this.key = hash(query);
         this.query = query;
         this.results = results;
+        this.createdAt = new Date();
 
         console.log(`Saving search ${this.key} with criteria `, query);
+    }
+
+    getAgeInMinutes() {
+        return Math.floor((new Date() - new Date(this.createdAt)) / 60000);
     }
 }
 

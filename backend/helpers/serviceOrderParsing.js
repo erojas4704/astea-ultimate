@@ -11,6 +11,7 @@ const fields = {
     "warehouse_id": "warehouse",
     "order_type_id": "orderType",
     "actgr_descr": "actionGroup",
+    "cc_actgr_descr": "actionGroup",
     "is_in_history": "isInHistory",
     "cc_cust_company_descr": "customer.name",
     "cc_cust_company_id": "customer.id",

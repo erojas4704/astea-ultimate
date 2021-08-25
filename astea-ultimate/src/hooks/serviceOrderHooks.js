@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import useAsync from "./useAsync";
+import { getAgeInMinutes } from "../Helpers/ServiceOrderUtils";
 
 const useServiceOrder = (id, props) => {
     let cancelTokenSource = useRef();
@@ -19,7 +20,8 @@ const useServiceOrder = (id, props) => {
 
     const serviceOrder = response ? response.data : getLocalServiceOrder(local, props, id);
     if (response) {
-        localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response.data));
+        response.data.cachedAt = new Date();
+        localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response.data)); //TODO make service order model and update it there.
     }
 
 
@@ -48,6 +50,11 @@ const useInteractions = (serviceOrder) => {
 
     const interactions = response ? response.data : serviceOrder.interactions;
 
+    if(response){
+        serviceOrder.interactions = response.data;
+        localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(serviceOrder)); //TODO make service order model and update it there.
+    }
+
     useEffect(() => {
         execute();
         return () => {
@@ -59,12 +66,15 @@ const useInteractions = (serviceOrder) => {
 }
 
 const shouldLoadInteractions = (serviceOrder) => {
-    return !serviceOrder.interactions || serviceOrder.completeness < 2 || serviceOrder.interactions == 0; //TODO force an update after a certain age
+    return (!serviceOrder.interactions || serviceOrder.interactions == 0) && serviceOrder.completeness == 2; //TODO force an update after a certain age
 }
 
 const shouldLoadServiceOrder = (serviceOrder, id, local) => {
-    debugger
-    if (local && local.completeness > 1 && local.id === id) return false; //TODO force an update after a certain age
+    if(local && getAgeInMinutes(local) > 5) console.log(`Service order ${id} is old. Getting new ${getAgeInMinutes(local)}`);
+    if(!local) console.log(`Service order does not exist. Getting new`);
+    if(local && local.completeness < 2) console.log(`Service order ${id} is incomplete. Getting new`);
+
+    if (local && local.completeness > 1 && local.id === id && getAgeInMinutes(local) < 5) return false; //TODO force an update after a certain age defined by environment
     return !serviceOrder || serviceOrder.id !== id || serviceOrder.completeness < 3;
 }
 

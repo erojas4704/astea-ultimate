@@ -10,7 +10,7 @@ function generateSearchQuery(criteria, page=1) {
     
     //TODO make an array of all the keys to look for that can be set in the environment variable.
     if(criteria['all']){
-        ["actionGroup", "id", "name", "tag", "serial"].forEach( key => {
+        ["actionGroup", "id", "name", "tag", "serial", "technicianName", "technicianID"].forEach( key => {
             const asteaKey = translateToAsteaKey(key, false);
             catchAll.push(`${asteaKey} LIKE '%${criteria['all']}%'`);
             const secondaryKey = translateToAsteaKey(key, true);
@@ -53,13 +53,16 @@ function translateToAsteaKey(key, useSecondary) {
         "id": "order_line.request_id",
         "name": "order_line.cust_company_descr",
         "tag": "tagno",
-        "serial": "serial_no"
+        "serial": "serial_no",
+        "technicianName": "person.search_name",
+        "technicianID" : "service_call.sa_person_id"
     }
 
     const secondary = {
         "id": "c_order_line.request_id",
         "openDate": "c_order_line.open_date",
-        "name": "c_order_line.cust_company_descr"
+        "name": "c_order_line.cust_company_descr",
+        "technicianID": "c_service_call.sa_person_id"
     }
 
     if (useSecondary && secondary[key]) {

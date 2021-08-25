@@ -1,15 +1,25 @@
 import axios from "axios";
 import moment from "moment";
 import "./SearchView.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { capitalizeNames, nameToInitials } from "./Helpers/StringUtils";
+import useSearch from "./hooks/useSearch";
 
 const SearchView = () => {
     const [results, setResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [searching, setSearching] = useState(false);
-    const [selected, setSelected] = useState(null);
+    const [selected, setSelected] = useState(useParams().id || '');
+    const { searchData, cacheSearch } = useSearch();
+
+    useEffect(() => {
+        console.log("SEARCH DATA CHANGED");
+        if (searchData && searchData.query) {
+            setSearchTerm(searchData.query.all);
+            setResults(searchData.data);
+        }
+    }, [searchData])
 
     const changeHandler = evt => {
         setSearchTerm(evt.target.value);
@@ -22,12 +32,15 @@ const SearchView = () => {
 
     const doSearch = async searchTerm => {
         setSearching(true);
+        const params = {
+            all: searchTerm,
+            actionGroup: "QNTech"
+        }
         const resp = await axios.get('/ServiceOrder/search', {
-            params: {
-                all: searchTerm,
-                actionGroup: "QNTech"
-            }
+            params
         });
+
+        cacheSearch(params, resp.data);
         setResults(resp.data);
         setSearching(false);
     }
@@ -36,16 +49,16 @@ const SearchView = () => {
         <div className="search-view">
             <form onSubmit={handleSubmit}>
                 <label htmlFor="search" className="search-label mr-2">Search: </label>
-                <input type="text" name="search" id="search" placeholder="Search for Service Order" onChange={changeHandler} disabled={searching} />
+                <input type="text" name="search" id="search" placeholder="Search for Service Order" value={searchTerm} onChange={changeHandler} disabled={searching} />
             </form>
             <div className="results">
                 <table className="results-table table table-hover table-sm">
                     <colgroup>
                         <col />
                         <col />
-                        <col className="col-name"/>
-                        <col/>
-                    </colgroup>  
+                        <col className="col-name" />
+                        <col />
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -55,17 +68,17 @@ const SearchView = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {results.map(result => 
-                        <tr key={result.id}
-                            className={result.inHistory==="Y"?'in-history':''}
-                            style={selected===result.id?{backgroundColor: '#fff1db'}:null}>
-                            <td>
-                                <Link onClick={() => setSelected(result.id)} to={{ pathname: `/astea/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
-                            </td>
-                            <td>{nameToInitials(result.technician?.name) || ""}</td>
-                            <td className="col-name">{capitalizeNames(result.customer?.name) || capitalizeNames(result.caller?.name) || capitalizeNames(result.company?.name) || ""}</td>
-                            <td>{moment(result.openDate).format("MM/DD/yy")}</td>
-                        </tr>)}
+                        {results.map(result =>
+                            <tr key={result.id}
+                                className={result.inHistory === "Y" ? 'in-history' : ''}
+                                style={selected === result.id ? { backgroundColor: '#fff1db' } : null}>
+                                <td>
+                                    <Link onClick={() => setSelected(result.id)} to={{ pathname: `/astea/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
+                                </td>
+                                <td>{nameToInitials(result.technician?.name) || ""}</td>
+                                <td className="col-name">{capitalizeNames(result.customer?.name) || capitalizeNames(result.caller?.name) || capitalizeNames(result.company?.name) || ""}</td>
+                                <td>{moment(result.openDate).format("MM/DD/yy")}</td>
+                            </tr>)}
                     </tbody>
                 </table>
             </div>

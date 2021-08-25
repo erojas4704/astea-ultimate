@@ -1,0 +1,89 @@
+Create a new interaction
+
+POST /AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt? {order metadata}
+
+
+{
+  "stateId": "6c8d2da3-1b02-48cd-b871-45b9e448a14c",
+  "sessionId": "f2a2dcfc-5034-4020-ae54-9a036e4b8f99Prod",
+  "macroName": "new",
+  "bcName": "Service_Order",
+  "boAlias": "customer_authorization",
+  "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>",
+  "updateStateXml": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'></value></array></xml>",
+  "requestStateXml": "<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='6c8d2da3-1b02-48cd-b871-45b9e448a14c'><BO alias='customer_authorization'></BO></GetCurrentState></root>",
+  "requestStateXPathFilter": "//customer_authorization/row[last()]",
+  "saveState": false,
+  "closeState": false,
+  "moduleName": "service_order_maint"
+}
+
+Then:
+
+POST /AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt? {order metadata}
+
+{
+  "stateId": "6c8d2da3-1b02-48cd-b871-45b9e448a14c",
+  "sessionId": "f2a2dcfc-5034-4020-ae54-9a036e4b8f99Prod",
+  "macroName": "",
+  "bcName": "Service_Order",
+  "boAlias": "checklist_for_order_hdr",
+  "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'></value></array></xml>",
+  "updateStateXml": "<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"></root>\r\n",
+  "requestStateXml": "",
+  "requestStateXPathFilter": "",
+  "saveState": false,
+  "closeState": false,
+  "moduleName": "service_order_maint"
+}
+
+/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt {order metadata}
+
+{
+  "stateId": "6c8d2da3-1b02-48cd-b871-45b9e448a14c",
+  "sessionId": "f2a2dcfc-5034-4020-ae54-9a036e4b8f99Prod",
+  "macroName": "CheckSLAMacro",
+  "bcName": "Service_Order",
+  "boAlias": "main",
+  "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'>False</value></array></xml>",
+  "updateStateXml": "<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"><main><row status=\"8\" number=\"1\" serverStatus=\"3\" attachmentsNum=\"0\" primaryTable=\"order_line\"><cc_is_apply status=\"8\">Apply</cc_is_apply></row></main></root>\r\n",
+  "requestStateXml": "<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='6c8d2da3-1b02-48cd-b871-45b9e448a14c'><BO alias='main'></BO><BO alias='demand_labor'></BO></GetCurrentState></root>",
+  "requestStateXPathFilter": "",
+  "saveState": false,
+  "closeState": false,
+  "moduleName": "service_order_maint"
+}
+
+POST /AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt
+
+{
+  "stateId": "6c8d2da3-1b02-48cd-b871-45b9e448a14c",
+  "sessionId": "f2a2dcfc-5034-4020-ae54-9a036e4b8f99Prod",
+  "macroName": "",
+  "bcName": "Service_Order",
+  "boAlias": "main",
+  "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'></value></array></xml>",
+  "updateStateXml": `
+    <root
+        xmlns:dt=\"urn:schemas-microsoft-com:datatypes\">
+        <customer_authorization>
+            <row status=\"14\" number=\"2\" serverStatus=\"2\"/>
+        </customer_authorization>
+        <customer_authorization>
+            <row status=\"12\" number=\"3\" serverStatus=\"2\">
+                <comment_text status=\"8\" len=\"2147483647\">2003464310 depot case</comment_text>
+            </row>
+        </customer_authorization>
+    </root>
+  `,
+  "requestStateXml": "",
+  "requestStateXPathFilter": "",
+  "saveState": true,
+  "closeState": false,
+  "moduleName": "service_order_maint"
+}
+
+Resp << 
+{"d":""}
+
+Empty D token

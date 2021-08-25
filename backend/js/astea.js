@@ -167,8 +167,8 @@ async function extractFromResults(results) {
     return await Promise.all(promises);
 }
 
-async function retrieveSV(id, isInHistory, session) { //TODO function is too long
-    const cached = await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
+async function retrieveSV(id, isInHistory, session, forceNew=false) { //TODO function is too long
+    const cached = forceNew? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     if (cached) {
         console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
     }

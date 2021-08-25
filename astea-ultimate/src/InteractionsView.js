@@ -11,7 +11,7 @@ const InteractionsView = ({ serviceOrder }) => {
         <div className="label">
             Interactions
         </div>
-            {loading && <FontAwesomeIcon className="fa-spin sv-spinner" style={{ fontSize: "26px"}} icon={faCircleNotch} />}
+        {loading && <FontAwesomeIcon className="fa-spin sv-spinner" style={{ fontSize: "26px"}} icon={faCircleNotch} />}
         
         {interactions && interactions.map(interaction => (
             <div className="interaction" key={uuid()}>

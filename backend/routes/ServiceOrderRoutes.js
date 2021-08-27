@@ -73,7 +73,21 @@ router.post("/interactions", async (req, res, next) => {
             "bcName": "Service_Order",
             "boAlias": "customer_authorization",
             "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'></value></array></xml>",
-            "updateStateXml": `<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"><main><row status=\"8\" number=\"1\" serverStatus=\"3\" attachmentsNum=\"0\" primaryTable=\"order_line\"><cc_eta_failure_code_optional status=\"8\">Y</cc_eta_failure_code_optional><cc_recall_failure_code_optional status=\"8\">Y</cc_recall_failure_code_optional><cc_resolve_failure_code_optional status=\"8\">Y</cc_resolve_failure_code_optional></row></main><customer_authorization><row status=\"12\" number=\"${index}\" serverStatus=\"2\"><comment_text status=\"8\" len=\"2147483647\">${message}</comment_text></row></customer_authorization></root>`
+            "updateStateXml": `
+            <root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\">
+                <main>
+                    <row status=\"8\" number=\"1\" serverStatus=\"3\" attachmentsNum=\"0\" primaryTable=\"order_line\">
+                        <cc_eta_failure_code_optional status=\"8\">Y</cc_eta_failure_code_optional>
+                        <cc_recall_failure_code_optional status=\"8\">Y</cc_recall_failure_code_optional>
+                        <cc_resolve_failure_code_optional status=\"8\">Y</cc_resolve_failure_code_optional>
+                    </row>
+                </main>
+                <customer_authorization>
+                    <row status=\"12\" number=\"${index}\" serverStatus=\"2\">
+                    <comment_text status=\"8\" len=\"2147483647\">${message}</comment_text>
+                    </row>
+                </customer_authorization>
+            </root>`
             ,
             "requestStateXml": "",
             "requestStateXPathFilter": "",

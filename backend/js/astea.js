@@ -170,7 +170,7 @@ async function extractFromResults(results) {
 async function retrieveSV(id, isInHistory, session, forceNew=false) { //TODO function is too long
     const cached = forceNew? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     if (cached) {
-        console.log(`Found cached service order. Completness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
+        console.log(`Found cached service order. Completeness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
     }
     const sessionID = session.sessionID;
 
@@ -228,7 +228,7 @@ async function parseErrorMessage(data) {
 }
 
 async function getInteractions(id, session, isInHistory = false) {
-    let serviceOrder = await Database.getServiceOrder(id);
+    let serviceOrder = await Database.getServiceOrder(id); ///TODO need current metadata, probably
     if(!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
@@ -242,10 +242,9 @@ async function getInteractions(id, session, isInHistory = false) {
         formatCommandBody(stateID, session.sessionID, command, isInHistory),
         { headers }
     );
-
-    //Convert XML to Json
-    const json = await interpretMacroResponse(resp.data['d']);
-    serviceOrder.parseInteractions(json);
+    
+    const json = await interpretMacroResponse(resp.data['d']); //Convert XML to Json
+    serviceOrder.parseInteractions(json); 
     serviceOrder.calculateCompleteness(); //Call this instead of setting it
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache

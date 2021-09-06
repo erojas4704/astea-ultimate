@@ -49,15 +49,15 @@ router.post("/interactions2", async (req, res, next) => {
             "Cache-Control": "no-cache",
             "Cookie": `ComputerID_Prod__erojas1=${sessionID}; ASPSESSIONIDCADCSBAT=JEKALPMAEEEIFIFCMAHLOKKE`
         };
-        const unnamedPrelimMacroResp = await axios.post(URLInteractWithServer,
-            { "stateId": stateID, "sessionId": sessionID, "macroName": "", "bcName": "Service_Order", "boAlias": "", "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>", "updateStateXml": "<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"><main><row status=\"8\" number=\"1\" serverStatus=\"0\" attachmentsNum=\"0\" primaryTable=\"order_line\"><cc_is_apply status=\"8\">Modified</cc_is_apply></row></main></root>\r\n", "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateID}'><BO alias='main'></BO></GetCurrentState></root>`, "requestStateXPathFilter": "", "saveState": false, "closeState": false, "moduleName": "service_order_maint" },
-            { headers }
-        )
+        // const unnamedPrelimMacroResp = await axios.post(URLInteractWithServer,
+        //     { "stateId": stateID, "sessionId": sessionID, "macroName": "", "bcName": "Service_Order", "boAlias": "", "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>", "updateStateXml": "<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"><main><row status=\"8\" number=\"1\" serverStatus=\"0\" attachmentsNum=\"0\" primaryTable=\"order_line\"><cc_is_apply status=\"8\">Modified</cc_is_apply></row></main></root>\r\n", "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateID}'><BO alias='main'></BO></GetCurrentState></root>`, "requestStateXPathFilter": "", "saveState": false, "closeState": false, "moduleName": "service_order_maint" },
+        //     { headers }
+        // )
 
-        const getStateUIForInteractions = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt?${hostName}`,
-            { "stateId": stateID, "sessionId": sessionID, "bcName": "Service_Order", "xmlRequest": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='service_request_maint' stateID='${stateID}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`, "moduleName": "service_order_maint" },
-            { headers }
-        );
+        // const getStateUIForInteractions = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt?${hostName}`,
+        //     { "stateId": stateID, "sessionId": sessionID, "bcName": "Service_Order", "xmlRequest": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='service_request_maint' stateID='${stateID}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`, "moduleName": "service_order_maint" },
+        //     { headers }
+        // );
 
         const createBlankInteractionResp = await axios.post(URLInteractWithServer,
             {
@@ -74,6 +74,7 @@ router.post("/interactions2", async (req, res, next) => {
                 "closeState": false,
                 "moduleName": "service_order_maint"
             },
+            
             {
                 headers: {
                     "Content-Type": "application/json; charset=utf-8",
@@ -87,7 +88,7 @@ router.post("/interactions2", async (req, res, next) => {
                     "Host": "alliance.microcenter.com",
                     "Connection": " Keep-Alive",
                     "Cache-Control": "no-cache",
-                    "Cookie": "ComputerID_Prod__erojas1=c9ec33fc-d9b8-423a-a222-047938dc0d63Prod; ASPSESSIONIDACTTBQAD=IBDGAGMBANDJHOBAJBLLDPLN"
+                    //"Cookie": "ComputerID_Prod__erojas1=c9ec33fc-d9b8-423a-a222-047938dc0d63Prod; ASPSESSIONIDACTTBQAD=IBDGAGMBANDJHOBAJBLLDPLN"
                 }
             }
         );//Headers seem to have no bearing on what kind of response I get. It's creating blank customer authorization records, but not interactions.
@@ -96,7 +97,7 @@ router.post("/interactions2", async (req, res, next) => {
         const totalRows = createBlankInteractionRespJSON.root.customer_authorization[0].$.totalRows;
         const rowNumber = createBlankInteractionRespJSON.root.customer_authorization[0].row[0].$.number;
 
-        return res.send(createBlankInteractionRespJSON.root.customer_authorization[0].row[0].descr[0]._);
+        return res.send(`${createBlankInteractionRespJSON.root.customer_authorization[0].row[0].descr[0]._} row number: ${rowNumber}`);
 
         const hitApplyRetrieveXML = await axios.post(URLRetrieveXML,
             { "sessionID": sessionID, "XMLCriteria": "<Find entity_name='glb_param' query_name='contact_center_getglbparams'  getRecordCount='true' ap_module_name=\"service_order\" ><operators values='=;'/><types values='string;'/><is_replace_alias values='Y;'/></Find>" },

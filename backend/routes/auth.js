@@ -36,7 +36,7 @@ router.post('/login', async (req, res, next) => {
                 }, SECRET_KEY);
 
                 res.cookie("astea-session", JSON.stringify(token)); //Set the JWT token as a cookie, to be passed in future requests.
-                return res.send("success");
+                return res.json({ success: true, sessionID: username });
             }
         }
 
@@ -53,7 +53,7 @@ router.post('/login', async (req, res, next) => {
 
         res.cookie("astea-session", JSON.stringify(token)); //Set the JWT token as a cookie, to be passed in future requests.
         res.cookie("username", username);
-        return res.send("success");
+        return res.json({ success: true, sessionID: resp.sessionID });
     } catch (e) {
         return next(e);
     }

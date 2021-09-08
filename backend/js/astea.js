@@ -22,7 +22,7 @@ const { ORDERS_EXPIRE_IN_MINUTES } = process.env;
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Accept": "application/json, text/javascript, */*; q=0.01",
-    // "CurrentProfile": "Prod"
+    "CurrentProfile": "Prod"
 }
 
 function formatExecuteMacroBody(macroName, isInHistory, sessionID, ...params) {
@@ -181,7 +181,8 @@ async function retrieveSV(id, isInHistory, session, forceNew=false) { //TODO fun
 
     const resp = await axios.post(
         URLExecuteMacro,
-        formatExecuteMacroBody("retrieve", isInHistory, sessionID, id)
+        formatExecuteMacroBody("retrieve", isInHistory, sessionID, id),
+        { headers }
     ); //Execute Astea Macro retrieve
 
     if (resp.data.ExceptionDetail) {

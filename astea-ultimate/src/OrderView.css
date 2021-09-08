@@ -114,3 +114,7 @@
 .sv-section{
     background-color: #f5f5f5;
 }
+
+.add-interaction-textarea{
+    width: 100%;
+}

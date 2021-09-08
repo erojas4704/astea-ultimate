@@ -18,7 +18,7 @@ const LoginView = (props) => {
         setIsLoading(true);
         try {
             const resp = await axios.post(`/auth/login`, { ...form, forceKick: true });
-            if (resp.data === "success") {
+            if (resp.data.success) {
                 setIsLoggedIn(true);
             }
         }

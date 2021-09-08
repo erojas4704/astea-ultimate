@@ -167,8 +167,8 @@ async function extractFromResults(results) {
     return await Promise.all(promises);
 }
 
-async function retrieveSV(id, isInHistory, session, forceNew=false) { //TODO function is too long
-    const cached = forceNew? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
+async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO function is too long
+    const cached = forceNew ? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     if (cached) {
         console.log(`Found cached service order. Completeness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
     }
@@ -211,7 +211,7 @@ async function getTechniciansInActionGroup(sessionID, actionGroupID) {
     )
 
     const json = await parseXMLToJSON(resp.data['d']);
-    const techs = json.root.row.map( tech => new Technician(tech));
+    const techs = json.root.row.map(tech => new Technician(tech));
     return techs;
 }
 
@@ -228,14 +228,103 @@ async function parseErrorMessage(data) {
     return parseErrorCode(messageJSON.root.MessageAsteaCode);
 }
 
+async function createInteraction(id, session, message) {
+    const svResp = await retrieveSV(id, false, session, true); //Open a new State
+    const { sessionID } = session;
+    const { stateID, hostName } = svResp.serviceOrder.metadata;
+
+    //Need to get interactions first before creating a new one.
+    await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt?${hostName}`,
+        { "stateId": stateID, "sessionId": sessionID, "bcName": "Service_Order", "xmlRequest": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='service_request_maint' stateID='${stateID}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`, "moduleName": "service_order_maint" },
+        { headers }
+    );
+
+    const createBlankInteractionResp = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?${hostName}`,
+        {
+            "stateId": stateID,
+            "sessionId": sessionID,
+            "macroName": "new",
+            "bcName": "Service_Order",
+            "boAlias": "customer_authorization",
+            "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>",
+            "updateStateXml": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'></value></array></xml>",
+            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateID}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`,
+            "requestStateXPathFilter": "//customer_authorization/row[last()]",
+            "saveState": false,
+            "closeState": false,
+            "moduleName": "service_order_maint"
+        },
+        { headers }
+    );
+
+    const createBlankInteractionRespJSON = await parseXMLToJSON(createBlankInteractionResp.data['d']);
+    const rowNumber = createBlankInteractionRespJSON.root.customer_authorization[0].row[0].$.number;
+
+    const dotnetFinalize = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/dotnet?${hostName}`,
+        `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+        <s:Header>
+        <currentprofile xmlns="http://www.astea.com">Prod</currentprofile>
+        </s:Header>
+        <s:Body>
+        <InteractWithServerExt xmlns="http://astea.services.wcf/">
+            <stateId>${stateID}</stateId>
+            <sessionId>${sessionID}</sessionId>
+            <macroName/>
+            <bcName>Service_Order</bcName>
+            <boAlias>main</boAlias>
+            <macroParameters>&lt;xml xmlns:dt='urn:schemas-microsoft-com:datatypes'&gt;
+            &lt;array&gt;
+            &lt;value dt:dt='string'&gt;
+            &lt;/value&gt;
+            &lt;/array&gt;
+            &lt;/xml&gt;</macroParameters>
+            <updateStateXml>
+            &lt;root xmlns:dt="urn:schemas-microsoft-com:datatypes"&gt;
+                &lt;main&gt;
+                    &lt;row status="8" number="1" serverStatus="3" attachmentsNum="0" primaryTable="order_line"&gt;
+                        &lt;cc_eta_failure_code_optional status="8"&gt;Y&lt;/cc_eta_failure_code_optional&gt;
+                        &lt;cc_recall_failure_code_optional status="8"&gt;Y&lt;/cc_recall_failure_code_optional&gt;
+                        &lt;cc_resolve_failure_code_optional status="8"&gt;Y&lt;/cc_resolve_failure_code_optional&gt;
+                    &lt;/row&gt;
+                &lt;/main&gt;
+                &lt;customer_authorization&gt;
+                    &lt;row status="12" number="${rowNumber}" serverStatus="2"&gt;
+                    &lt;comment_text status="8" len="2147483647"&gt;${message}&lt;/comment_text&gt;
+                    &lt;/row&gt;
+                &lt;/customer_authorization&gt;
+            &lt;/root&gt;&#xD;
+            </updateStateXml>
+            <requestStateXml/>
+            <requestStateXPathFilter/>
+            <saveState>true</saveState>
+            <closeState>false</closeState>
+            <moduleName/>
+        </InteractWithServerExt>
+        </s:Body>
+        </s:Envelope>`,
+        {
+            headers: {
+                "Content-Type": "text/xml; charset=utf-8",
+                "SOAPAction": "http://astea.services.wcf/IBCBaseContract/InteractWithServerExt",
+                "Accept-Encoding": "gzip, deflate",
+                "Host": "alliance.microcenter.com",
+                "Expect": "100-continue",
+                "currentprofile": "Prod"
+            }
+        }
+    );
+    console.log("DOTNET FINALIZE ", dotnetFinalize);
+    return dotnetFinalize.data;
+}
+
 async function getInteractions(id, session, isInHistory = false) {
     let serviceOrder = await Database.getServiceOrder(id); ///TODO need current metadata, probably
-    if(!serviceOrder || serviceOrder.completeness < 3) {
+    if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }
 
-    const {stateID, hostName} = serviceOrder.metadata;
+    const { stateID, hostName } = serviceOrder.metadata;
 
     const command = isInHistory ? "customer_authorization_history" : "customer_authorization";
     const resp = await axios.post(
@@ -243,9 +332,9 @@ async function getInteractions(id, session, isInHistory = false) {
         formatCommandBody(stateID, session.sessionID, command, isInHistory),
         { headers }
     );
-    
+
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML to Json
-    serviceOrder.parseInteractions(json); 
+    serviceOrder.parseInteractions(json);
     serviceOrder.calculateCompleteness(); //Call this instead of setting it
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache
@@ -255,13 +344,13 @@ async function getInteractions(id, session, isInHistory = false) {
 
 async function getMaterials(id, session, isInHistory = false) {
     let serviceOrder = await Database.getServiceOrder(id);
-    if(!serviceOrder || serviceOrder.completeness < 3) {
+    if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }
 
-    
-    const {stateID, hostName} = serviceOrder.metadata;
+
+    const { stateID, hostName } = serviceOrder.metadata;
 
     const command = isInHistory ? "material_history" : "demand_material";
     const resp = await axios.post(
@@ -299,4 +388,4 @@ function getOrderMetadata(json) {
     }
 }
 
-module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup, getInteractions, getMaterials };
+module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup, getInteractions, getMaterials, createInteraction };

@@ -46,7 +46,7 @@ const SearchView = () => {
     }
 
     return (
-        <div className="search-view">
+        <div className="search-view"  style={{height: '100%'}}>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="search" className="search-label mr-2">Search: </label>
                 <input type="text" name="search" id="search" placeholder="Search for Service Order" value={searchTerm} onChange={changeHandler} disabled={searching} />

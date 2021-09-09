@@ -13,11 +13,14 @@ const InteractionsView = ({ serviceOrder }) => {
     const [newInteractionText, setNewInteractionText] = useState("");
     const [postingInteraction, setPostingInteraction] = useState(false);
 
+
     useEffect(() => {
         //Reset everything.
         setNewInteractionText("");
         setAddingInteraction(false);
         setPostingInteraction(false);
+        console.log("Service order changed for interaction ", serviceOrder.id, "interactions " + (interactions?.length || 0), "interactions in order " + serviceOrder.interactions?.length);
+
     }, [serviceOrder]);
 
     const addBlankInteraction = () => {
@@ -27,14 +30,20 @@ const InteractionsView = ({ serviceOrder }) => {
 
     const submitInteraction = async (e) => {
         e.preventDefault();
+        const message = newInteractionText;
+        setNewInteractionText("");
         setPostingInteraction(true);
-        console.log("Sending out new interaction");
+        setAddingInteraction(false);
+        const newInteraction = { message, date: new Date(), author: "Me", uploading: true };
+        //TODO Timeline.push(addInteraction etc.); For the undo functionality.
+        interactions.push(newInteraction); //TODO make the author my name
         const resp = await axios.post("/ServiceOrder/Interactions",
             {
                 id: serviceOrder.id,
                 message: newInteractionText
             }
         );
+        newInteraction.uploading = false;
         setPostingInteraction(false);
         console.log(resp);
     }
@@ -45,6 +54,7 @@ const InteractionsView = ({ serviceOrder }) => {
         <div className="label">
             Interactions
         </div>
+        {error && <div className="error">{error.toString()}</div>}
         {loading && <FontAwesomeIcon className="fa-spin sv-spinner" style={{ fontSize: "26px" }} icon={faCircleNotch} />}
 
         {interactions && interactions.map(interaction => (
@@ -52,6 +62,7 @@ const InteractionsView = ({ serviceOrder }) => {
                 <div className="interaction-header">
                     <div className="interaction-author">{interaction.author}</div>
                     <div className="interaction-date">{moment(interaction.date).format('MM/DD/yyyy  h:mm a')}</div>
+                    {interaction.uploading && <FontAwesomeIcon className="fa-spin sv-spinner mx-2" style={{ fontSize: "26px" , color: "#d63031"}} icon={faCircleNotch} />}
                 </div>
                 <div className="interaction-message">
                     {interaction.message}
@@ -62,8 +73,8 @@ const InteractionsView = ({ serviceOrder }) => {
             <>
                 <div>New Interaction: </div>
                 <form className="add-interaction-form" onSubmit={submitInteraction}>
-                    <textarea className="add-interaction-textarea" value={newInteractionText} onChange={(e) => setNewInteractionText(e.target.value)} disabled={postingInteraction}/>
-                    <button className="btn btn-primary" type="submit" style={{ width: 'auto' }} disabled={postingInteraction}>Add</button>
+                    <textarea className="add-interaction-textarea" value={newInteractionText} onChange={(e) => setNewInteractionText(e.target.value)} />
+                    <button className="btn btn-primary" type="submit" style={{ width: 'auto' }}>Add</button>
                     <button className="btn btn-danger mx-2" onClick={() => setAddingInteraction(false)} style={{ width: 'auto' }} disabled={postingInteraction}>Cancel</button>
                 </form>
             </>

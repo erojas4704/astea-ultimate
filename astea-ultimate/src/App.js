@@ -2,7 +2,6 @@
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import './App.css';
 import Authenticator from './Authenticator';
-import LoggedInView from './LoggedInView';
 import LoginView from './LoginView';
 import HomeView from './HomeView';
 import ServiceOrder from './ServiceOrder';

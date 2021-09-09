@@ -139,6 +139,7 @@ async function orderLocatorSearch(session, criteria) {
     );
 
     const json = await parseXMLToJSON(resp.data);
+    debugger;
     const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const resultsJSON = await parseXMLToJSON(resultsXML);

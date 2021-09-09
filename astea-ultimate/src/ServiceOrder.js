@@ -16,10 +16,9 @@ const ServiceOrder = (props) => {
     const { technicians, isLoadingTechnicians } = useTechnicians();
     const { serviceOrder, isLoading, error } = useServiceOrder(id, props);
 
-
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>
-            <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading ? <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} /> : ''}</div>
+            <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}</div>
             {serviceOrder && (
                 <div className="order-details">
                     <div className="order-col" style={{ flexGrow: "1", marginBottom: "2px" }}>
@@ -73,14 +72,18 @@ const ServiceOrder = (props) => {
                     </div>
                     <div className="order-col" style={{ flexGrow: "3" }}>
                         <div className="label">Issue</div>
-                        <div className="value">{serviceOrder.problem}</div>
+                        <div className="value">
+                            {serviceOrder.problem}
+                            {serviceOrder.problem?.length <= 60 && <>...</>}
+                            {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}
+                        </div>
                         <div className="order-row">
                             <div className="label">Open Date</div>
                             <div className="value">{moment(serviceOrder.openDate).format('MM/DD/yyyy')}</div>
                         </div>
                         <div className="divider" />
 
-                        <InteractionsView serviceOrder={serviceOrder}/>
+                        <InteractionsView serviceOrder={serviceOrder} />
                     </div>
                 </div>
             )

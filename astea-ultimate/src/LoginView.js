@@ -23,8 +23,9 @@ const LoginView = (props) => {
             }
         }
         catch (err) {
-            console.log("THE ERROR ? ", err.response.data.error.message);
-            setError(err.response.data.error.message);
+            console.log(err.response);
+            //console.log("THE ERROR ? ", err.response.data.error.message);
+            setError(err.response?.data?.error?.message || "Server Error");
         }
         setIsLoading(false);
     }

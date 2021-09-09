@@ -18,7 +18,7 @@ const useServiceOrder = (id, props) => {
         }
     );
 
-    const serviceOrder = response ? response.data : getLocalServiceOrder(local, props, id);
+    let serviceOrder = response ? response.data : getLocalServiceOrder(local, props, id);
     if (response) {
         response.data.cachedAt = new Date();
         localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response.data)); //TODO make service order model and update it there.
@@ -27,7 +27,8 @@ const useServiceOrder = (id, props) => {
 
     useEffect(() => {
         console.log(`Local service order ${id}`, local);
-        execute();
+        if(id !== serviceOrder.id) serviceOrder = null;
+        execute(); 
         return () => {
             cancelTokenSource.current.cancel();
         }
@@ -38,6 +39,7 @@ const useServiceOrder = (id, props) => {
 const useInteractions = (serviceOrder) => {
     const { id } = serviceOrder;
     let cancelTokenSource = useRef();
+    let interactions;
 
     const { execute, response, error, loading } = useAsync(
         () => {
@@ -47,8 +49,9 @@ const useInteractions = (serviceOrder) => {
             else return new Promise((r, x) => r()); //TODO ugly hack. Fix it.
         }
     );
+    
+    interactions = response ? response.data : serviceOrder.interactions;
 
-    const interactions = response ? response.data : serviceOrder.interactions;
 
     if(response){
         serviceOrder.interactions = response.data;

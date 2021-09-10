@@ -9,6 +9,7 @@ import { v4 as uuid } from "uuid";
 import { Link } from "react-router-dom";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import InteractionsView from "./InteractionsView";
+import MaterialsView from "./MaterialsView";
 
 const ServiceOrder = (props) => {
     const params = useParams();
@@ -60,15 +61,7 @@ const ServiceOrder = (props) => {
                             <div className="value">{serviceOrder.type}</div>
                         </div>
                         <div className="divider" />
-                        <div className="label">Materials</div>
-                        {serviceOrder.materials && serviceOrder.materials.map(material => (
-                            <div className="material" key={uuid()}>
-                                <div className="material-partnumber">
-                                    {material.sourceDocument ? <Link to={`/Product?id=${material.id}`}>{material.id} </Link> : <span>{material.id}</span>}
-                                </div>
-                                <div className="material-name">{material.name}</div>
-                            </div>
-                        ))}
+                        <MaterialsView serviceOrder={serviceOrder} />
                     </div>
                     <div className="order-col" style={{ flexGrow: "3" }}>
                         <div className="label">Issue</div>

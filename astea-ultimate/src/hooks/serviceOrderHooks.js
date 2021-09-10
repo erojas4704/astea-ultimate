@@ -27,7 +27,7 @@ const useServiceOrder = (id, props) => {
 
     useEffect(() => {
         console.log(`Local service order ${id}`, local);
-        if(id !== serviceOrder.id) serviceOrder = null;
+        if(id !== serviceOrder?.id) serviceOrder = null;
         execute(); 
         return () => {
             cancelTokenSource.current.cancel();
@@ -52,7 +52,6 @@ const useInteractions = (serviceOrder) => {
     
     interactions = response ? response.data : serviceOrder.interactions;
 
-
     if(response){
         serviceOrder.interactions = response.data;
         localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(serviceOrder)); //TODO make service order model and update it there.
@@ -66,6 +65,42 @@ const useInteractions = (serviceOrder) => {
     }, [serviceOrder]);
 
     return { interactions, loading, error };
+}
+
+const useMaterials = (serviceOrder) => {
+    const { id } = serviceOrder;
+    let cancelTokenSource = useRef();
+    let materials;
+
+    const { execute, response, error, loading } = useAsync(
+        () => {
+            cancelTokenSource.current = axios.CancelToken.source();
+            if (shouldLoadMaterials(serviceOrder))
+                return axios.get('/ServiceOrder/materials', { params: { id }, cancelToken: cancelTokenSource.current.token });
+
+            else return new Promise((r, x) => r()); //TODO ugly hack. Fix it.
+        }
+    );
+
+    materials = response ? response.data : serviceOrder.materials;
+
+    if(response){
+        serviceOrder.materials = response.data;
+        localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(serviceOrder)); //TODO make service order model and update it there.
+    }
+
+    useEffect(() => {
+        execute();
+        return () => {
+            cancelTokenSource.current.cancel();
+        }
+    }, [serviceOrder]);
+
+    return { materials, loading, error };
+}
+
+const shouldLoadMaterials = (serviceOrder) => {
+    if (!serviceOrder.materials) return true;
 }
 
 const shouldLoadInteractions = (serviceOrder) => {
@@ -90,4 +125,4 @@ const getLocalServiceOrder = (local, props, id) => {
     }
 }
 
-export { useServiceOrder, useInteractions };
+export { useServiceOrder, useInteractions, useMaterials };

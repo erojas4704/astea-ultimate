@@ -45,7 +45,6 @@ const InteractionsView = ({ serviceOrder }) => {
         );
         newInteraction.uploading = false;
         setPostingInteraction(false);
-        console.log(resp);
     }
 
     //TODO allow adding rapid fire interactions. Maybe instead just add the new one to the thing with a red spinner for uploading.

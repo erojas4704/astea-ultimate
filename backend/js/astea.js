@@ -130,7 +130,6 @@ async function orderLocatorSearch(session, criteria) {
     const resp = await axios.post(URLSearch, searchBody,
         {
             headers: {
-                //...headers,
                 "Content-Type": "text/xml; charset=utf-8",
                 "currentprofile": "Prod",
                 "SOAPAction": "\"http://astea.services.wcf/IDataViewMgrContract/RetrieveXMLExt\""
@@ -139,7 +138,6 @@ async function orderLocatorSearch(session, criteria) {
     );
 
     const json = await parseXMLToJSON(resp.data);
-    debugger;
     const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const resultsJSON = await parseXMLToJSON(resultsXML);
@@ -314,7 +312,6 @@ async function createInteraction(id, session, message) {
             }
         }
     );
-    console.log("DOTNET FINALIZE ", dotnetFinalize);
     return dotnetFinalize.data;
 }
 
@@ -343,13 +340,12 @@ async function getInteractions(id, session, isInHistory = false) {
     return serviceOrder.interactions;
 }
 
-async function getMaterials(id, session, isInHistory = false) {
+async function getMaterials(id, session, isInHistory = false) { //TODO maybe use existing state instead of opening a new one?
     let serviceOrder = await Database.getServiceOrder(id);
     if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }
-
 
     const { stateID, hostName } = serviceOrder.metadata;
 

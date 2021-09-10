@@ -14,6 +14,7 @@ const SearchView = () => {
     const [searching, setSearching] = useState(false);
     const [selected, setSelected] = useState(useParams().id || '');
     const { searchData, cacheSearch } = useSearch();
+    const [includeHistory, setIncludeHistory] = useState(false);
 
     useEffect(() => {
         if (searchData && searchData.query) {
@@ -24,6 +25,10 @@ const SearchView = () => {
 
     const changeHandler = evt => {
         setSearchTerm(evt.target.value);
+    };
+
+    const historyChangeHandler = evt => {
+        setIncludeHistory(evt.target.checked);
     };
 
     const handleSubmit = e => {
@@ -37,6 +42,10 @@ const SearchView = () => {
             all: searchTerm,
             actionGroup: "QNTech"
         }
+        if(!includeHistory){
+            params.inHistory = "N";
+        }
+        
         const resp = await axios.get('/ServiceOrder/search', {
             params
         });
@@ -52,8 +61,8 @@ const SearchView = () => {
                 <div className="input-group ">
                     <input type="text" className=" form-control rounded-pill m-1" name="search" id="search" placeholder="Search by name or SV number" value={searchTerm} onChange={changeHandler} disabled={searching} />
 
-                    <label class="form-check-label mx-2 my-auto">
-                        <input type="checkbox" class="form-check-input" value="" />History
+                    <label className="form-check-label mx-2 my-auto">
+                        <input onChange={historyChangeHandler} type="checkbox" class="form-check-input" name="includeHistory" value="" selected={includeHistory}/> History
                     </label>
 
                 </div>

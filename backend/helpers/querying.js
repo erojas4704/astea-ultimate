@@ -1,4 +1,4 @@
-
+//TODO sometimes the search returns nothing with an @@1
 function generateSearchQuery(criteria, page=1) {
     //Generates an Astea search query
     let conditions = [];
@@ -55,14 +55,16 @@ function translateToAsteaKey(key, useSecondary) {
         "tag": "tagno",
         "serial": "serial_no",
         "technicianName": "person.search_name",
-        "technicianID" : "service_call.sa_person_id"
+        "technicianID" : "service_call.sa_person_id",
+        "inHistory": "order_line.is_in_history"
     }
 
     const secondary = {
         "id": "c_order_line.request_id",
         "openDate": "c_order_line.open_date",
         "name": "c_order_line.cust_company_descr",
-        "technicianID": "c_service_call.sa_person_id"
+        "technicianID": "c_service_call.sa_person_id",
+        "inHistory": "c_order_line.is_in_history",
     }
 
     if (useSecondary && secondary[key]) {

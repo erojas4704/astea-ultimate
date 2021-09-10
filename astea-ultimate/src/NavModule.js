@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const NavModule = ({ children, active, icon }) => {
+const NavModule = ({ children, active, icon, onClick }) => {
     const className = active ? 'nav-element active' : 'nav-element';
     return (
-        <div className={className}>
+        <div onClick={onClick} className={className}>
             <FontAwesomeIcon icon={icon} />
             <div className="nav-label">{children}</div>
         </div>

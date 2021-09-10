@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { capitalizeNames, nameToInitials } from "./Helpers/StringUtils";
 import useSearch from "./hooks/useSearch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const SearchView = () => {
     const [results, setResults] = useState([]);
@@ -14,7 +16,6 @@ const SearchView = () => {
     const { searchData, cacheSearch } = useSearch();
 
     useEffect(() => {
-        console.log("SEARCH DATA CHANGED");
         if (searchData && searchData.query) {
             setSearchTerm(searchData.query.all);
             setResults(searchData.data);
@@ -46,10 +47,16 @@ const SearchView = () => {
     }
 
     return (
-        <div className="search-view"  style={{height: '100%'}}>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="search" className="search-label mr-2">Search: </label>
-                <input type="text" name="search" id="search" placeholder="Search for Service Order" value={searchTerm} onChange={changeHandler} disabled={searching} />
+        <div className="search-view" style={{ height: '100%' }}>
+            <form onSubmit={handleSubmit} className="form-inline">
+                <div className="input-group ">
+                    <input type="text" className=" form-control rounded-pill m-1" name="search" id="search" placeholder="Search by name or SV number" value={searchTerm} onChange={changeHandler} disabled={searching} />
+
+                    <label class="form-check-label mx-2 my-auto">
+                        <input type="checkbox" class="form-check-input" value="" />History
+                    </label>
+
+                </div>
             </form>
             <div className="results">
                 <table className="results-table table table-hover table-sm">

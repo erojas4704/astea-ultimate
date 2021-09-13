@@ -5,6 +5,7 @@ import Authenticator from './Authenticator';
 import LoginView from './LoginView';
 import HomeView from './HomeView';
 import ServiceOrder from './ServiceOrder';
+import NewServiceOrder from "./NewServiceOrder";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/astea" component={HomeView} />
         <Switch>
           <Route exact path="/login" component={LoginView} />
+          <Route path="/astea/ServiceOrder/new"  component={NewServiceOrder} />
           <Route path="/astea/ServiceOrder/:id"  component={ServiceOrder} />
         </Switch>
       </Router>

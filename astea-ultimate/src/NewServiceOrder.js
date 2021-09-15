@@ -1,10 +1,12 @@
 import { useState } from "react";
 import CustomerLookup from "./CustomerLookup";
+import useCustomerSearch from "./hooks/useCustomerSearch";
 import "./NewServiceOrder.css";
 
 const NewServiceOrder = () => {
     const [formData, setFormData] = useState({});
     const [customerID, setCustomerID] = useState(null);
+    const { execute, loading, response, error } = useCustomerSearch({ name: formData.name });
 
     const onChange = (e) => {
         const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;

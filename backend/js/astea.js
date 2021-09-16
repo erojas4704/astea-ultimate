@@ -342,7 +342,7 @@ async function getInteractions(id, session, isInHistory = false) {
 
 async function getMaterials(id, session, isInHistory = false) { //TODO maybe use existing state instead of opening a new one?
     let serviceOrder = await Database.getServiceOrder(id);
-    if (!serviceOrder || serviceOrder.completeness < 3) {
+    if (!serviceOrder || serviceOrder.completeness < 3) { pol
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }

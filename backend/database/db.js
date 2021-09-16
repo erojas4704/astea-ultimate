@@ -21,20 +21,31 @@ class Database {
     }
 
     static async getServiceOrder(id) {
-        const data = await fs.readFile(`${DATA_URL}/ServiceOrders/${id}.sv`, "utf8")
+        const path = `${DATA_URL}/ServiceOrders/${id}.sv`;
+        const data = await fs.readFile(path, "utf8")
             .catch(err => console.log(err)); //Fail silently
-    
-        if(!data) return;
-        const obj = JSON.parse(data);
-        let sv = Object.assign(new ServiceOrder, obj)
-        //console.log("Found new SV ", sv);
-        return sv;
+
+        if (!data) return;
+        try {
+            const obj = JSON.parse(data);
+            let sv = Object.assign(new ServiceOrder, obj)
+            //console.log("Found new SV ", sv);
+            return sv;
+        } catch (err) {
+            console.log(`Data for service order [${id}] is corrupt. Discarding`);
+            fs.unlink(path, err => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+        
         //TODO clean when it works
         //return Database.serviceOrders[id];
     }
 
     static async setServiceOrder(id, order) {
-        await fs.writeFile(`${DATA_URL}/ServiceOrders/${id}.sv`, JSON.stringify(order), {flag: 'w'})
+        await fs.writeFile(`${DATA_URL}/ServiceOrders/${id}.sv`, JSON.stringify(order), { flag: 'w' })
             .catch(err => console.error(err)); //Fail silently
         //Database.serviceOrders[id] = order;
 

@@ -2,6 +2,7 @@
 require("dotenv").config();
 const express = require("express");
 const svRoutes = require("./routes/ServiceOrderRoutes.js");
+const customerRoutes = require("./routes/CustomerRoutes.js");
 const technicianRoutes = require("./routes/TechnicianRoutes.js");
 const authRoutes = require("./routes/auth.js");
 const cookieParser = require('cookie-parser')
@@ -16,6 +17,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 //Routes
+app.use("/Customer", customerRoutes);
 app.use("/ServiceOrder", svRoutes);
 app.use("/Technician", technicianRoutes);
 app.use("/auth", authRoutes);

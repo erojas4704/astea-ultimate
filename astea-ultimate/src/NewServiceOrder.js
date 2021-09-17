@@ -4,13 +4,29 @@ import useCustomerSearch from "./hooks/useCustomerSearch";
 import "./NewServiceOrder.css";
 
 const NewServiceOrder = () => {
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        customerId: "",
+        customer: ""
+    });
     const [customerID, setCustomerID] = useState(null);
-    const { execute, loading, response, error } = useCustomerSearch({ name: formData.name });
+    const { execute, loading, response, error } = useCustomerSearch({ name: formData.customer }); //TODO rename some vars
+    const [searchTimeout, setSearchTimeout] = useState(null);
 
     const onChange = (e) => {
         const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value });
+    }
+
+    const onCustomerName = (e) => {
+        const value = e.target.value;
+        //On change of customer name, wait a second, then search. 
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        setSearchTimeout(setTimeout(() => {
+            execute({ name: value });
+        }, 1000))
     }
 
     console.log(formData);
@@ -28,7 +44,7 @@ const NewServiceOrder = () => {
                             name="customer"
                             id="customer"
                             value={formData.customer}
-                            onChange={onChange}
+                            onChange={(e) => { onChange(e); onCustomerName(e) }}
                         />
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="newCustomer" id="newCustomer" checked={formData.newCustomer} onChange={onChange} />
@@ -73,7 +89,7 @@ const NewServiceOrder = () => {
                     </div>
                 </>}
             </form>
-            {(formData.customer && !formData.customerID) && <CustomerLookup filter={formData.customer} />}
+            {(formData.customer && !formData.customerID) && <CustomerLookup filter={formData.customer} data={response} />}
         </div>
     )
 }

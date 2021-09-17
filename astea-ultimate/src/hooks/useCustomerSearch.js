@@ -4,7 +4,7 @@ import useAsync from "./useAsync"
 const useCustomerSearch = (params) => {
     const { execute, response, error, loading } = useAsync(
         () => {
-            return axios.get(`/astea/customer/search`, { params });
+            return axios.get(`/Customer/search`, { params });
         }
     );
 

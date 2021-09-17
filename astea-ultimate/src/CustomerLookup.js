@@ -1,6 +1,6 @@
 import useCustomerSearch from "./hooks/useCustomerSearch";
 
-const CustomerLookup = ({ filter, customerData }) => {
+const CustomerLookup = ({ filter, data }) => {
     return (
         <div>
             <table className="table table-striped">
@@ -12,6 +12,7 @@ const CustomerLookup = ({ filter, customerData }) => {
                     </tr>
                 </thead>
                 <tbody>
+                    {data && data.map(customer => <tr key={customer.id}><td>{customer.name}</td></tr>) }
                 </tbody>
             </table>
         </div>

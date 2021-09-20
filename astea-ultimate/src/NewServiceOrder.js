@@ -89,7 +89,7 @@ const NewServiceOrder = () => {
                     </div>
                 </>}
             </form>
-            {(formData.customer && !formData.customerID) && <CustomerLookup filter={formData.customer} data={response} />}
+            {(formData.customer && !formData.customerID) && <CustomerLookup filter={formData.customer} data={response?.data} />}
         </div>
     )
 }

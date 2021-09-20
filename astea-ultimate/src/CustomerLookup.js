@@ -12,9 +12,10 @@ const CustomerLookup = ({ filter, data }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data && data.map(customer => <tr key={customer.id}><td>{customer.name}</td></tr>) }
+                    {/* {data && data.map(customer => <tr key={customer.id}><td>{customer.name}</td></tr>) } */}
                 </tbody>
             </table>
+            <div>{JSON.stringify(data)}</div>
         </div>
     );
 }

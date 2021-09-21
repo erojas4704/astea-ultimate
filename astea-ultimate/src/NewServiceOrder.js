@@ -11,6 +11,7 @@ const NewServiceOrder = () => {
     const [customerID, setCustomerID] = useState(null);
     const { execute, loading, response, error } = useCustomerSearch({ name: formData.customer }); //TODO rename some vars
     const [searchTimeout, setSearchTimeout] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const onChange = (e) => {
         const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -22,18 +23,25 @@ const NewServiceOrder = () => {
         //On change of customer name, wait a second, then search. 
         if (searchTimeout) {
             clearTimeout(searchTimeout);
+            setSearchTimeout(null);
         }
 
-        setSearchTimeout(setTimeout(() => {
-            execute({ name: value });
-        }, 1000))
+        if (shouldSearch(searchTerm, value, response?.data)) {
+            setSearchTimeout(setTimeout(() => {
+                setSearchTerm(value);
+                execute({ name: value });
+            }, 2000));
+        }
     }
 
-    console.log(formData);
+    const formSubmit = (e) => {
+        e.preventDefault();
+    }
+
     return (
         <div className="container">
             {/* Customer / Tranasaction Input */}
-            <form className="check-in-form">
+            <form className="check-in-form" onSubmit={formSubmit}>
                 <div className="h3">New Service Order</div>
                 <div className="form-row">
                     <div className="form-group ">
@@ -46,9 +54,9 @@ const NewServiceOrder = () => {
                             value={formData.customer}
                             onChange={(e) => { onChange(e); onCustomerName(e) }}
                         />
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="newCustomer" id="newCustomer" checked={formData.newCustomer} onChange={onChange} />
-                            <label class="form-check-label" htmlFor="newCustomer">
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="checkbox" name="newCustomer" id="newCustomer" checked={formData.newCustomer} onChange={onChange} />
+                            <label className="form-check-label" htmlFor="newCustomer">
                                 New
                             </label>
                         </div>
@@ -92,6 +100,20 @@ const NewServiceOrder = () => {
             {(formData.customer && !formData.customerID) && <CustomerLookup filter={formData.customer} data={response?.data} />}
         </div>
     )
+}
+
+const shouldSearch = (currentSearch, newValue, searchData) => {
+    if (currentSearch.length < 1) return true;
+
+        console.log(`Should search ${currentSearch} -> ${newValue}? \n 
+        Are searches not the same? ${currentSearch !== newValue} \n 
+        Does the new search include the original search? ${newValue.includes(currentSearch)}
+        Does the original search include the new search? ${currentSearch.includes(newValue)}
+        returning ${currentSearch !== newValue && !newValue.includes(currentSearch) && !currentSearch.includes(newValue)}
+    `);
+
+
+    return currentSearch !== newValue && !newValue.includes(currentSearch) && !currentSearch.includes(newValue); //If they're different search. If the new value includes the current search, don't search
 }
 
 export default NewServiceOrder;

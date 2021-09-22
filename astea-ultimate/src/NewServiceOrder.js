@@ -2,6 +2,8 @@ import { useState } from "react";
 import CustomerLookup from "./CustomerLookup";
 import useCustomerSearch from "./hooks/useCustomerSearch";
 import "./NewServiceOrder.css";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const NewServiceOrder = () => {
     const [formData, setFormData] = useState({
@@ -39,7 +41,7 @@ const NewServiceOrder = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container new-service-order">
             {/* Customer / Tranasaction Input */}
             <form className="check-in-form" onSubmit={formSubmit}>
                 <div className="h3">New Service Order</div>
@@ -97,6 +99,7 @@ const NewServiceOrder = () => {
                     </div>
                 </>}
             </form>
+            {loading && <FontAwesomeIcon className="fa-spin sv-spinner center" icon={faCircleNotch} />}
             {(formData.customer && !formData.customerID) && <CustomerLookup filter={formData.customer} data={response?.data} />}
         </div>
     )
@@ -105,7 +108,7 @@ const NewServiceOrder = () => {
 const shouldSearch = (currentSearch, newValue, searchData) => {
     if (currentSearch.length < 1) return true;
 
-        console.log(`Should search ${currentSearch} -> ${newValue}? \n 
+    console.log(`Should search ${currentSearch} -> ${newValue}? \n 
         Are searches not the same? ${currentSearch !== newValue} \n 
         Does the new search include the original search? ${newValue.includes(currentSearch)}
         Does the original search include the new search? ${currentSearch.includes(newValue)}

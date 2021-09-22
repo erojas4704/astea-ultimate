@@ -5,8 +5,6 @@ import { useParams } from "react-router-dom";
 import { capitalizeNames } from "./Helpers/StringUtils";
 import { useServiceOrder } from "./hooks/serviceOrderHooks";
 import useTechnicians from "./hooks/useTechnicians";
-import { v4 as uuid } from "uuid";
-import { Link } from "react-router-dom";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import InteractionsView from "./InteractionsView";
 import MaterialsView from "./MaterialsView";

@@ -2,6 +2,7 @@ import { capitalizeNames } from "./Helpers/StringUtils";
 
 const CustomerLookup = ({ filter, data }) => {
     const customers = data ? data.filter(customer => customer.name.toLowerCase().includes(filter.toLowerCase())) : [];
+    console.log("customers: ", customers?.length || "0", "data:", data?.length || "0");
     //debugger;
     return (
         <div>

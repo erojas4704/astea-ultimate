@@ -1,4 +1,5 @@
 import { capitalizeNames } from "./Helpers/StringUtils";
+import { v4 as uuid } from "uuid";
 
 const CustomerLookup = ({ filter, data }) => {
     const customers = data ? data.filter(customer => customer.name.toLowerCase().includes(filter.toLowerCase())) : [];
@@ -6,6 +7,7 @@ const CustomerLookup = ({ filter, data }) => {
     //debugger;
     return (
         <div>
+            {data && data.length >= 599 && <div className="error">More than 700 results. Try narrowing your search.</div>}
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -19,7 +21,7 @@ const CustomerLookup = ({ filter, data }) => {
                 <tbody>
                     {customers.map(
                         customer => (
-                            <tr key={customer.id}>
+                            <tr key={uuid()}>
                                 <td>{customer.id}</td>
                                 <td>{customer.node}</td>
                                 <td>{capitalizeNames(customer.name)}</td>

@@ -32,7 +32,7 @@ const NewServiceOrder = () => {
             setSearchTimeout(setTimeout(() => {
                 setSearchTerm(value);
                 execute({ name: value });
-            }, 2000));
+            }, 1000));
         }
     }
 
@@ -112,11 +112,17 @@ const shouldSearch = (currentSearch, newValue, searchData) => {
         Are searches not the same? ${currentSearch !== newValue} \n 
         Does the new search include the original search? ${newValue.includes(currentSearch)}
         Does the original search include the new search? ${currentSearch.includes(newValue)}
-        returning ${currentSearch !== newValue && !newValue.includes(currentSearch) && !currentSearch.includes(newValue)}
+        returning ${
+            currentSearch !== newValue && //Make sure the searches are different
+            (!newValue.includes(currentSearch) && searchData?.length < 700)  //If the new search is not a subset of the old search, and the search data is over 700, then search.
+            || !currentSearch.includes(newValue)
+        }
     `);
 
 
-    return currentSearch !== newValue && !newValue.includes(currentSearch) && !currentSearch.includes(newValue); //If they're different search. If the new value includes the current search, don't search
+    return currentSearch !== newValue && //Make sure the searches are different
+        (!newValue.includes(currentSearch) && searchData?.length < 700)  //If the new search is not a subset of the old search, and the search data is over 700, then search.
+        || !currentSearch.includes(newValue); //If the current search does not the new value, we will search.
 }
 
 export default NewServiceOrder;

@@ -22,7 +22,6 @@ const HomeView = () => {
                     {module === "AgingView" && <AgingView />}
                     {module === "RequisitionView" && <RequisitionView />}
                     {module === "OptionsView" && <OptionsView />}
-                    {module === "ResolvedAuditView" && <ResolvedAuditView />}
                     {module === "PartsView" && <PartsView />}
                 </div>
             </div>
@@ -33,7 +32,7 @@ const HomeView = () => {
                 <NavModule onClick={() => setModule("RequisitionView")} active={module === "RequisitionView"} icon={faBoxes} enabled={false}>Requisition</NavModule>
                 <NavModule onClick={() => setModule("OptionsView")} active={module === "OptionsView"} icon={faCog} enabled={false}>Options</NavModule>
                 <div className="nav-spacer" />
-                <NavModule onClick={() => setModule("ResolvedAudit")} active={module === "ResolvedAuditView"} icon={faClipboard} enabled={false}>Resolved Audit</NavModule>
+                <Link  className="module-link" to="/astea/ResolvedAudit" active={module === "ResolvedAuditView"}><NavModule icon={faClipboard} enabled={false}>Resolved Audit</NavModule></Link>
                 <Link className="module-link" to="/astea/ServiceOrder/new"><NavModule icon={faPlus} enabled={false}>New Service Order</NavModule></Link>
             </nav>
         </>

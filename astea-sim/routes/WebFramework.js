@@ -3,9 +3,10 @@ const { parseXMLToJSON } = require('../helpers/xml');
 const { getServiceOrder } = require('../astea/macros');
 const router = express.Router();
 const fs = require('fs').promises;
-const { extractLoginDataFromJSON, extractSearchCriteriaFromJSON, sanitizeXMLString, extractFromAsteaQuery } = require('../helpers/parsers');
+const { extractLoginDataFromJSON, extractSearchCriteriaFromJSON, sanitizeXMLString, extractFromAsteaQuery, searchResultsToAsteaGibberish } = require('../helpers/parsers');
 const { loginToAstea } = require('../auth/auth');
 const forFakeDelay = require('../helpers/fakeDelay');
+const { getAllServiceOrders } = require('../astea/sv');
 
 const asteaMacros = {
     "service_request_maint": getServiceOrder
@@ -45,7 +46,23 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             const XMLCriteria = extractSearchCriteriaFromJSON(json);
             const query = XMLCriteria["Find"][0]["$"]["where_cond1"];
             const { actionGroup, id, name, tag, serial } = extractFromAsteaQuery(query);
-            return res.send("attaboy");
+            const serviceOrders = await getAllServiceOrders();
+            const filtered = [];
+            //SV2107240204@@1 Breaks
+            Object.values(serviceOrders).forEach(serviceOrder => {
+                if (
+                    (id && serviceOrder.id?.includes(id)) ||
+                    (name && serviceOrder.name?.includes(name)) ||
+                    (tag && serviceOrder.tag?.includes(tag)) ||
+                    (serial && serviceOrder.serial?.includes(serial)) ||
+                    (actionGroup && serviceOrder.actionGroup?.includes(actionGroup))
+                ) filtered.push(serviceOrder);
+            });
+
+            const xmlResult = searchResultsToAsteaGibberish(filtered);
+
+            console.log(xmlResult);
+            return res.send(xmlResult);
         }
 
     } catch (err) {

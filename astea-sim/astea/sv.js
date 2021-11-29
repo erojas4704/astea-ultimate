@@ -8,8 +8,9 @@ const cacheDirectory = './.cache/ServiceOrders';
 
 const getAllServiceOrders = async () => {
     const svList = await readdir(cacheDirectory);
-    let promises = svList.map(sv => {
-        return readFile(`${cacheDirectory}/${sv}`, 'utf8');
+    let promises = svList.map(async sv => {
+        let data = await readFile(`${cacheDirectory}/${sv}`, 'utf8',);
+        return JSON.parse(data);
     });
     const results = await Promise.all(promises);
     const orders = {};

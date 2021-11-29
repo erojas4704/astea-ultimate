@@ -48,14 +48,15 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             const { actionGroup, id, name, tag, serial } = extractFromAsteaQuery(query);
             const serviceOrders = await getAllServiceOrders();
             const filtered = [];
-            //SV2107240204@@1 Breaks
             Object.values(serviceOrders).forEach(serviceOrder => {
                 if (
-                    (id && serviceOrder.id?.includes(id)) ||
-                    (name && serviceOrder.name?.includes(name)) ||
-                    (tag && serviceOrder.tag?.includes(tag)) ||
-                    (serial && serviceOrder.serial?.includes(serial)) ||
-                    (actionGroup && serviceOrder.actionGroup?.includes(actionGroup))
+                    (
+                        (id && serviceOrder.id?.includes(id))
+                        || (name && serviceOrder.name?.includes(name))
+                        || (tag && serviceOrder.tag?.includes(tag))
+                        || (serial && serviceOrder.serial?.includes(serial))
+                    )
+                    && (actionGroup && serviceOrder.actionGroup?.includes(actionGroup))
                 ) filtered.push(serviceOrder);
             });
 

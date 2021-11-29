@@ -9,7 +9,7 @@ const DEFAULT_STATE = {
     error: null
 }
 
-export default function userReducer(state = DEFAULT_STATE, action) {
+export default function authReducer(state = DEFAULT_STATE, action) {
     switch (action.type) {
         case USER_LOGIN_START:
             return {

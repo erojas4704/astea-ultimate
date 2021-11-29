@@ -3,10 +3,12 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const webFramework = require("./routes/WebFramework");
+const bodyParser = require("body-parser");
 
 //Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+app.use("/Web_Framework", bodyParser.text({ type: "*/*" }));
 app.use("/Web_Framework", webFramework);
 
 /** Generic error handler; anything unhandled goes here. */

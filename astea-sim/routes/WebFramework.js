@@ -1,20 +1,57 @@
 const express = require('express');
 const { parseXMLToJSON } = require('../helpers/xml');
+const { getServiceOrder } = require('../astea/macros');
 const router = express.Router();
 const fs = require('fs').promises;
+const { extractLoginDataFromJSON, extractSearchCriteriaFromJSON, sanitizeXMLString, extractFromAsteaQuery } = require('../helpers/parsers');
+const { loginToAstea } = require('../auth/auth');
+const forFakeDelay = require('../helpers/fakeDelay');
+
+const asteaMacros = {
+    "service_request_maint": getServiceOrder
+}
 
 router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res) => {
-    console.log(req.body);
     const json = await parseXMLToJSON(req.body.xmlRequest);
-    console.log(json);
-    console.log(JSON.stringify(json));
-    debugger;
+    const macro = extractMacro(json);
+    asteaMacros[macro]()
+
     return res.json(req.body);
 });
 
 router.post(`/SecurityManager.svc/dotnet`, async (req, res) => {
-    const loginData = await fs.readFile('./xml/login-succeed.xml');
-    res.send(loginData);
+    const json = await parseXMLToJSON(req.body);
+    const { username, password } = extractLoginDataFromJSON(json);
+    const sessionId = await loginToAstea(username, password);
+
+    await forFakeDelay();
+
+    if (sessionId) {
+        const loginData = await fs.readFile('./xml/login-succeed.xml');
+        res.send(loginData);
+    } else {
+        res.send((await fs.readFile('./xml/login-fail.xml')));
+    }
+});
+
+/**Run an Astea search */
+router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
+    try {
+        //http://astea.services.wcf/IDataViewMgrContract/RetrieveXMLExt
+        const action = req.headers["soapaction"].match(/\/([^\/]+)\/?$/)[1].replace(/\W*/g, '');
+        if (action === "RetrieveXMLExt") {
+            const xml = sanitizeXMLString(req.body);
+            const json = await parseXMLToJSON(xml);
+            const XMLCriteria = extractSearchCriteriaFromJSON(json);
+            const query = XMLCriteria["Find"][0]["$"]["where_cond1"];
+            const { actionGroup, id, name, tag, serial } = extractFromAsteaQuery(query);
+            return res.send("attaboy");
+        }
+
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
 });
 
 module.exports = router;

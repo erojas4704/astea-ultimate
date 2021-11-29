@@ -142,7 +142,7 @@ async function orderLocatorSearch(session, criteria) {
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const resultsJSON = await parseXMLToJSON(resultsXML);
     const serviceOrders = await extractFromResults(resultsJSON);
-    Search.create(criteria, serviceOrders);
+    Search.create(criteria, serviceOrders); //Search caching
 
     return serviceOrders;
     //TODO this function needs error handling

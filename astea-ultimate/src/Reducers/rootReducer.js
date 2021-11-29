@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux';
-import userReducer from './userReducer';
+import authReducer from './authReducer';
+import locatorReducer from './locatorReducer';
+import svReducer from './svReducer';
 
 export default combineReducers({
-    auth: userReducer
+    auth: authReducer,
+    orders: svReducer,
+    locator: locatorReducer
 });

@@ -4,6 +4,11 @@ const express = require("express");
 const app = express();
 const webFramework = require("./routes/WebFramework");
 const bodyParser = require("body-parser");
+// const { decodeFromAsteaGibberish } = require("../backend/helpers/querying");
+// const fs = require("fs");
+// const testFile = fs.readFileSync("../backend/data/Search Result.txt", "utf8");
+// fs.writeFileSync("./out/SearchResult.xml", decodeFromAsteaGibberish(testFile));
+
 
 //Middleware
 app.use(express.json());

@@ -87,6 +87,8 @@ function translateFromAsteaKey(key) {
 
 
 function encodeToAsteaGibberish(string){
+    //&#xD; Carriage return
+    string = string.replace(/&/g, "&amp;amp;");       //Replace &
     string = string.replace(/'/g, "&apos;");     //Replace single quotes with Astea's XML-safe version
     string = string.replace(/</g, "&lt;");       //Replace <
     string = string.replace(/>/g, "&gt;");       //Replace >
@@ -96,6 +98,7 @@ function encodeToAsteaGibberish(string){
 }
 
 function decodeFromAsteaGibberish(string){
+    string = string.replace(/&amp;amp;/g, "&");       //Replace Astea's XML-safe version of & with &
     string = string.replace(/&apos;/g, "'");      //Replace Astea's XML-safe version of single quotes with a single quote
     string = string.replace(/&lt;/g, "<");        //Replace Astea's XML-safe version of <
     string = string.replace(/&gt;/g, ">");        //Replace Astea's XML-safe version of >

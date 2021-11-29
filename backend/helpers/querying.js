@@ -1,3 +1,23 @@
+const searchKeys = {
+    "openDate": "order_line.open_date",
+    "actionGroup": "actgr.descr",
+    "id": "order_line.request_id",
+    "name": "order_line.cust_company_descr",
+    "tag": "tagno",
+    "serial": "serial_no",
+    "technicianName": "person.search_name",
+    "technicianID" : "service_call.sa_person_id",
+    "inHistory": "order_line.is_in_history"
+}
+
+const secondarySearchKeys = {
+    "id": "c_order_line.request_id",
+    "openDate": "c_order_line.open_date",
+    "name": "c_order_line.cust_company_descr",
+    "technicianID": "c_service_call.sa_person_id",
+    "inHistory": "c_order_line.is_in_history",
+}
+
 //TODO sometimes the search returns nothing with an @@1
 function generateSearchQuery(criteria, page=1) {
     //Generates an Astea search query
@@ -10,7 +30,7 @@ function generateSearchQuery(criteria, page=1) {
     
     //TODO make an array of all the keys to look for that can be set in the environment variable.
     if(criteria['all']){
-        ["actionGroup", "id", "name", "tag", "serial", "technicianName", "technicianID"].forEach( key => {
+        ["id", "name", "tag", "serial", "technicianName", "technicianID"].forEach( key => {
             const asteaKey = translateToAsteaKey(key, false);
             catchAll.push(`${asteaKey} LIKE '%${criteria['all']}%'`);
             const secondaryKey = translateToAsteaKey(key, true);
@@ -47,33 +67,22 @@ function generateSearchQuery(criteria, page=1) {
 }
 
 function translateToAsteaKey(key, useSecondary) {
-    const keys = {
-        "openDate": "order_line.open_date",
-        "actionGroup": "actgr.descr",
-        "id": "order_line.request_id",
-        "name": "order_line.cust_company_descr",
-        "tag": "tagno",
-        "serial": "serial_no",
-        "technicianName": "person.search_name",
-        "technicianID" : "service_call.sa_person_id",
-        "inHistory": "order_line.is_in_history"
+    if (useSecondary && secondarySearchKeys[key]) {
+        return secondarySearchKeys[key];
     }
 
-    const secondary = {
-        "id": "c_order_line.request_id",
-        "openDate": "c_order_line.open_date",
-        "name": "c_order_line.cust_company_descr",
-        "technicianID": "c_service_call.sa_person_id",
-        "inHistory": "c_order_line.is_in_history",
+    if(!searchKeys[key]) throw new Error(`Could not find Astea search key for '${key}'`);
+
+    return searchKeys[key];
+}
+
+function translateFromAsteaKey(key) {
+    for(let searchKey in searchKeys) {
+        if(searchKeys[searchKey] === key) 
+            return searchKey;
     }
 
-    if (useSecondary && secondary[key]) {
-        return secondary[key];
-    }
-
-    if(!keys[key]) throw new Error(`Could not find Astea search key for '${key}'`);
-
-    return keys[key];
+    throw new Error(`Could not convert ${key} into one of our search keys.`);
 }
 
 
@@ -95,4 +104,4 @@ function decodeFromAsteaGibberish(string){
     return string;
 }
 
-module.exports = { translateToAsteaKey, generateSearchQuery, encodeToAsteaGibberish, decodeFromAsteaGibberish };
+module.exports = { translateToAsteaKey, translateFromAsteaKey, generateSearchQuery, encodeToAsteaGibberish, decodeFromAsteaGibberish };

@@ -22,7 +22,9 @@ router.get("/raw", async (req, res, next) => {
     }
 });
 
+/** Get a service order by ID */
 router.get("/", async (req, res, next) => {
+    //TODO use params here instead
     const { id, history } = req.query;
     try {
         const sv = await retrieveSV(id, history === "y", req.session);

@@ -17,8 +17,8 @@ router.get('/ValidateSession', hasAsteaCredentials, async (req, res, next) => {
             return res.json({ success: false });
         }
         const resp = await validateSessionID(sessionID);
-        if(!resp.success) res.clearCookie("astea-session");
-        return res.json( resp );
+        if (!resp.success) res.clearCookie("astea-session");
+        return res.json(resp);
     } catch (e) {
         return next(e);
     }
@@ -36,7 +36,7 @@ router.post('/login', async (req, res, next) => {
                 }, SECRET_KEY);
 
                 res.cookie("astea-session", JSON.stringify(token)); //Set the JWT token as a cookie, to be passed in future requests.
-                return res.json({ success: true, sessionID: username });
+                return res.json({ success: true, sessionID: username, username });
             }
         }
 
@@ -54,6 +54,17 @@ router.post('/login', async (req, res, next) => {
         res.cookie("astea-session", JSON.stringify(token)); //Set the JWT token as a cookie, to be passed in future requests.
         res.cookie("username", username);
         return res.json({ success: true, sessionID: resp.sessionID });
+    } catch (e) {
+        return next(e);
+    }
+});
+
+router.post('/logout', async (req, res, next) => {
+    try {
+        //TODO actually perform the logout against the Astea server as well.
+        res.clearCookie("astea-session");
+        res.clearCookie("username");
+        return res.json({ success: true });
     } catch (e) {
         return next(e);
     }

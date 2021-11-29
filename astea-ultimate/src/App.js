@@ -1,5 +1,5 @@
 
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import Authenticator from './Authenticator';
 import LoginView from './LoginView';
@@ -7,8 +7,14 @@ import HomeView from './HomeView';
 import ServiceOrder from './ServiceOrder';
 import NewServiceOrder from "./NewServiceOrder";
 import ResolvedAuditView from './ResolvedAuditView';
+import { useDispatch, useSelector } from 'react-redux';
+import Button from "react-bootstrap/Button";
+import { logoutUser } from './Actions/user';
 
 function App() {
+  const auth = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
   return (
     <div className="App app-container">
       <Router>
@@ -16,9 +22,13 @@ function App() {
         <Route path="/astea" component={HomeView} />
         <Switch>
           <Route exact path="/login" component={LoginView} />
-          <Route path="/astea/ServiceOrder/new"  component={NewServiceOrder} />
-          <Route path="/astea/ServiceOrder/:id"  component={ServiceOrder} />
-          <Route path="/astea/ResolvedAudit"  component={ResolvedAuditView} />
+          <Route path="/astea/ServiceOrder/new" component={NewServiceOrder} />
+          <Route path="/astea/ServiceOrder/:id" component={ServiceOrder} />
+          <Route path="/astea/ResolvedAudit" component={ResolvedAuditView} />
+          {auth.sessionId !== null ?
+            <Button variant="danger" onClick={() => dispatch(logoutUser())}>Log Out</Button> :
+            <Redirect to="/login" />
+          }
         </Switch>
       </Router>
     </div>

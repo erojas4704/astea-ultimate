@@ -1,41 +1,31 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
-import useAuth from "./hooks/useAuth";
+import { cancelLogin, loginUser } from "./Actions/user";
 import LoginForm from "./LoginForm";
 
 const LoginView = (props) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [error, setError] = useState(props.location.state?.error);
-    const auth = useAuth();
+    const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+    const isLoggedIn = useSelector(state => state.auth.sessionId !== null);
 
     useEffect(() => {
-        setIsLoggedIn(auth && auth.success);
-    }, [auth]);
+        dispatch(cancelLogin()); //Cancel the login on mount
+        return () => {
+            dispatch(cancelLogin()); //Cancel the login on unmount
+        }
+    }, [dispatch]);
 
-    const handleSubmit = async form => {
-        setIsLoading(true);
-        try {
-            const resp = await axios.post(`/auth/login`, { ...form, forceKick: true });
-            if (resp.data.success) {
-                setIsLoggedIn(true);
-            }
-        }
-        catch (err) {
-            console.log(err.response);
-            //console.log("THE ERROR ? ", err.response.data.error.message);
-            setError(err.response?.data?.error?.message || "Server Error");
-        }
-        setIsLoading(false);
+    const handleSubmit = form => {
+        dispatch(loginUser(form));
     }
 
     return (
         <div>
             {isLoggedIn && <Redirect to="/astea" />}
             <h3>Login</h3>
-            <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
-            {error && <div className="error">{error.message}</div>}
+            <LoginForm onSubmit={handleSubmit} isLoading={auth.loading} />
+            {auth.error && <div className="error">{auth.error}</div>}
         </div>
     );
 };

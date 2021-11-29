@@ -62,7 +62,7 @@ const SearchView = () => {
                     <input type="text" className=" form-control rounded-pill m-1" name="search" id="search" placeholder="Search by name or SV number" value={searchTerm} onChange={changeHandler} disabled={searching} />
 
                     <label className="form-check-label mx-2 my-auto">
-                        <input onChange={historyChangeHandler} type="checkbox" class="form-check-input" name="includeHistory" value="" selected={includeHistory}/> History
+                        <input onChange={historyChangeHandler} type="checkbox" className="form-check-input" name="includeHistory" value="" selected={includeHistory}/> History
                     </label>
 
                 </div>

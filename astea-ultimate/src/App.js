@@ -7,13 +7,10 @@ import HomeView from './HomeView';
 import ServiceOrder from './ServiceOrder';
 import NewServiceOrder from "./NewServiceOrder";
 import ResolvedAuditView from './ResolvedAuditView';
-import { useDispatch, useSelector } from 'react-redux';
-import Button from "react-bootstrap/Button";
-import { logoutUser } from './Actions/user';
+import { useSelector } from 'react-redux';
 
 function App() {
   const auth = useSelector(state => state.auth);
-  const dispatch = useDispatch();
 
   return (
     <div className="App app-container">
@@ -25,10 +22,7 @@ function App() {
           <Route path="/astea/ServiceOrder/new" component={NewServiceOrder} />
           <Route path="/astea/ServiceOrder/:id" component={ServiceOrder} />
           <Route path="/astea/ResolvedAudit" component={ResolvedAuditView} />
-          {auth.sessionId !== null ?
-            <Button variant="danger" onClick={() => dispatch(logoutUser())}>Log Out</Button> :
-            <Redirect to="/login" />
-          }
+          {auth.sessionId === null && <Redirect to="/login" />}
         </Switch>
       </Router>
     </div>

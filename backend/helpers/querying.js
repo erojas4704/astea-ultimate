@@ -6,7 +6,7 @@ const searchKeys = {
     "tag": "tagno",
     "serial": "serial_no",
     "technicianName": "person.search_name",
-    "technicianID" : "service_call.sa_person_id",
+    "technicianID": "service_call.sa_person_id",
     "inHistory": "order_line.is_in_history"
 }
 
@@ -19,7 +19,7 @@ const secondarySearchKeys = {
 }
 
 //TODO sometimes the search returns nothing with an @@1
-function generateSearchQuery(criteria, page=1) {
+function generateSearchQuery(criteria, page = 1) {
     //Generates an Astea search query
     let conditions = [];
     let secondaryConditions = []; //I don't know why astea has a secondary condition, but it does.
@@ -27,10 +27,13 @@ function generateSearchQuery(criteria, page=1) {
     let catchAllSecondary = [];
     let catchAllAppendix = "";
     let catchAllAppendixSecondary = "";
-    
+
+    criteria.inHistory = criteria.includeHistory ? "Y" : "N";
+    delete criteria.includeHistory; //TODO just a quick hack to get the search working
+
     //TODO make an array of all the keys to look for that can be set in the environment variable.
-    if(criteria['all']){
-        ["id", "name", "tag", "serial", "technicianName", "technicianID"].forEach( key => {
+    if (criteria['all']) {
+        ["id", "name", "tag", "serial", "technicianName", "technicianID"].forEach(key => {
             const asteaKey = translateToAsteaKey(key, false);
             catchAll.push(`${asteaKey} LIKE '%${criteria['all']}%'`);
             const secondaryKey = translateToAsteaKey(key, true);
@@ -41,7 +44,7 @@ function generateSearchQuery(criteria, page=1) {
     }
 
     for (let key in criteria) {
-        if(key === "all") continue;
+        if (key === "all") continue;
         //Generate a query based on that key.
         const asteaKey = translateToAsteaKey(key, false);
         conditions.push(`( ${asteaKey} LIKE '%${criteria[key]}%' )`);
@@ -71,14 +74,14 @@ function translateToAsteaKey(key, useSecondary) {
         return secondarySearchKeys[key];
     }
 
-    if(!searchKeys[key]) throw new Error(`Could not find Astea search key for '${key}'`);
+    if (!searchKeys[key]) throw new Error(`Could not find Astea search key for '${key}'`);
 
     return searchKeys[key];
 }
 
 function translateFromAsteaKey(key) {
-    for(let searchKey in searchKeys) {
-        if(searchKeys[searchKey] === key) 
+    for (let searchKey in searchKeys) {
+        if (searchKeys[searchKey] === key)
             return searchKey;
     }
 
@@ -86,7 +89,7 @@ function translateFromAsteaKey(key) {
 }
 
 
-function encodeToAsteaGibberish(string){
+function encodeToAsteaGibberish(string) {
     //&#xD; Carriage return
     string = string.replace(/&/g, "&amp;amp;");       //Replace &
     string = string.replace(/'/g, "&apos;");     //Replace single quotes with Astea's XML-safe version
@@ -97,7 +100,7 @@ function encodeToAsteaGibberish(string){
     return string;
 }
 
-function decodeFromAsteaGibberish(string){
+function decodeFromAsteaGibberish(string) {
     string = string.replace(/&amp;amp;/g, "&");       //Replace Astea's XML-safe version of & with &
     string = string.replace(/&apos;/g, "'");      //Replace Astea's XML-safe version of single quotes with a single quote
     string = string.replace(/&lt;/g, "<");        //Replace Astea's XML-safe version of <

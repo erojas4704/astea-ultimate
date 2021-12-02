@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import useAsync from "./useAsync";
-import { getAgeInMinutes } from "../Helpers/ServiceOrderUtils";
+import { getAgeInMinutes } from "../helpers/ServiceOrderUtils";
 
 const useServiceOrder = (id, props) => {
     let cancelTokenSource = useRef();

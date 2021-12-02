@@ -1,7 +1,7 @@
 import { Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from './Actions/user';
+import { logoutUser } from '../actions/user';
 
 const OptionsView = () => {
     const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import { SET_MODULE } from "../Actions/types";
+import { SET_MODULE } from "../actions/types";
 
 const DEFAULT_STATE = {
     module: "",

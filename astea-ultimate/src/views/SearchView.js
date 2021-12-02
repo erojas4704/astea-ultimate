@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
 import useSearch from "../hooks/useSearch";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const SearchView = () => {
     const [results, setResults] = useState([]);
@@ -32,7 +30,7 @@ const SearchView = () => {
     };
 
     const handleSubmit = e => {
-        e.preventDefault()
+        e.preventDefault();
         doSearch(searchTerm);
     }
 

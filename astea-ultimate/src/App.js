@@ -2,7 +2,7 @@
 import { Route, BrowserRouter as Router, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import LoginView from './views/LoginView';
-import Navigator from './views/HomeView';
+import Navigator from './views/Navigator';
 import ServiceOrder from './views/ServiceOrder';
 import NewServiceOrder from "./views/NewServiceOrder";
 import ResolvedAuditView from './views/ResolvedAuditView';

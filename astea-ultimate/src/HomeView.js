@@ -9,34 +9,49 @@ import OptionsView from "./OptionsView";
 import PartsView from "./PartsView";
 import ResolvedAuditView from "./ResolvedAuditView";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setModule } from "./Actions/nav";
 
-const HomeView = () => {
-    const [module, setModule] = useState("SearchView");
+//TODO help
+const Navigator = () => {
+    const module = useSelector(state => state.nav.module);
+    const [expanded, setExpanded] = useState(false);
+    const dispatch = useDispatch();
 
-    //Todo needs better semantics.
+    const handleNavClick = (newModule, autoExpand) => {
+        if (module === newModule) {
+            setExpanded(!expanded);
+            //TODO maybe animate to shrink
+        }else{
+            //Maybe add autoExpand attribute to navs at some point.
+            setExpanded(true);
+        }
+        dispatch(setModule(newModule));
+    }
+
     return (
         <>
+            <nav className="nav">
+                <NavModule module="SearchView" onClick={handleNavClick} icon={faSearch}>Locator</NavModule>
+                <NavModule module="AgingView" onClick={handleNavClick} icon={faHourglassStart} enabled={false}>Aging</NavModule>
+                <NavModule module="PartsView" onClick={handleNavClick} icon={faLayerGroup} enabled={false}>Parts</NavModule>
+                <NavModule module="RequisitionView" onClick={handleNavClick} icon={faBoxes} enabled={false}>Requisition</NavModule>
+                <NavModule module="PartsView" onClick={handleNavClick} icon={faCog} enabled={false}>Options</NavModule>
+                <div className="nav-spacer" />
+                <Link className="module-link" to="/astea/ResolvedAudit" active={module === "ResolvedAuditView"}><NavModule icon={faClipboard} enabled={false}>Resolved Audit</NavModule></Link>
+                <Link className="module-link" to="/astea/ServiceOrder/new"><NavModule icon={faPlus} enabled={false}>New Service Order</NavModule></Link>
+            </nav>
             <div className="side-container">
-                <div className="homeview">
+                {expanded && <div className="homeview">
                     {module === "SearchView" && <SearchView />}
                     {module === "AgingView" && <AgingView />}
                     {module === "RequisitionView" && <RequisitionView />}
                     {module === "OptionsView" && <OptionsView />}
                     {module === "PartsView" && <PartsView />}
-                </div>
+                </div>}
             </div>
-            <nav className="nav">
-                <NavModule onClick={() => setModule("SearchView")} active={module === "SearchView"} icon={faSearch}>Locator</NavModule>
-                <NavModule onClick={() => setModule("AgingView")} active={module === "AgingView"} icon={faHourglassStart} enabled={false}>Aging</NavModule>
-                <NavModule onClick={() => setModule("PartsView")} active={module === "PartsView"} icon={faLayerGroup} enabled={false}>Parts</NavModule>
-                <NavModule onClick={() => setModule("RequisitionView")} active={module === "RequisitionView"} icon={faBoxes} enabled={false}>Requisition</NavModule>
-                <NavModule onClick={() => setModule("OptionsView")} active={module === "OptionsView"} icon={faCog} enabled={false}>Options</NavModule>
-                <div className="nav-spacer" />
-                <Link  className="module-link" to="/astea/ResolvedAudit" active={module === "ResolvedAuditView"}><NavModule icon={faClipboard} enabled={false}>Resolved Audit</NavModule></Link>
-                <Link className="module-link" to="/astea/ServiceOrder/new"><NavModule icon={faPlus} enabled={false}>New Service Order</NavModule></Link>
-            </nav>
         </>
     );
 };
 
-export default HomeView;
+export default Navigator;

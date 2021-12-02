@@ -4,7 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { useInteractions } from "./hooks/serviceOrderHooks";
+import { useInteractions } from "../hooks/serviceOrderHooks";
 import "./OrderView.css";
 
 const InteractionsView = ({ serviceOrder }) => {

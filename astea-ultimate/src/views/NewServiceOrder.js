@@ -1,6 +1,6 @@
 import { useState } from "react";
-import CustomerLookup from "./CustomerLookup";
-import useCustomerSearch from "./hooks/useCustomerSearch";
+import CustomerLookup from "../CustomerLookup";
+import useCustomerSearch from "../hooks/useCustomerSearch";
 import "./NewServiceOrder.css";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

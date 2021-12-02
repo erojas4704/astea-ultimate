@@ -1,4 +1,4 @@
-import { useMaterials } from "./hooks/serviceOrderHooks";
+import { useMaterials } from "../hooks/serviceOrderHooks";
 import { v4 as uuid } from "uuid";
 import { Link } from "react-router-dom";
 

@@ -3,8 +3,8 @@ import moment from "moment";
 import "./SearchView.css";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { capitalizeNames, nameToInitials } from "./Helpers/StringUtils";
-import useSearch from "./hooks/useSearch";
+import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
+import useSearch from "../hooks/useSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 

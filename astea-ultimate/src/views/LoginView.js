@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { cancelLogin, loginUser } from "./Actions/user";
-import LoginForm from "./LoginForm";
+import { Navigate } from "react-router-dom";
+import { cancelLogin, loginUser } from "../actions/user";
+import LoginForm from "../components/LoginForm";
 
 const LoginView = (props) => {
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const LoginView = (props) => {
 
     return (
         <div>
-            {isLoggedIn && <Redirect to="/astea" />}
+            {isLoggedIn && <Navigate to="/astea" />}
             <h3>Login</h3>
             <LoginForm onSubmit={handleSubmit} isLoading={auth.loading} />
             {auth.error && <div className="error">{auth.error}</div>}

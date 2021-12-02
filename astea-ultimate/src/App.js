@@ -1,12 +1,13 @@
 
-import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import LoginView from './LoginView';
-import Navigator from './HomeView';
-import ServiceOrder from './ServiceOrder';
-import NewServiceOrder from "./NewServiceOrder";
-import ResolvedAuditView from './ResolvedAuditView';
+import LoginView from './views/LoginView';
+import Navigator from './views/HomeView';
+import ServiceOrder from './views/ServiceOrder';
+import NewServiceOrder from "./views/NewServiceOrder";
+import ResolvedAuditView from './views/ResolvedAuditView';
 import { useSelector } from 'react-redux';
+import RequireAuth from './components/RequireAuth';
 
 function App() {
     const auth = useSelector(state => state.auth);
@@ -14,14 +15,16 @@ function App() {
     return (
         <div className="App app-container">
             <Router>
-                <Route path="/astea" component={Navigator} />
-                <Switch>
-                    <Route exact path="/login" component={LoginView} />
-                    <Route path="/astea/ServiceOrder/new" component={NewServiceOrder} />
-                    <Route path="/astea/ServiceOrder/:id" component={ServiceOrder} />
-                    <Route path="/astea/ResolvedAudit" component={ResolvedAuditView} />
-                    {auth.sessionId === null ? <Redirect to="/login" /> : <Redirect to="/astea" />}
-                </Switch>
+            {auth.sessionId !== null && <Navigator />}
+                <Routes>
+                    <Route path="/" element={auth.sessionId === null? <Navigate to="/login" /> : <Navigate to="/astea" />} />
+                    <Route path="/login" element={<LoginView />} />
+                    <Route element={<RequireAuth />}>
+                        <Route path="/astea/ServiceOrder/new" element={<NewServiceOrder />} />
+                        <Route path="/astea/ServiceOrder/:id" element={<ServiceOrder />} />
+                        <Route path="/astea/ResolvedAudit" element={<ResolvedAuditView />} />
+                    </Route>
+                </Routes>
             </Router>
         </div>
     );

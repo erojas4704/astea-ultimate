@@ -1,7 +1,7 @@
 import SearchView from "./SearchView";
 import "./HomeView.css";
 import { faBoxes, faCog, faHourglassStart, faLayerGroup, faPlus, faSearch, faClipboard } from "@fortawesome/free-solid-svg-icons";
-import NavModule from "./NavModule";
+import NavModule from "../NavModule";
 import React, { useState } from "react";
 import AgingView from "./AgingView";
 import RequisitionView from "./RequisitionView";
@@ -10,7 +10,7 @@ import PartsView from "./PartsView";
 import ResolvedAuditView from "./ResolvedAuditView";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setModule } from "./Actions/nav";
+import { setModule } from "../actions/nav";
 
 //TODO help
 const Navigator = () => {

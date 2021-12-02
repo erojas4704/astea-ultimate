@@ -1,4 +1,4 @@
-import { capitalizeNames } from "./Helpers/StringUtils";
+import { capitalizeNames } from "./helpers/StringUtils";
 import { v4 as uuid } from "uuid";
 
 const CustomerLookup = ({ filter, data }) => {

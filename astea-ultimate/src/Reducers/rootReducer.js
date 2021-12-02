@@ -2,11 +2,11 @@ import { combineReducers } from 'redux';
 import authReducer from './authReducer';
 import locatorReducer from './locatorReducer';
 import navReducer from './navReducer';
-import svReducer from './svReducer';
+import orderReducer from './orderReducer';
 
 export default combineReducers({
     auth: authReducer,
-    orders: svReducer,
+    orders: orderReducer,
     locator: locatorReducer,
     nav: navReducer
 });

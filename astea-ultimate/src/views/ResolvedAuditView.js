@@ -49,8 +49,8 @@ export default function ResolvedAuditView() {
             <th></th>
             <th></th>
           </tr>
-          <tbody></tbody>
         </thead>
+        <tbody></tbody>
       </Table>
     </Container>
   );

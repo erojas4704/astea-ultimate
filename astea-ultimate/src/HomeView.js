@@ -24,6 +24,7 @@ const Navigator = () => {
             //TODO maybe animate to shrink
         }else{
             //Maybe add autoExpand attribute to navs at some point.
+            //Also add an expandable boolean as well.
             setExpanded(true);
         }
         dispatch(setModule(newModule));
@@ -36,7 +37,7 @@ const Navigator = () => {
                 <NavModule module="AgingView" onClick={handleNavClick} icon={faHourglassStart} enabled={false}>Aging</NavModule>
                 <NavModule module="PartsView" onClick={handleNavClick} icon={faLayerGroup} enabled={false}>Parts</NavModule>
                 <NavModule module="RequisitionView" onClick={handleNavClick} icon={faBoxes} enabled={false}>Requisition</NavModule>
-                <NavModule module="PartsView" onClick={handleNavClick} icon={faCog} enabled={false}>Options</NavModule>
+                <NavModule module="OptionsView" onClick={handleNavClick} icon={faCog} enabled={false}>Options</NavModule>
                 <div className="nav-spacer" />
                 <Link className="module-link" to="/astea/ResolvedAudit" active={module === "ResolvedAuditView"}><NavModule icon={faClipboard} enabled={false}>Resolved Audit</NavModule></Link>
                 <Link className="module-link" to="/astea/ServiceOrder/new"><NavModule icon={faPlus} enabled={false}>New Service Order</NavModule></Link>

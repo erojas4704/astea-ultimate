@@ -5,14 +5,12 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
 import useSearch from "../hooks/useSearch";
+import { useSelector } from "react-redux";
 
 const SearchView = () => {
-    const [results, setResults] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searching, setSearching] = useState(false);
-    const [selected, setSelected] = useState(useParams().id || '');
-    const { searchData, cacheSearch } = useSearch();
-    const [includeHistory, setIncludeHistory] = useState(false);
+    const results = useSelector(state => state.locator.data);
+    const searchTerm = useSelector(state => state.locator.term);
+
 
     useEffect(() => {
         if (searchData && searchData.query) {
@@ -31,7 +29,7 @@ const SearchView = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        doSearch(searchTerm);
+
     }
 
     const doSearch = async searchTerm => {

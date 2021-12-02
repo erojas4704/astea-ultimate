@@ -11,3 +11,5 @@ export const LOAD_SV_FAIL = 'LOAD_SV_FAIL';
 export const LOADED_SV_SUMMARY = 'LOADED_SV_SUMMARY';
 export const LOAD_SV_SUCCESS = 'LOAD_SV_SUCCESS';
 export const LOAD_SV_CANCEL = 'LOAD_SV_CANCEL';
+
+export const SET_MODULE = 'SET_MODULE';

@@ -2,7 +2,6 @@ import axios from "axios"
 import { USER_LOGIN_FAIL, USER_LOGIN_START, USER_LOGIN_SUCCESS, USER_LOGOUT_FAIL, USER_LOGOUT_START, USER_LOGOUT_SUCCESS, USER_LOGIN_CANCEL } from "./types";
 
 export function loginUser({ username, password }) {
-    //TODO user can get stuck in the login hook if they navigate away from the page.
     return async dispatch => {
         try {
             const cancelToken = axios.CancelToken;

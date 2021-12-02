@@ -11,7 +11,6 @@ import RequireAuth from './components/RequireAuth';
 
 function App() {
     const auth = useSelector(state => state.auth);
-
     return (
         <div className="App app-container">
             <Router>
@@ -19,7 +18,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={auth.sessionId === null? <Navigate to="/login" /> : <Navigate to="/astea" />} />
                     <Route path="/login" element={<LoginView />} />
-                    <Route element={<RequireAuth />}>
+                    <Route path="/astea" element={<RequireAuth />}>
                         <Route path="/astea/ServiceOrder/new" element={<NewServiceOrder />} />
                         <Route path="/astea/ServiceOrder/:id" element={<ServiceOrder />} />
                         <Route path="/astea/ResolvedAudit" element={<ResolvedAuditView />} />

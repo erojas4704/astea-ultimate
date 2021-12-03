@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Form, Row, Col, Table } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { resetSearch, search } from "../actions/locator";
 
 export default function ResolvedAuditView() {
+  const orders = useSelector(state => state.locator.data);
+  const loading = useSelector(state => state.locator.loading);
+  const error = useSelector(state => state.locator.error);
+
+  const dispatch = useDispatch();
   const [form, setForm] = useState({
     id: "",
     location: "",
   });
+
+  useEffect(() => {
+    dispatch(resetSearch());
+    dispatch(search({
+      status: 500,
+      actionGroup: "QNTech"
+    }, false));
+  }, [dispatch]);
+
+  //TODO maybe make a hook that does all the searching and use it in places where this becomes redundant.
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -46,11 +64,20 @@ export default function ResolvedAuditView() {
             <th>Customer</th>
             <th>Technician</th>
             <th>Location</th>
-            <th></th>
-            <th></th>
+            <th>Age</th>
+            <th>Scanned?</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {orders.map(order => (
+            <tr key={order.id}>
+              <td>{order.id}</td>
+              <td>{order.customer?.name || ""}</td>
+              <td>{order.technician?.name || ""}</td>
+              <td>{order.location}</td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
     </Container>
   );

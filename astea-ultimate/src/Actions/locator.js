@@ -6,10 +6,19 @@ export function resetSearch() {
 }
 
 export function search(term, includeHistory) {
-    const params = {
-        all: term,
-        includeHistory,
-        actionGroup: "QNTech" //TODO get from user or even better settings
+    let params;
+    if (typeof term === "string") {
+        params = {
+            all: term,
+            includeHistory,
+            actionGroup: "QNTech" //TODO get from user or even better settings
+        }
+    }else if(typeof term === "object"){
+        params = {
+            ...term,
+            includeHistory,
+            actionGroup: "QNTech" //TODO get from user or even better settings
+        }
     }
 
     return async dispatch => {

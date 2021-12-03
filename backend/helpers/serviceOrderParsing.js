@@ -23,7 +23,9 @@ const fields = {
     "sa_person_descr": "technician.name",
     "cc_sa_descr": "technician.name",
     "tagno": "tag",
-    "is_in_history": "inHistory"
+    "is_in_history": "inHistory",
+    "order_line.order_stat_uniq_id": "status",
+    
 }
 
 function parseServiceOrderData(data) {

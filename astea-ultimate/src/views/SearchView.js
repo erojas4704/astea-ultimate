@@ -16,6 +16,8 @@ const SearchView = () => {
     const [searchInput, setSearchInput] = useState("");
     const [includeHistory, setIncludeHistory] = useState(false);
     const [selected, setSelected] = useState(useParams().id || '');
+    
+    //TODO maybe a search hook that simplifies all this crap
 
     useEffect(() => {
         dispatch(resetSearch());

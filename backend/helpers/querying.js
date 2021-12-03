@@ -7,7 +7,8 @@ const searchKeys = {
     "serial": "serial_no",
     "technicianName": "person.search_name",
     "technicianID": "service_call.sa_person_id",
-    "inHistory": "order_line.is_in_history"
+    "inHistory": "order_line.is_in_history",
+    "status": "order_line.order_stat_uniq_id",
 }
 
 const secondarySearchKeys = {
@@ -16,6 +17,7 @@ const secondarySearchKeys = {
     "name": "c_order_line.cust_company_descr",
     "technicianID": "c_service_call.sa_person_id",
     "inHistory": "c_order_line.is_in_history",
+    "status": "c_order_line.order_stat_uniq_id",
 }
 
 //TODO sometimes the search returns nothing with an @@1

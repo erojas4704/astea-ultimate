@@ -1,4 +1,3 @@
-import axios from "axios";
 import moment from "moment";
 import "./SearchView.css";
 import { useEffect, useState } from "react";
@@ -12,7 +11,6 @@ const SearchView = () => {
     const searchCriteria = useSelector(state => state.locator.searchCriteria);
     const loading = useSelector(state => state.locator.loading);
     const error = useSelector(state => state.locator.error);
-    const getCachedSearch = useSelector(state => state.locator.getCachedSearch);
 
     const dispatch = useDispatch();
     const [searchInput, setSearchInput] = useState("");
@@ -25,6 +23,7 @@ const SearchView = () => {
 
     const changeHandler = evt => {
         setSearchInput(evt.target.value);
+        //TODO maybe filter the current results based on what's here?
     };
 
     const historyChangeHandler = evt => {
@@ -34,28 +33,9 @@ const SearchView = () => {
     const handleSubmit = e => {
         e.preventDefault();
         dispatch(search(searchInput, includeHistory));
+        //TODO call a method to get a cached search result if the search is redudant while we wait for the newer results.
     }
 
-    /*
-    const doSearch = async searchTerm => {
-        setSearching(true);
-        const params = {
-            all: searchTerm,
-            actionGroup: "QNTech"
-        }
-        if(!includeHistory){
-            params.inHistory = "N";
-        }
-        s
-        const resp = await axios.get('/ServiceOrder/search', {
-            params
-        });
-
-        cacheSearch(params, resp.data);
-        setResults(resp.data);
-        setSearching(false);
-    }
-    */
 
     return (
         <div className="search-view" style={{ height: '100%' }}>

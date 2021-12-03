@@ -3,7 +3,7 @@ const { parseXMLToJSON } = require('../helpers/xml');
 const { getServiceOrder } = require('../astea/macros');
 const router = express.Router();
 const fs = require('fs').promises;
-const { extractLoginDataFromJSON, extractSearchCriteriaFromJSON, sanitizeXMLString, extractFromAsteaQuery, searchResultsToAsteaGibberish } = require('../helpers/parsers');
+const { extractLoginDataFromJSON, extractSearchCriteriaFromJSON, sanitizeXMLString, extractFromAsteaQuery, searchResultsToAsteaGibberish, extractMacroFromJSON } = require('../helpers/parsers');
 const { loginToAstea } = require('../auth/auth');
 const forFakeDelay = require('../helpers/fakeDelay');
 const { getAllServiceOrders } = require('../astea/sv');
@@ -14,7 +14,7 @@ const asteaMacros = {
 
 router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res) => {
     const json = await parseXMLToJSON(req.body.xmlRequest);
-    const macro = extractMacro(json);
+    const macro = extractMacroFromJSON(json);
     asteaMacros[macro]()
 
     return res.json(req.body);
@@ -52,7 +52,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
                 if (
                     (
                         (id && serviceOrder.id?.includes(id))
-                        || (name && serviceOrder.name?.includes(name))
+                        || (name && serviceOrder.caller?.name?.includes(name))
                         || (tag && serviceOrder.tag?.includes(tag))
                         || (serial && serviceOrder.serial?.includes(serial))
                     )

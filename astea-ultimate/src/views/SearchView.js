@@ -8,9 +8,7 @@ import { resetSearch, search } from "../actions/locator";
 
 const SearchView = () => {
     const results = useSelector(state => state.locator.data);
-    const searchCriteria = useSelector(state => state.locator.searchCriteria);
     const loading = useSelector(state => state.locator.loading);
-    const error = useSelector(state => state.locator.error);
 
     const dispatch = useDispatch();
     const [searchInput, setSearchInput] = useState("");

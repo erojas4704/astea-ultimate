@@ -10,8 +10,6 @@ class Search {
     static async get(query) {
         let key = hash(query);
         const search = await Database.getSearch(key);
-        console.log(query, key, Object.keys(Database.searches).length);
-
 
         if (!search) return;
         //if (search) console.log("FOUND SEARCH ", search, key);

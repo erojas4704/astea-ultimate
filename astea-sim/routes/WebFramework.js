@@ -45,7 +45,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             const json = await parseXMLToJSON(xml);
             const XMLCriteria = extractSearchCriteriaFromJSON(json);
             const query = XMLCriteria["Find"][0]["$"]["where_cond1"];
-            const { actionGroup, id, name, tag, serial } = extractFromAsteaQuery(query);
+            const { actionGroup, id, name, tag, serial, status} = extractFromAsteaQuery(query);
             const serviceOrders = await getAllServiceOrders();
             const filtered = [];
             Object.values(serviceOrders).forEach(serviceOrder => {
@@ -55,6 +55,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
                         || (name && serviceOrder.caller?.name?.includes(name))
                         || (tag && serviceOrder.tag?.includes(tag))
                         || (serial && serviceOrder.serial?.includes(serial))
+                        || (status && serviceOrder.statusID?.includes(status))
                     )
                     && (actionGroup && serviceOrder.actionGroup?.includes(actionGroup))
                 ) filtered.push(serviceOrder);

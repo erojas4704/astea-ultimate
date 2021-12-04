@@ -11,7 +11,7 @@ const NewServiceOrder = () => {
         customer: ""
     });
     const [customerID, setCustomerID] = useState(null);
-    const { execute, loading, response, error } = useCustomerSearch({ name: formData.customer }); //TODO rename some vars
+    const { execute, loading, response } = useCustomerSearch({ name: formData.customer }); //TODO rename some vars
     const [searchTimeout, setSearchTimeout] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
 

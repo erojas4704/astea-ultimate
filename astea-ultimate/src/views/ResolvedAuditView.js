@@ -1,12 +1,10 @@
 import moment from "moment";
 import { useState } from "react";
-import { Container, Form, Row, Col, Table } from "react-bootstrap";
+import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
 import { capitalizeNames } from "../helpers/StringUtils";
 import useSearch from "../hooks/useSearch";
 
 export default function ResolvedAuditView() {
-
-    //TODO maybe make a hook that does all the searching and use it in places where this becomes redundant.
     const { data: orders } = useSearch({
         status: 500,
         actionGroup: "QNTech",
@@ -18,15 +16,19 @@ export default function ResolvedAuditView() {
         location: "",
     });
 
-
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    const handleSubmit = e => {
+        e.preventDefault();
+        
+    }
+
     return (
         <Container className="m-3">
             <Row>
-                <Form>
+                <Form className="form-inline" onSubmit={handleSubmit}>
                     <Row>
                         <Col xs={3} style={{ width: "6rem" }}>
                             <Form.Group controlId="location">
@@ -48,6 +50,7 @@ export default function ResolvedAuditView() {
                                 />
                             </Form.Group>
                         </Col>
+                        <Col className="d-flex justify-content-end"><Button variant="primary" type="submit">Add</Button></Col>
                     </Row>
                 </Form>
             </Row>

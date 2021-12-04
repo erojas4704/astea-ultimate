@@ -69,7 +69,6 @@ function extractFromAsteaQuery(query) {
     console.log(query.split(/AND|OR/));
     query.split(/AND|OR/).forEach(element => {
         try {
-            debugger;
             let [asteaField, value] = /[\w\. '%"]+/.exec(element.trim())[0].split(/LIKE/);
             console.log(asteaField);
             asteaField = asteaField.trim();

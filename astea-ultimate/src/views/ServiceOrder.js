@@ -13,7 +13,7 @@ const ServiceOrder = (props) => {
     const params = useParams();
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
-    const { serviceOrder, isLoading, error } = useServiceOrder(id, props);
+    const { serviceOrder, isLoading } = useServiceOrder(id, props);
 
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import auditReducer from './auditReducer';
 import authReducer from './authReducer';
 import locatorReducer from './locatorReducer';
 import navReducer from './navReducer';
@@ -8,5 +9,6 @@ export default combineReducers({
     auth: authReducer,
     orders: orderReducer,
     locator: locatorReducer,
-    nav: navReducer
+    nav: navReducer,
+    audit: auditReducer
 });

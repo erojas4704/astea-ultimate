@@ -10,8 +10,8 @@ export default function useSearch(criteria) {
         setLoading(true);
         setError(null);
         try {
+            console.log("Search ran");
             const response = await axios.get('/ServiceOrder/search', { params: criteria }); //TODO make an API class that handles this .
-            console.log("GETEGETET");
             setData(response.data);
         } catch (err) {
             setError(err);
@@ -21,7 +21,7 @@ export default function useSearch(criteria) {
     useEffect(() => {
         if (criteria)
             execute(criteria);
-    }, [execute]);
+    }, []);
 
     return { loading, error, data, execute }
 };

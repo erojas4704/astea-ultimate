@@ -3,4 +3,11 @@ const getAgeInMinutes = (serviceOrder) => {
     return Math.floor((difference / 1000) / 60);
 }
 
-export { getAgeInMinutes };
+/**Sanitizes an order ID to only be the numbers before the '@@' delimiter. In uppercase. */
+const getPureId = id => {
+    const result = /\w+/.exec(id);
+    if (!result) return '';
+    return result[0].toUpperCase();
+}
+
+export { getAgeInMinutes, getPureId };

@@ -1,20 +1,70 @@
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { addToAudit } from "../actions/audit";
 import { capitalizeNames } from "../helpers/StringUtils";
+import { getPureId } from "../helpers/ServiceOrderUtils";
 import useSearch from "../hooks/useSearch";
+import useKey from "../hooks/useKey";
 
+
+const findOrderById = id => {
+    //Returns a callback to be used by array.find
+    //Removes all whitespace and finds by the digits preceeding the '@@' symbol.
+    id = getPureId(id);
+    console.log(id);
+    return order => {
+        return getPureId(order.id) === id;
+    }
+}
+
+//TODO needs to be simplified
 export default function ResolvedAuditView() {
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({ id: "", location: "" });
+    const [scanBuffer, setScanBuffer] = useState("");
+    const [bufferTimeout, setBufferTimeout] = useState(null);
+    const key = useKey();
+
+    //todo useScan hook
+    useEffect(() => {
+        if (key === null) return;
+
+        if (key.key === "Enter") {
+            audit(scanBuffer, form.location);
+        } else if ((key.keyCode >= 48 && key.keyCode <= 90) || key.keyCode >= 96 && key.keyCode <= 105) { //TODO seperate into function checking if valid key (alphanumeric)
+            setScanBuffer(current => current + key.key);
+        }
+
+        if (bufferTimeout) {
+            clearTimeout(bufferTimeout);
+            setBufferTimeout(null);
+        }
+
+        setBufferTimeout(
+            setTimeout(() => {
+                console.log("Cleared buffer ", scanBuffer);
+                setScanBuffer("");
+                setBufferTimeout(null);
+            }, 200));
+    }, [key]);
+
     const { data: orders } = useSearch({
         status: 500,
         actionGroup: "QNTech",
         includeHistory: false
     });
 
-    const [form, setForm] = useState({
-        id: "",
-        location: "",
-    });
+    const audit = (id, location) => {
+        const order = orders.find(findOrderById(id));
+        if (order) {
+            dispatch(addToAudit(order, location));
+        } else {
+            alert(`Order ${id} not found`);
+        }
+
+    }
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,7 +72,8 @@ export default function ResolvedAuditView() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        
+        audit(form.id, form.location);
+        setForm({ id: "", location: "" });
     }
 
     return (
@@ -37,6 +88,7 @@ export default function ResolvedAuditView() {
                                     placeholder="Zone"
                                     value={form.location}
                                     onChange={handleChange}
+                                    name="location"
                                 />
                             </Form.Group>
                         </Col>
@@ -47,6 +99,7 @@ export default function ResolvedAuditView() {
                                     placeholder="SV Number"
                                     value={form.id}
                                     onChange={handleChange}
+                                    name="id"
                                 />
                             </Form.Group>
                         </Col>
@@ -62,7 +115,6 @@ export default function ResolvedAuditView() {
                         <th>Technician</th>
                         <th>Location</th>
                         <th>Age</th>
-                        <th>Scanned?</th>
                     </tr>
                 </thead>
                 <tbody>

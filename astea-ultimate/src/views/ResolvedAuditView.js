@@ -9,6 +9,9 @@ import useSearch from "../hooks/useSearch";
 import useKey from "../hooks/useKey";
 import useScanner from "../hooks/useScanner";
 
+const AUDIT_FOUND = 1;
+const AUDIT_NOT_FOUND = 2;
+
 
 const findOrderById = id => {
     //Returns a callback to be used by array.find
@@ -19,6 +22,16 @@ const findOrderById = id => {
         return getPureId(order.id) === id;
     }
 }
+const auditSort = (a, b) => {
+    if (a.audit && b.audit) {
+        return b.audit.index - a.audit.index;
+    } else if (a.audit && !b.audit)
+        return -1;
+    else if (!a.audit && b.audit)
+
+
+        return 0;
+}
 
 //TODO needs to be simplified
 export default function ResolvedAuditView() {
@@ -26,28 +39,46 @@ export default function ResolvedAuditView() {
     const currentAudit = useSelector(state => state.audit);
     const [form, setForm] = useState({ id: "", location: "" });
     const scan = useScanner();
+    const [orders, setOrders] = useState({});
+    const { data } = useSearch({
+        status: 500,
+        actionGroup: "QNTech",
+        includeHistory: false
+    });
+
+    useEffect(() => {
+        const orderMap = {};
+        data.forEach(order => {
+            if (currentAudit.orders[order.id]) order.audit = currentAudit.orders[order.id];
+            orderMap[order.id] = order;
+        });
+        //Add from audit any non-existent orders. Any mistakes we may have made in the audit.
+        for (let audit in currentAudit.orders) {
+            if (!orderMap[audit]) {
+                orderMap[audit] = {
+                    id: audit,
+                    audit: currentAudit.orders[audit]
+                };
+            }
+        }
+        setOrders(orderMap);
+    }, [data, currentAudit.orders]);
 
     useEffect(() => {
         if (scan)
             submitAudit(scan, form.location);
     }, [scan]);
 
-    const { data: orders } = useSearch({
-        status: 500,
-        actionGroup: "QNTech",
-        includeHistory: false
-    });
-
     const submitAudit = (id, location) => {
-        const order = orders.find(findOrderById(id));
+        const order = Object.values(orders).find(findOrderById(id)); //TODO simplify
         if (location === "") location = "~";
 
         if (order) {
-            dispatch(addToAudit(order, location));
+            dispatch(addToAudit(id, AUDIT_FOUND, location));
         } else {
-            alert(`Order ${id} not found`);
+            //alert(`Order ${id} not found`);
+            dispatch(addToAudit(id, AUDIT_NOT_FOUND, location));
         }
-
     }
 
     const handleChange = (e) => {
@@ -59,6 +90,13 @@ export default function ResolvedAuditView() {
         submitAudit(form.id, form.location);
         setForm({ ...form, id: "" });
     }
+
+    console.log("render");
+
+    useEffect(() => {
+        
+    })
+    const ordersArr = Object.values(orders);//.sort(auditSort);
 
     return (
         <Container className="m-3">
@@ -102,15 +140,15 @@ export default function ResolvedAuditView() {
                     </tr>
                 </thead>
                 <tbody>
-                    {orders && orders.map(order => {
-                        const audit = currentAudit.orders[order.id];
-
+                    {ordersArr && ordersArr.map(order => {
+                        //const audit = currentAudit.orders[order.id];
+                        //TODO simplify. Figure out if you want to use an Array or an Object
                         return (
                             <tr key={order.id}>
                                 <td>{order.id}</td>
                                 <td>{capitalizeNames(order.caller?.name || "")}</td>
                                 <td>{order.technician?.name || ""}</td>
-                                <td>{"" || audit?.location}</td>
+                                <td>{"" || order.audit?.location}</td>
                                 <td>{moment().diff(order.openDate, "days")}</td>
                                 <td></td>
                             </tr>

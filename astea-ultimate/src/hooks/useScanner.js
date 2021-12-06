@@ -12,7 +12,12 @@ export default function useScanner() {
         if (key === null) return;
 
         if (key.key === "Enter") {
+            console.log("FINITO", scanBuffer);
             setInput(scanBuffer);
+            setScanBuffer("");
+            clearTimeout(timeoutId);
+            setTimeoutId(null);
+            return;
         } else if ((key.keyCode >= 48 && key.keyCode <= 90) || key.keyCode >= 96 && key.keyCode <= 105) { //TODO seperate into function checking if valid key (alphanumeric)
             setScanBuffer(current => current + key.key);
         }

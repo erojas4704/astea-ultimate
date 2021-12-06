@@ -15,17 +15,18 @@ const fields = {
     "is_in_history": "isInHistory",
     "cc_cust_company_descr": "customer.name",
     "cc_cust_company_id": "customer.id",
-    "cust_id": "customer.id",
+    "cc_site_company_descr": "customer.name",
     "company_descr": "customer.name",
-    "caller_person_id": "caller.id",
-    "caller_name": "caller.name",
+    "cust_id": "customer.id",
+    "caller_person_id": "customer.id",
+    "caller_name": "customer.name",
     "sa_person_id": "technician.id",
     "sa_person_descr": "technician.name",
     "cc_sa_descr": "technician.name",
     "tagno": "tag",
     "is_in_history": "inHistory",
     "order_line.order_stat_uniq_id": "status",
-    
+
 }
 
 function parseServiceOrderData(data) {
@@ -47,7 +48,7 @@ function parseServiceOrderData(data) {
                     value = obj;
                 }
             }
-            result[fieldName] = value
+            if (!result[fieldName]) result[fieldName] = value
         }
     }
 
@@ -56,9 +57,9 @@ function parseServiceOrderData(data) {
 
 /* Removes all references to history objects from data. 
 So that in history and out of history data have similar formatting. */
-function sanitizeData(data){
+function sanitizeData(data) {
     const newData = {};
-    for(const key in data){
+    for (const key in data) {
         const newKey = key.replace("_history", "");
         newData[newKey] = data[key];
     }
@@ -81,7 +82,9 @@ function destructureStringToObject(string, value) {
     };
 
     while (fieldAr[1]) {
-        obj = { [fieldAr.pop()]: obj };
+        obj = {
+            [fieldAr.pop()]: obj
+        };
     }
 
     return obj;

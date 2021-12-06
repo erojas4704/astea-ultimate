@@ -6,8 +6,8 @@ import { addToAudit } from "../actions/audit";
 import { capitalizeNames } from "../helpers/StringUtils";
 import { getPureId } from "../helpers/ServiceOrderUtils";
 import useSearch from "../hooks/useSearch";
-import useKey from "../hooks/useKey";
 import useScanner from "../hooks/useScanner";
+import { v4 as uuid } from "uuid";
 
 const AUDIT_FOUND = 1;
 const AUDIT_NOT_FOUND = 2;
@@ -17,7 +17,7 @@ const findOrderById = id => {
     //Returns a callback to be used by array.find
     //Removes all whitespace and finds by the digits preceeding the '@@' symbol.
     id = getPureId(id);
-    console.log(id);
+    // console.log(id);
     return order => {
         return getPureId(order.id) === id;
     }
@@ -28,8 +28,6 @@ const auditSort = (a, b) => {
     } else if (a.audit && !b.audit)
         return -1;
     else if (!a.audit && b.audit)
-
-
         return 0;
 }
 
@@ -68,16 +66,21 @@ export default function ResolvedAuditView() {
     }, [resolvedOrders, currentAudit.orders]);
 
     useEffect(() => {
-        if (scan)
-            submitAudit(scan, form.location);
+        console.log("SCAN", scan);
+        if (scan) {
+            if (scan.length <= 4)
+                setForm({ ...form, location: scan });
+            else
+                submitAudit(scan, form.location);
+        }
     }, [scan]);
 
     const submitAudit = (id, location) => {
-        const order = Object.values(resolvedOrders).find(findOrderById(id)); //TODO simplify
+        const order = resolvedOrders.find(findOrderById(id)); //TODO simplify
         if (location === "") location = "~";
 
         if (order) {
-            dispatch(addToAudit(id, AUDIT_FOUND, location));
+            dispatch(addToAudit(order.id, AUDIT_FOUND, location));
         } else {
             //alert(`Order ${id} not found`);
             dispatch(addToAudit(id, AUDIT_NOT_FOUND, location));
@@ -141,7 +144,7 @@ export default function ResolvedAuditView() {
                             //const audit = currentAudit.orders[order.id];
                             //TODO simplify. Figure out if you want to use an Array or an Object
                             return (
-                                <tr key={order.id}>
+                                <tr key={order.id || uuid()}>
                                     <td>{order.id}</td>
                                     <td>{capitalizeNames(order.caller?.name || "")}</td>
                                     <td>{order.technician?.name || ""}</td>

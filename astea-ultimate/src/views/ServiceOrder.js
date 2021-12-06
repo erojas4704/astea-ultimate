@@ -73,7 +73,6 @@ const ServiceOrder = (props) => {
                             <div className="value">{moment(serviceOrder.openDate).format('MM/DD/yyyy')}</div>
                         </div>
                         <div className="divider" />
-
                         <InteractionsView serviceOrder={serviceOrder} />
                     </div>
                 </div>

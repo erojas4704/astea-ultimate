@@ -39,30 +39,33 @@ export default function ResolvedAuditView() {
     const currentAudit = useSelector(state => state.audit);
     const [form, setForm] = useState({ id: "", location: "" });
     const scan = useScanner();
-    const [orders, setOrders] = useState({});
-    const { data } = useSearch({
+    const [orders, setOrders] = useState([]);
+    const { data: resolvedOrders } = useSearch({
         status: 500,
         actionGroup: "QNTech",
         includeHistory: false
     });
 
     useEffect(() => {
-        const orderMap = {};
-        data.forEach(order => {
-            if (currentAudit.orders[order.id]) order.audit = currentAudit.orders[order.id];
-            orderMap[order.id] = order;
-        });
+        const orderBuffer =
+            resolvedOrders.map(order => {
+                if (currentAudit.orders[order.id]) order.audit = currentAudit.orders[order.id];
+                return order;
+            });
+
         //Add from audit any non-existent orders. Any mistakes we may have made in the audit.
         for (let audit in currentAudit.orders) {
-            if (!orderMap[audit]) {
-                orderMap[audit] = {
-                    id: audit,
-                    audit: currentAudit.orders[audit]
-                };
+            if (!resolvedOrders.find(findOrderById(audit))) {
+                orderBuffer.push({
+                    id: audit.id,
+                    audit
+                });
             }
         }
-        setOrders(orderMap);
-    }, [data, currentAudit.orders]);
+
+        console.log("rebuilt and sorted orders");
+        setOrders(orderBuffer);
+    }, [resolvedOrders, currentAudit.orders]);
 
     useEffect(() => {
         if (scan)
@@ -70,7 +73,7 @@ export default function ResolvedAuditView() {
     }, [scan]);
 
     const submitAudit = (id, location) => {
-        const order = Object.values(orders).find(findOrderById(id)); //TODO simplify
+        const order = Object.values(resolvedOrders).find(findOrderById(id)); //TODO simplify
         if (location === "") location = "~";
 
         if (order) {
@@ -90,13 +93,6 @@ export default function ResolvedAuditView() {
         submitAudit(form.id, form.location);
         setForm({ ...form, id: "" });
     }
-
-    console.log("render");
-
-    useEffect(() => {
-        
-    })
-    const ordersArr = Object.values(orders);//.sort(auditSort);
 
     return (
         <Container className="m-3">
@@ -140,7 +136,7 @@ export default function ResolvedAuditView() {
                     </tr>
                 </thead>
                 <tbody>
-                    {ordersArr && ordersArr.map(order => {
+                    {orders && orders.map(order => {
                         //const audit = currentAudit.orders[order.id];
                         //TODO simplify. Figure out if you want to use an Array or an Object
                         return (

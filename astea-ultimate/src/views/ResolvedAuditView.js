@@ -95,63 +95,65 @@ export default function ResolvedAuditView() {
     }
 
     return (
-        <Container className="m-3">
-            <Row>
-                <Form className="form-inline" onSubmit={handleSubmit}>
-                    <Row>
-                        <Col xs={3} style={{ width: "6rem" }}>
-                            <Form.Group controlId="location">
-                                <Form.Control
-                                    type="input"
-                                    placeholder="Zone"
-                                    value={form.location}
-                                    onChange={handleChange}
-                                    name="location"
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col>
-                            <Form.Group controlId="id">
-                                <Form.Control
-                                    type="input"
-                                    placeholder="SV Number"
-                                    value={form.id}
-                                    onChange={handleChange}
-                                    name="id"
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col className="d-flex justify-content-end"><Button variant="primary" type="submit">Add</Button></Col>
-                    </Row>
-                </Form>
-            </Row>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Customer</th>
-                        <th>Technician</th>
-                        <th>Location</th>
-                        <th>Age</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders && orders.map(order => {
-                        //const audit = currentAudit.orders[order.id];
-                        //TODO simplify. Figure out if you want to use an Array or an Object
-                        return (
-                            <tr key={order.id}>
-                                <td>{order.id}</td>
-                                <td>{capitalizeNames(order.caller?.name || "")}</td>
-                                <td>{order.technician?.name || ""}</td>
-                                <td>{"" || order.audit?.location}</td>
-                                <td>{moment().diff(order.openDate, "days")}</td>
-                                <td></td>
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </Table>
-        </Container>
+        <div className="sv-view" >
+            <Container fluid className="my-3">
+                <Row>
+                    <Form className="form-inline" onSubmit={handleSubmit}>
+                        <Row>
+                            <Col xs={3} style={{ width: "6rem" }}>
+                                <Form.Group controlId="location">
+                                    <Form.Control
+                                        type="input"
+                                        placeholder="Zone"
+                                        value={form.location}
+                                        onChange={handleChange}
+                                        name="location"
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group controlId="id">
+                                    <Form.Control
+                                        type="input"
+                                        placeholder="SV Number"
+                                        value={form.id}
+                                        onChange={handleChange}
+                                        name="id"
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col className="d-flex justify-content-end"><Button variant="primary" type="submit">Add</Button></Col>
+                        </Row>
+                    </Form>
+                </Row>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Technician</th>
+                            <th>Location</th>
+                            <th>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders && orders.map(order => {
+                            //const audit = currentAudit.orders[order.id];
+                            //TODO simplify. Figure out if you want to use an Array or an Object
+                            return (
+                                <tr key={order.id}>
+                                    <td>{order.id}</td>
+                                    <td>{capitalizeNames(order.caller?.name || "")}</td>
+                                    <td>{order.technician?.name || ""}</td>
+                                    <td>{"" || order.audit?.location}</td>
+                                    <td>{moment().diff(order.openDate, "days")}</td>
+                                    <td></td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+            </Container>
+        </div>
     );
 }

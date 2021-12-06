@@ -66,11 +66,9 @@ function serviceOrderToXML(order) {
 
 function extractFromAsteaQuery(query) {
     const queries = {};
-    console.log(query.split(/AND|OR/));
     query.split(/AND|OR/).forEach(element => {
         try {
             let [asteaField, value] = /[\w\. '%"]+/.exec(element.trim())[0].split(/LIKE/);
-            console.log(asteaField);
             asteaField = asteaField.trim();
             value = value.trim().match(/'%(\w*)%'/)[1];
             queries[translateFromAsteaKey(asteaField)] = value;
@@ -78,9 +76,6 @@ function extractFromAsteaQuery(query) {
             console.log(`Catchings error! Not poilte!${e} also: ${element}`);
         }
     });
-
-
-    console.log(queries);
 
     return queries;
 }

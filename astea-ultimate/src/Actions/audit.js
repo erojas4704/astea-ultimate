@@ -1,11 +1,11 @@
 import { AUDIT_ADD } from "./types";
 
-export function addToAudit(order, location){
+export function addToAudit(id, status, location){
     return {
         type: AUDIT_ADD,
         payload: {
-            id: order.id,
-            order,
+            id,
+            status,
             location
         }
     }

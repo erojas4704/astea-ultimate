@@ -1,6 +1,7 @@
 import { AUDIT_ADD } from "../actions/types";
 
 const DEFAULT_STATE = {
+    index: 0,
     date: '',
     orders: {}
 }
@@ -11,9 +12,13 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
         case AUDIT_ADD:
             return {
                 ...state,
+                index: state.index + 1,
                 orders: {
                     ...state.orders,
-                    [action.payload.id]: action.payload
+                    [action.payload.id]: {
+                        ...action.payload,
+                        index: state.index
+                    }
                 }
             }
         default:

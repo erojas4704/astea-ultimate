@@ -15,7 +15,8 @@ const asteaMacros = {
 router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res) => {
     const json = await parseXMLToJSON(req.body.xmlRequest);
     const macro = extractMacroFromJSON(json);
-    asteaMacros[macro]()
+    console.log(`Executing macro ${macro}`);
+    asteaMacros[macro]();
 
     return res.json(req.body);
 });

@@ -146,9 +146,9 @@ export default function ResolvedAuditView() {
                             return (
                                 <tr key={order.id || uuid()}>
                                     <td>{order.id}</td>
-                                    <td>{capitalizeNames(order.caller?.name || "")}</td>
+                                    <td>{capitalizeNames(order.customer?.name || "")}</td>
                                     <td>{order.technician?.name || ""}</td>
-                                    <td>{"" || order.audit?.location}</td>
+                                    <td>{order.audit?.location || ""}</td>
                                     <td>{moment().diff(order.openDate, "days")}</td>
                                     <td></td>
                                 </tr>

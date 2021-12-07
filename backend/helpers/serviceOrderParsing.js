@@ -48,7 +48,11 @@ function parseServiceOrderData(data) {
                     value = obj;
                 }
             }
-            if (!result[fieldName]) result[fieldName] = value
+            if (fieldName === "customer") {
+                if (!value.name) debugger;
+                console.log(fieldName, value);
+            }
+            result[fieldName] = value
         }
     }
 
@@ -69,7 +73,8 @@ function sanitizeData(data) {
 /* Perform a shallow merge of two objects */
 function merge(obj1, obj2) {
     for (let key in obj2) {
-        obj1[key] = obj2[key];
+        if (!obj1[key])
+            obj1[key] = obj2[key]; //Do not overwrite existing keys
     }
     return obj1;
 }

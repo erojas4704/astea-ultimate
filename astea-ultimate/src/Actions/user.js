@@ -23,6 +23,17 @@ export function loginUser({ username, password }) {
     }
 }
 
+export function validateAuth(){
+    return async (dispatch) => {
+        try{
+            const resp = await axios.get("/auth/ValidateSession");
+            if(!resp.data.success) dispatch(logoutUser());
+        }catch(err){
+            console.log(err);
+        }
+    }
+}
+
 export function cancelLogin() {
     return async (dispatch, getState) => {
         const source = getState().auth.requestSource;

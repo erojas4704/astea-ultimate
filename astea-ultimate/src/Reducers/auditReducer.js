@@ -1,4 +1,4 @@
-import { AUDIT_ADD, AUDIT_NEW, AUDIT_ORDER_LOAD, AUDIT_ORDER_LOAD_SUCCESS, AUDIT_RESET, AUDIT_UPDATE } from "../actions/types";
+import { AUDIT_ADD, AUDIT_NEW, AUDIT_ORDER_LOAD, AUDIT_ORDER_LOAD_FAIL, AUDIT_ORDER_LOAD_SUCCESS, AUDIT_RESET, AUDIT_UPDATE } from "../actions/types";
 import { findOrderById, orderIdsMatch } from "../helpers/ServiceOrderUtils";
 
 const DEFAULT_STATE = {
@@ -60,6 +60,25 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
                     orders
                 }
             }
+        case AUDIT_ORDER_LOAD_FAIL:
+            {
+                const orders = [...state.orders];
+                const index = orders.findIndex(findOrderById(action.payload.id));
+                orders[index] = {
+                    ...orders[index],
+                    audit: {
+                        ...orders[index].audit,
+                        ...action.payload.audit,
+                        loading: false
+                    }
+                };
+
+                return {
+                    ...state,
+                    orders
+                }
+            }
+
         //TODO cross-intergation with the order reducer instead of loading them here.
         case AUDIT_ORDER_LOAD_SUCCESS:
             {

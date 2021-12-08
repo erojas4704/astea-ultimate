@@ -1,6 +1,7 @@
 import moment from "moment";
 import { capitalizeNames } from "../helpers/StringUtils";
 import { FOUND, NOT_FOUND, NOT_RESOLVED } from "../actions/auditTypes";
+import LoadingSpinner from "./LoadingSpinner";
 
 const colors = {
     [FOUND]: "table-info",
@@ -13,8 +14,8 @@ export default function AuditTableRow({order}) {
 
     return (<tr className={statusColor}>
         <td>{order.id}</td>
-        <td>{capitalizeNames(order.customer?.name)}</td>
-        <td>{capitalizeNames(order.technician?.name)}</td>
+        <td>{capitalizeNames(order.customer?.name) || (order.audit?.loading && <LoadingSpinner />)}</td>
+        <td>{capitalizeNames(order.technician?.name) || (order.audit?.loading && <LoadingSpinner />)}</td>
         <td>{order.audit?.location}</td>
         <td>{moment().diff(order.openDate, "days")}</td>
     </tr>)

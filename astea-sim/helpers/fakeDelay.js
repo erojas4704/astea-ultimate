@@ -1,11 +1,11 @@
 require("dotenv").config();
 const fakeDelayInSeconds = process.env.FAKE_DELAY_SECONDS;
 
-const forFakeDelay = async () => {
+const forFakeDelay = async (timer=1) => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
-        }, fakeDelayInSeconds * 1000);
+        }, timer * 1000);
     });
 }
 

@@ -2,88 +2,61 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addToAudit } from "../actions/audit";
-import { capitalizeNames } from "../helpers/StringUtils";
-import { getPureId } from "../helpers/ServiceOrderUtils";
+import { updateAuditOrder, createNewAudit, resetAudit, addToAudit } from "../actions/audit";
 import useSearch from "../hooks/useSearch";
 import useScanner from "../hooks/useScanner";
-import { v4 as uuid } from "uuid";
+import { findOrderById } from "../helpers/ServiceOrderUtils";
+import AuditTableRow from "../components/AuditTableRow";
+import { FOUND } from "../actions/auditTypes";
 
-const AUDIT_FOUND = 1;
-const AUDIT_NOT_FOUND = 2;
 
-
-const findOrderById = id => {
-    //Returns a callback to be used by array.find
-    //Removes all whitespace and finds by the digits preceeding the '@@' symbol.
-    id = getPureId(id);
-    // console.log(id);
-    return order => {
-        return getPureId(order.id) === id;
-    }
-}
-const auditSort = (a, b) => {
-    if (a.audit && b.audit) {
-        return b.audit.index - a.audit.index;
-    } else if (a.audit && !b.audit)
-        return -1;
-    else if (!a.audit && b.audit)
-        return 0;
+const sameDay = (a, b) => {
+    if (moment(a).isSame(b, 'day'))
+        return true;
+    return false;
 }
 
 //TODO needs to be simplified
 export default function ResolvedAuditView() {
     const dispatch = useDispatch();
-    const currentAudit = useSelector(state => state.audit);
     const [form, setForm] = useState({ id: "", location: "" });
+    const audit = useSelector(state => state.audit);
     const scan = useScanner();
-    const [orders, setOrders] = useState([]);
-    const { data: resolvedOrders } = useSearch({
+    const { data: resolvedOrders, execute: getResolvedOrders } = useSearch({
         status: 500,
         actionGroup: "QNTech",
         includeHistory: false
-    });
+    }, false);
 
     useEffect(() => {
-        const orderBuffer =
-            resolvedOrders.map(order => {
-                if (currentAudit.orders[order.id]) order.audit = currentAudit.orders[order.id];
-                return order;
-            });
-
-        //Add from audit any non-existent orders. Any mistakes we may have made in the audit.
-        for (let audit in currentAudit.orders) {
-            if (!resolvedOrders.find(findOrderById(audit))) {
-                orderBuffer.push({
-                    id: audit.id,
-                    audit
-                });
-            }
+        if (!sameDay(audit.date, new Date())) {
+            console.log("Audit date is not today. Discarding old audit.");
+            if (resolvedOrders.length === 0)
+                getResolvedOrders();
+            else
+                dispatch(createNewAudit(resolvedOrders));
         }
-
-        console.log("rebuilt and sorted orders");
-        setOrders(orderBuffer);
-    }, [resolvedOrders, currentAudit.orders]);
+    }, [dispatch, audit.date, resolvedOrders, getResolvedOrders])
 
     useEffect(() => {
-        console.log("SCAN", scan);
         if (scan) {
             if (scan.length <= 4)
-                setForm({ ...form, location: scan });
+                setForm(form => ({ ...form, location: scan }));
             else
-                submitAudit(scan, form.location);
+                dispatch(updateAuditOrder(scan, form.location));
         }
-    }, [scan]);
+    }, [scan, dispatch, form.location]);
 
-    const submitAudit = (id, location) => {
-        const order = resolvedOrders.find(findOrderById(id)); //TODO simplify
+    const handleReset = () => {
+        dispatch(resetAudit());
+    }
+
+    const submitForm = (id, location) => {
         if (location === "") location = "~";
-
-        if (order) {
-            dispatch(addToAudit(order.id, AUDIT_FOUND, location));
-        } else {
-            //alert(`Order ${id} not found`);
-            dispatch(addToAudit(id, AUDIT_NOT_FOUND, location));
+        if(audit.orders.find(findOrderById(id))){
+            dispatch(updateAuditOrder(id, location, FOUND));
+        }else{
+            dispatch(addToAudit(id, location));
         }
     }
 
@@ -93,7 +66,7 @@ export default function ResolvedAuditView() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        submitAudit(form.id, form.location);
+        submitForm(form.id, form.location);
         setForm({ ...form, id: "" });
     }
 
@@ -125,7 +98,10 @@ export default function ResolvedAuditView() {
                                     />
                                 </Form.Group>
                             </Col>
-                            <Col className="d-flex justify-content-end"><Button variant="primary" type="submit">Add</Button></Col>
+                            <Col className="d-flex justify-content-end">
+                                <Button variant="primary" type="submit">Add</Button>
+                                <Button variant="warning" onClick={handleReset}>Reset</Button>
+                            </Col>
                         </Row>
                     </Form>
                 </Row>
@@ -140,20 +116,7 @@ export default function ResolvedAuditView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders && orders.map(order => {
-                            //const audit = currentAudit.orders[order.id];
-                            //TODO simplify. Figure out if you want to use an Array or an Object
-                            return (
-                                <tr key={order.id || uuid()}>
-                                    <td>{order.id}</td>
-                                    <td>{capitalizeNames(order.customer?.name || "")}</td>
-                                    <td>{order.technician?.name || ""}</td>
-                                    <td>{order.audit?.location || ""}</td>
-                                    <td>{moment().diff(order.openDate, "days")}</td>
-                                    <td></td>
-                                </tr>
-                            )
-                        })}
+                        {audit && audit.orders.map(order => <AuditTableRow key={order.id} order={order} />)}
                     </tbody>
                 </Table>
             </Container>

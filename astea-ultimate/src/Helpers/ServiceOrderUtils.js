@@ -10,4 +10,18 @@ const getPureId = id => {
     return result[0].toUpperCase();
 }
 
-export { getAgeInMinutes, getPureId };
+const findOrderById = id => {
+    //Returns a callback to be used by array.find
+    //Removes all whitespace and finds by the digits preceeding the '@@' symbol.
+    id = getPureId(id);
+    // console.log(id);
+    return order => {
+        return getPureId(order.id) === id;
+    }
+}
+
+const orderIdsMatch = (id1, id2) => {
+    return getPureId(id1) === getPureId(id2);
+}
+
+export { getAgeInMinutes, getPureId, findOrderById, orderIdsMatch };

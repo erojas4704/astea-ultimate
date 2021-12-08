@@ -40,6 +40,7 @@ router.post(`/SecurityManager.svc/dotnet`, async (req, res) => {
 router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
     try {
         //http://astea.services.wcf/IDataViewMgrContract/RetrieveXMLExt
+        await forFakeDelay();
         const action = req.headers["soapaction"].match(/\/([^\/]+)\/?$/)[1].replace(/\W*/g, '');
         if (action === "RetrieveXMLExt") {
             const xml = sanitizeXMLString(req.body);
@@ -58,7 +59,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
                         || (serial && serviceOrder.serial?.includes(serial))
                         || (status && serviceOrder.statusID?.includes(status))
                     )
-                    && (actionGroup && serviceOrder.actionGroup?.includes(actionGroup))
+                    && (!actionGroup || (actionGroup && serviceOrder.actionGroup?.includes(actionGroup)))
                 ) filtered.push(serviceOrder);
             });
 

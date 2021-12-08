@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+//TODO make this stateless so it doesn't force unnecessary re-renders
 export default function useKey(callback) {
     const [key, setKey] = useState(null);
     useEffect(() => {

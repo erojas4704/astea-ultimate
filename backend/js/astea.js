@@ -19,6 +19,9 @@ const Search = require("../helpers/Search");
 const Technician = require("./Technician");
 const { ORDERS_EXPIRE_IN_MINUTES } = process.env;
 
+const { promisify } = require("util");
+const fs = require('fs');
+
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -193,6 +196,8 @@ async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO f
         }
     }
 
+    saveRawData(id, resp.data['d']);
+
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //2 Has just proper SV and metadata. 3 has interactions, materials and proper SV data
 
@@ -200,6 +205,12 @@ async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO f
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache
     return { serviceOrder, json };
+}
+
+function saveRawData(id, data) {
+    fs.writeFile(`./.cache/${id}.xml`, data, { flag: 'a' }, function (err) {
+        if (err) throw err;
+    });
 }
 
 async function getTechniciansInActionGroup(sessionID, actionGroupID) {

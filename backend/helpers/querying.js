@@ -31,15 +31,13 @@ function generateSearchQuery(criteria, page = 1) {
     let catchAllAppendixSecondary = "";
 
     if (criteria.includeHistory === "true") {
-
+        
         criteria.inHistory = "Y";
         delete criteria.includeHistory; //TODO just a quick hack to get the search working
     } else if (criteria.includeHistory === "false") {
         criteria.inHistory = "N";
         delete criteria.includeHistory; //TODO just a quick hack to get the search working
     }
-
-    console.log("CRITERIA", criteria);
 
     //TODO make an array of all the keys to look for that can be set in the environment variable.
     if (criteria['all']) {

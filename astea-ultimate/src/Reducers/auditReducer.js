@@ -36,7 +36,7 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
                 localIndex >= 0 ?
                     state.orders[localIndex]
                     : { id: action.payload.id, audit: action.payload };
-            updatedOrder.audit = { audit: updatedOrder.audit, ...action.payload };
+            updatedOrder.audit = { ...action.payload , ...updatedOrder.audit };
 
             return {
                 ...state,
@@ -54,6 +54,7 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
                 orders[index] = {
                     ...orders[index],
                     audit: {
+                        ...orders[index].audit,
                         ...action.payload,
                         loading: true
                     }

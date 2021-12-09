@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ERROR, NOT_FOUND, NOT_RESOLVED } from "./auditTypes";
 import { AUDIT_ADD, AUDIT_NEW, AUDIT_ORDER_LOAD, AUDIT_ORDER_LOAD_FAIL as AUDIT_ORDER_LOAD_FAIL, AUDIT_ORDER_LOAD_SUCCESS as AUDIT_ORDER_LOAD_SUCCESS, AUDIT_RESET, AUDIT_UPDATE } from "./types";
-
+import { getPureId } from "../helpers/ServiceOrderUtils";
 
 export function updateAuditOrder(id, location, status) {
     
@@ -35,7 +35,8 @@ export function addToAudit(id, location) {
         dispatch({ type: AUDIT_ADD, payload: { id, location } });
         try {
             dispatch({ type: AUDIT_ORDER_LOAD, payload: { id } });
-            const resp = await axios.get("/ServiceOrder/search", { params: { id } }); //TODO, instead of search, GET. 
+
+            const resp = await axios.get("/ServiceOrder/search", { params: { id: getPureId(id) } }); //TODO, instead of search, GET. 
             //Maybe stick with search so it doesn't matter if we miss the @@1 or not.
             if (resp.data.length > 0)
                 dispatch({

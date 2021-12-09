@@ -4,6 +4,7 @@ import { AUDIT_ADD, AUDIT_NEW, AUDIT_ORDER_LOAD, AUDIT_ORDER_LOAD_FAIL as AUDIT_
 
 
 export function updateAuditOrder(id, location, status) {
+    
     return {
         type: AUDIT_UPDATE,
         payload: {
@@ -35,7 +36,8 @@ export function addToAudit(id, location) {
         try {
             dispatch({ type: AUDIT_ORDER_LOAD, payload: { id } });
             const resp = await axios.get("/ServiceOrder/search", { params: { id } }); //TODO, instead of search, GET. 
-            if (resp.data.length === 1)
+            //Maybe stick with search so it doesn't matter if we miss the @@1 or not.
+            if (resp.data.length > 0)
                 dispatch({
                     type: AUDIT_ORDER_LOAD_SUCCESS,
                     payload: {

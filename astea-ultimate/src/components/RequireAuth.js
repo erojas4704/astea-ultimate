@@ -10,21 +10,6 @@ export default function RequireAuth() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    /*
-    useEffect(() => {
-        console.log(response);
-        if (!response.success && !loading){
-            //navigate("/login");
-            //dispatch(logoutUser());
-        }
-    } , [response, loading]);
-    */
-    useEffect(() => {
-        dispatch(validateAuth()); //TODO re-engineer this
-    }, [dispatch]);
-
-    //console.log(isAuthenticated, authenticated);
-
     if (!isAuthenticated) {
         //navigate("/");
         console.log("Should navigate back to login because terrible");

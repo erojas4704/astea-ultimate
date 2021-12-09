@@ -73,7 +73,6 @@ router.get("/search", async (req, res, next) => {
     const criteria = req.query;
     // debugger;
     try {
-        criteria.includeHistory = criteria.includeHistory === "true";
         return res.send(await orderLocatorSearch(req.session, criteria));
     } catch (e) {
         return next(e);

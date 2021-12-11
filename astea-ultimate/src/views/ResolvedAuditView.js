@@ -21,7 +21,20 @@ export default function ResolvedAuditView() {
     const dispatch = useDispatch();
     const [form, setForm] = useState({ id: "", location: "" });
     const audit = useSelector(state => state.audit);
+
     const scan = useScanner();
+
+    useEffect(() => {
+        if (scan) {
+            console.log("Scan went");
+            if (scan.length <= 4)
+                setForm(form => ({ ...form, location: scan }));
+            else
+                dispatch(updateAuditOrder(scan, form.location));
+        }
+    }, [scan, dispatch, form.location]);
+
+
     const { data: resolvedOrders, execute: getResolvedOrders } = useSearch({
         status: 500,
         actionGroup: "QNTech",
@@ -38,14 +51,6 @@ export default function ResolvedAuditView() {
         }
     }, [dispatch, audit.date, resolvedOrders, getResolvedOrders])
 
-    useEffect(() => {
-        if (scan) {
-            if (scan.length <= 4)
-                setForm(form => ({ ...form, location: scan }));
-            else
-                dispatch(updateAuditOrder(scan, form.location));
-        }
-    }, [scan, dispatch, form.location]);
 
     const handleReset = () => {
         dispatch(resetAudit());

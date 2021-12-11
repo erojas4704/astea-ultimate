@@ -9,7 +9,18 @@ export default function RequireAuth() {
     const isAuthenticated = auth.sessionId !== null;
     const navigate = useNavigate();
     const dispatch = useDispatch();
+<<<<<<< HEAD
     
+=======
+
+    // if (!isAuthenticated) {
+    //     //navigate("/");
+    //     console.log("Should navigate back to login because terrible");
+    //     console.log(`Do we have a sessionId in the cookie? ${isAuthenticated}`);
+    //     dispatch(logoutUser());
+    // }
+
+>>>>>>> e8fc7116fffc682ab371ba66ac82d78d77ca39ff
     return (
         isAuthenticated ?
             <Outlet />

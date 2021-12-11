@@ -31,6 +31,7 @@ export default function useScanner() {
             setTimeout(() => {
                 console.log("Cleared buffer ", scanBuffer);
                 setScanBuffer("");
+                setInput("");
                 setTimeoutId(null);
             }, 200));
     }, [key]);

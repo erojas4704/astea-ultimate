@@ -1,5 +1,5 @@
 import moment from "moment";
-import { capitalizeNames } from "../helpers/StringUtils";
+import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
 import { FOUND, NOT_FOUND, NOT_RESOLVED } from "../actions/auditTypes";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -14,8 +14,8 @@ export default function AuditTableRow({order}) {
 
     return (<tr className={statusColor}>
         <td>{order.id}</td>
-        <td>{capitalizeNames(order.customer?.name) || (order.audit?.loading && <LoadingSpinner />)}</td>
-        <td>{capitalizeNames(order.technician?.name) || (order.audit?.loading && <LoadingSpinner />)}</td>
+        <td>{nameToInitials(order.customer?.name) || (order.audit?.loading && <LoadingSpinner />)}</td>
+        <td>{nameToInitials(order.technician?.name) || (order.audit?.loading && <LoadingSpinner />)}</td>
         <td>{order.audit?.location}</td>
         <td>{moment().diff(order.openDate, "days")}</td>
     </tr>)

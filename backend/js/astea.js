@@ -19,6 +19,9 @@ const Search = require("../helpers/Search");
 const Technician = require("./Technician");
 const { ORDERS_EXPIRE_IN_MINUTES } = process.env;
 
+const { promisify } = require("util");
+const fs = require('fs');
+
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
     "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -138,6 +141,7 @@ async function orderLocatorSearch(session, criteria) {
     );
 
     const json = await parseXMLToJSON(resp.data);
+    try{
     const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const resultsJSON = await parseXMLToJSON(resultsXML);
@@ -145,6 +149,11 @@ async function orderLocatorSearch(session, criteria) {
     Search.create(criteria, serviceOrders); //Search caching
 
     return serviceOrders;
+    }catch(err){
+        console.log(`Error in parsing order locator search results: ${err}`);
+        console.log(json);
+        throw err;
+    }
     //TODO this function needs error handling
 }
 
@@ -193,6 +202,8 @@ async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO f
         }
     }
 
+    saveRawData(id, resp.data['d']);
+
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //2 Has just proper SV and metadata. 3 has interactions, materials and proper SV data
 
@@ -200,6 +211,12 @@ async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO f
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache
     return { serviceOrder, json };
+}
+
+function saveRawData(id, data) {
+    fs.writeFile(`./.cache/${id}.xml`, data, { flag: 'a' }, function (err) {
+        if (err) throw err;
+    });
 }
 
 async function getTechniciansInActionGroup(sessionID, actionGroupID) {

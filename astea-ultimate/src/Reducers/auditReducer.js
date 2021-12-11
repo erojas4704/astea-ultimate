@@ -27,12 +27,16 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
             //Add to beginning of audit, making sure that the order is not already in the audit
             return {
                 ...state,
-                orders: [action.payload, ...state.orders.filter(order => !orderIdsMatch(order.id, action.payload.id))]
+                orders: [{id: action.payload.id, audit: action.payload}, ...state.orders.filter(order => !orderIdsMatch(order.id, action.payload.id))]
             }
-        case AUDIT_UPDATE:
+        case AUDIT_UPDATE://TODO cleanings
             const localIndex = state.orders.findIndex(findOrderById(action.payload.id));
-            const updatedOrder = localIndex >= 0 ? state.orders[localIndex] : action.payload;
-            updatedOrder.audit = action.payload;
+            console.log(localIndex);
+            const updatedOrder =
+                localIndex >= 0 ?
+                    state.orders[localIndex]
+                    : { id: action.payload.id, audit: action.payload };
+            updatedOrder.audit = { ...action.payload , ...updatedOrder.audit };
 
             return {
                 ...state,
@@ -50,6 +54,7 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
                 orders[index] = {
                     ...orders[index],
                     audit: {
+                        ...orders[index].audit,
                         ...action.payload,
                         loading: true
                     }

@@ -51,13 +51,33 @@ export default function ResolvedAuditView() {
         }
     }, [dispatch, audit.date, resolvedOrders, getResolvedOrders])
 
+<<<<<<< HEAD
+=======
+    useEffect(() => {
+        if (scan) {
+            console.log("Scanning for order: " + scan);
+            const id = scan;
+            if (scan.length <= 4)
+                setForm(form => ({ ...form, location: scan }));
+            else{
+                const location = form.location || "SD";
+                //TODO extract method
+                if(audit.orders.find(findOrderById(id))){
+                    dispatch(updateAuditOrder(id, form.location, FOUND));
+                }else{
+                    dispatch(addToAudit(id, form.location));
+                }
+            }
+        }
+    }, [scan, dispatch, form.location]);
+>>>>>>> e8fc7116fffc682ab371ba66ac82d78d77ca39ff
 
     const handleReset = () => {
         dispatch(resetAudit());
     }
 
     const submitForm = (id, location) => {
-        if (location === "") location = "~";
+        if (location === "") location = "SD";
         if(audit.orders.find(findOrderById(id))){
             dispatch(updateAuditOrder(id, location, FOUND));
         }else{

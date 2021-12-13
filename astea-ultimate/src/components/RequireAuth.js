@@ -9,9 +9,6 @@ export default function RequireAuth() {
     const isAuthenticated = auth.sessionId !== null;
     const navigate = useNavigate();
     const dispatch = useDispatch();
-<<<<<<< HEAD
-    
-=======
 
     // if (!isAuthenticated) {
     //     //navigate("/");
@@ -20,7 +17,6 @@ export default function RequireAuth() {
     //     dispatch(logoutUser());
     // }
 
->>>>>>> e8fc7116fffc682ab371ba66ac82d78d77ca39ff
     return (
         isAuthenticated ?
             <Outlet />

@@ -51,8 +51,6 @@ export default function ResolvedAuditView() {
         }
     }, [dispatch, audit.date, resolvedOrders, getResolvedOrders])
 
-<<<<<<< HEAD
-=======
     useEffect(() => {
         if (scan) {
             console.log("Scanning for order: " + scan);
@@ -70,7 +68,6 @@ export default function ResolvedAuditView() {
             }
         }
     }, [scan, dispatch, form.location]);
->>>>>>> e8fc7116fffc682ab371ba66ac82d78d77ca39ff
 
     const handleReset = () => {
         dispatch(resetAudit());

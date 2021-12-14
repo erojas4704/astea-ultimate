@@ -14,7 +14,7 @@ export default function authReducer(state = DEFAULT_STATE, action) {
         case USER_LOGIN_START:
             return {
                 ...DEFAULT_STATE,
-                cancelLogin: action.payload.cancelLogin,
+                cancel: action.payload.cancel,
                 loading: true
             }
         case USER_LOGIN_FAIL:
@@ -37,7 +37,7 @@ export default function authReducer(state = DEFAULT_STATE, action) {
                 ...state,
                 loading: false,
                 error: null,
-                requestSource: null
+                cancel: null
             }
         case USER_LOGOUT_START:
             return {

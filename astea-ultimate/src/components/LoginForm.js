@@ -19,7 +19,7 @@ const LoginForm = ({ onSubmit, isLoading }) => {
 
     return (
         <div>
-            <form className="login-form" onSubmit={handleSubmit} onChange={handleChange}>
+            <form className="login-form" onSubmit={handleSubmit} onChange={handleChange} data-testid="login-form">
                 <div className="form-group">
                     <label htmlFor="username">Username: </label>
                     <input type="text" name="username" id="username" placeholder="Username" disabled={isLoading}/>

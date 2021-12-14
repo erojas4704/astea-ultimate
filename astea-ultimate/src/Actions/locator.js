@@ -1,4 +1,4 @@
-import axios from "axios";
+import Api from "../api";
 import { LOCATOR_SEARCH, LOCATOR_SEARCH_FAIL, LOCATOR_SEARCH_RESET, LOCATOR_SEARCH_SUCCESS } from "./types";
 
 export function resetSearch() {
@@ -13,7 +13,7 @@ export function search(term, includeHistory) {
             includeHistory,
             actionGroup: "QNTech" //TODO get from user or even better settings
         }
-    }else if(typeof term === "object"){
+    } else if (typeof term === "object") {
         params = {
             ...term,
             includeHistory,
@@ -27,10 +27,10 @@ export function search(term, includeHistory) {
             payload: params
         });
         try {
-            const resp = await axios.get('/ServiceOrder/search', { params });
+            const results = await Api.search(params);
             dispatch({
                 type: LOCATOR_SEARCH_SUCCESS,
-                payload: resp.data
+                payload: results
             })
         } catch (err) {
             console.log(err);

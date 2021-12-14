@@ -8,20 +8,9 @@ import NewServiceOrder from "./views/NewServiceOrder";
 import ResolvedAuditView from './views/ResolvedAuditView';
 import { useSelector } from 'react-redux';
 import RequireAuth from './components/RequireAuth';
-import Api from './api';
-import { useEffect } from 'react';
 
 function App() {
     const auth = useSelector(state => state.auth);
-
-    useEffect(() => {
-        const test = (async () => {
-            const {data, cancel} = Api.cancelableRequest(Api.getServiceOrder, "SV2112120379@@1");
-            console.log(data, cancel);
-            const d = await data;
-            console.log(d);
-        })()
-    }, []);
 
     return (
         <div className="App app-container">

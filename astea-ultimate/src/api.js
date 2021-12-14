@@ -15,11 +15,11 @@ class Api {
         * @param {function} cancel - The cancel callback.
         * @returns {promise, cancel} - An object containing the promise and the cancel function.
     */
-    static cancelableRequest(callback, ...params) {
+    static req(callback, ...params) {
         const cancelTokenSource = axios.CancelToken.source();
-        const promise = callback(...params, cancelTokenSource.token);
+        const data = callback(...params, cancelTokenSource.token);
         const cancel = cancelTokenSource.cancel;
-        return { promise, cancel }
+        return { data, cancel }
     }
 
     /** Returns a cancelable promise to retrieve a service order. 
@@ -61,8 +61,26 @@ class Api {
     /** Log the user out. Returns true if successful. */
     static async logout() {
         const resp = await axios.post("/auth/logout");
-        if (resp.success) return true;
+        if (resp.data.success) return true;
         return false;
+    }
+
+    /** Log the user in. Returns sessionId if successful, undefined if not. Sets a JWT cookie. */
+    static async login(username, password, cancelToken = null) {
+        const resp = await axios.post("/auth/login",
+            { username, password },
+            { cancelToken }
+        );
+        //Login returns {success, sessionID} if successful. 
+        //TODO should return username as well.
+        if (resp.data.success)
+            return { sessionId: resp.data.sessionID }; //TODO sessionID should be sessionId
+        else return;
+    }
+
+    static async validateSession(){
+        const resp = await axios.get("/auth/ValidateSession");
+        return resp.data.success;
     }
 }
 

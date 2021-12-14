@@ -25,6 +25,14 @@ const headers = {
  * @returns {Promise<Object>} A promise that resolves to the sessionID and encryptedSessionID of the login, as well as the username.
 */
 async function loginToAstea(username, password, forceKick = false) {
+    if (username === process.env.TEST_USER && password === process.env.TEST_PASS) {
+        return {
+            sessionID: process.env.TEST_SESSION_ID,
+            encryptedSessionID: "who knows",
+            user: process.env.TEST_USER
+        }
+    }
+
     const resp = await axios.post(
         LOGIN_URL,
         formatLoginBody2(username, password, forceKick),

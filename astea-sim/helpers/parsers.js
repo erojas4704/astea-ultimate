@@ -39,6 +39,7 @@ function searchResultsToAsteaGibberish(results) {
                 </RetrieveXMLExtResponse>
             </s:Body>
         </s:Envelope>`;
+
     return body;
 }
 //TODO include node in the order
@@ -52,8 +53,8 @@ function serviceOrderToXML(order) {
     <is_in_history dt:dt="string">${order.inHistory || "N"}</is_in_history>
     <node_id dt:dt="string">145</node_id>
     <open_date dt:dt="string">${order.createdAt || ""}</open_date>
-    <caller_name dt:dt="string">${order.caller.name || ""}</caller_name>
-    <caller_person_id dt:dt="string">${order.caller.id || ""}</caller_person_id>
+    <caller_name dt:dt="string">${order.customer.name || ""}</caller_name>
+    <caller_person_id dt:dt="string">${order.customer.id || ""}</caller_person_id>
     <actgr_id dt:dt="string">${toActionGroupID(order.actionGroup) || ""}</actgr_id>
     <order_stat_uniq_id dt:dt="int">${order.statusID || ""}</order_stat_uniq_id>
     <order_stat_descr dt:dt="string">${order.status || ""}</order_stat_descr>

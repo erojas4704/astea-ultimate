@@ -28,9 +28,13 @@ const getAllXMLServiceOrders = async () => {
     const svList = await readdir(rawDirectory);
     let promises = svList.map(async sv => {
         let data = await readFile(`${rawDirectory}/${sv}`, 'utf8',);
-        const json = await parseXMLToJSON(data);
-
-        return parseServiceOrderData(json.main[0].row[0]);
+        try {
+            const json = await parseXMLToJSON(data);
+            return parseServiceOrderData(json.root.main[0].row[0]);
+        } catch (e) {
+            console.error(`Error parsing ${sv}`);
+            return null;
+        }
     });
     const results = await Promise.all(promises);
     const orders = {};

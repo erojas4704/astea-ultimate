@@ -10,9 +10,11 @@ const LoginView = (props) => {
     const isLoggedIn = useSelector(state => state.auth.sessionId !== null);
 
     useEffect(() => {
-        dispatch(cancelLogin()); //Cancel the login on mount
+        if (auth.loading) //TODO use "pending" as the terminology
+            dispatch(cancelLogin()); //Cancel the login on mount
         return () => {
-            dispatch(cancelLogin()); //Cancel the login on unmount
+            if (auth.loading)
+                dispatch(cancelLogin()); //Cancel the login on unmount
         }
     }, [dispatch]);
 

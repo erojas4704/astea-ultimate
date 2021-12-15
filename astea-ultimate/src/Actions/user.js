@@ -4,13 +4,9 @@ import { USER_LOGIN_FAIL, USER_LOGIN_START, USER_LOGIN_SUCCESS, USER_LOGOUT_FAIL
 export function loginUser({ username, password }) {
     return async dispatch => {
         try {
-            console.log("GOT USERNAME AND PASSWORD", username, password);
             const { promise, cancel } = Api.req(Api.login, username, password);
             dispatch({ type: USER_LOGIN_START, payload: { cancel } });
             const data = await promise;
-
-            console.log(promise);
-            console.log(data);
 
             if (data.sessionId) {
                 dispatch({

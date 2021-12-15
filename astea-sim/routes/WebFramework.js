@@ -6,7 +6,7 @@ const fs = require('fs').promises;
 const { extractLoginDataFromJSON, extractSearchCriteriaFromJSON, sanitizeXMLString, extractFromAsteaQuery, searchResultsToAsteaGibberish, extractMacroFromJSON } = require('../helpers/parsers');
 const { loginToAstea } = require('../auth/auth');
 const forFakeDelay = require('../helpers/fakeDelay');
-const { getAllServiceOrders } = require('../astea/sv');
+const { getAllServiceOrders, getAllXMLServiceOrders } = require('../astea/sv');
 
 const asteaMacros = {
     "service_request_maint": getServiceOrder
@@ -14,11 +14,12 @@ const asteaMacros = {
 
 router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res) => {
     const json = await parseXMLToJSON(req.body.xmlRequest);
+    const jsonParameters = await parseXMLToJSON(req.body.macroParameters);
     const macro = extractMacroFromJSON(json);
     console.log(`Executing macro ${macro}`);
-    asteaMacros[macro]();
+    const data = await asteaMacros[macro](jsonParameters);
 
-    return res.json(req.body);
+    return res.send(data);
 });
 
 router.post(`/SecurityManager.svc/dotnet`, async (req, res) => {
@@ -48,7 +49,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             const XMLCriteria = extractSearchCriteriaFromJSON(json);
             const query = XMLCriteria["Find"][0]["$"]["where_cond1"];
             const { actionGroup, id, name, tag, serial, status } = extractFromAsteaQuery(query);
-            const serviceOrders = await getAllServiceOrders();
+            const serviceOrders = await getAllXMLServiceOrders();
             const filtered = [];
             Object.values(serviceOrders).forEach(serviceOrder => {
                 if (

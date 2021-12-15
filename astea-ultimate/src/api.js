@@ -72,7 +72,6 @@ class Api {
             { cancelToken }
         );
 
-        console.log("LOGIN CALLED DUDE ", resp);
         //Login returns {success, sessionID} if successful. 
         //TODO should return username as well.
         if (resp.data.success)

@@ -9,7 +9,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 function render(ui, {
     preloadedState,
-    store = createStore(rootReducer, preloadedState, applyMiddleware(thunk)), //TODO figure out how to to preloaded state
+    store = createStore(rootReducer, preloadedState, applyMiddleware(thunk)), //TODO figure out how to do preloaded state
     ...renderOptions
 } = {}) {
     function Wrapper({ children }) {

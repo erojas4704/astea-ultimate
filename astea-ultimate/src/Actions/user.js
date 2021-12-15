@@ -4,10 +4,12 @@ import { USER_LOGIN_FAIL, USER_LOGIN_START, USER_LOGIN_SUCCESS, USER_LOGOUT_FAIL
 export function loginUser({ username, password }) {
     return async dispatch => {
         try {
-            const { promise, cancel } = Api.req(loginUser, username, password);
+            const { promise, cancel } = Api.req(Api.login, username, password);
             dispatch({ type: USER_LOGIN_START, payload: { cancel } });
-
             const data = await promise;
+
+            console.log(promise);
+            console.log(data);
 
             if (data.sessionId) {
                 dispatch({
@@ -16,9 +18,10 @@ export function loginUser({ username, password }) {
                 });
             } else throw new Error(data);
         } catch (err) {
+            console.error(err);
             dispatch({
                 type: USER_LOGIN_FAIL,
-                payload: err.response.data.error.message //TODO more standardized error messages that aren't A$$.
+                payload: err.message //TODO more standardized error messages that aren't A$$.
             });
         }
     }

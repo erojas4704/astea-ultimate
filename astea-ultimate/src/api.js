@@ -17,9 +17,9 @@ class Api {
     */
     static req(callback, ...params) {
         const cancelTokenSource = axios.CancelToken.source();
-        const data = callback(...params, cancelTokenSource.token);
+        const promise = callback(...params, cancelTokenSource.token);
         const cancel = cancelTokenSource.cancel;
-        return { data, cancel }
+        return { promise, cancel }
     }
 
     /** Returns a cancelable promise to retrieve a service order. 
@@ -71,6 +71,8 @@ class Api {
             { username, password },
             { cancelToken }
         );
+
+        console.log("LOGIN CALLED DUDE ", resp);
         //Login returns {success, sessionID} if successful. 
         //TODO should return username as well.
         if (resp.data.success)

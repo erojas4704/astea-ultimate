@@ -3,6 +3,9 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import LoginView from './LoginView';
 import { render } from './test-utils';
+import { createMemoryHistory } from 'history';
+import axios from 'axios';
+import { MemoryRouter } from 'react-router-dom';
 
 describe("login page rendering", () => {
     it("renders properly", () => {
@@ -23,13 +26,16 @@ describe("login page rendering", () => {
 
 describe("login page behavior", () => {
     it("should allow the user to log in successfully.", async () => {
-        jest.spyOn(window, 'fetch').mockImplementationOnce(() => {
+        jest.spyOn(axios, 'post').mockImplementationOnce(() => {
             return Promise.resolve({
-                sessionID: "666666"
+                data: {
+                    sessionID: "666666",
+                    success: true
+                }
             });
         });
 
-        const { getByTestId, getByText, getByLabelText } = render(<LoginView />);
+        const { getByTestId, getByText, getByLabelText } = render(<LoginView />, { includeRouter: true });
 
         await act(async () => {
             fireEvent.change(getByLabelText(/username/i), {
@@ -46,5 +52,6 @@ describe("login page behavior", () => {
             fireEvent.submit(getByTestId("login-form"));
         });
 
+        expect(getByText(/locator/i)).toBeInTheDocument();
     });
 });

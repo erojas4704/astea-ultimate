@@ -5,6 +5,7 @@ import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 
 import rootReducer from "../reducers/rootReducer";
+import { BrowserRouter as Router } from "react-router-dom";
 
 function render(ui, {
     preloadedState,
@@ -12,7 +13,18 @@ function render(ui, {
     ...renderOptions
 } = {}) {
     function Wrapper({ children }) {
-        return <Provider store={store}>{children}</Provider>
+        if (renderOptions.includeRouter) {
+            return (
+                <Provider store={store}>
+                    <Router>
+                        {children}
+                    </Router>
+                </Provider>
+            )
+        }
+        return (
+            <Provider store={store}>{children}</Provider>
+        )
     }
     return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
 }

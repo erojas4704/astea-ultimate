@@ -19,11 +19,10 @@ const useServiceOrder = (id, props) => {
         }
     );
 
-    let serviceOrder = response ? response.data : getLocalServiceOrder(local, props, id);
+    let serviceOrder = response ? response : getLocalServiceOrder(local, props, id);
     if (response) {
-        debugger;
-        response.data.cachedAt = new Date();
-        localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response.data)); //TODO make service order model and update it there.
+        response.cachedAt = new Date();
+        localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response)); //TODO make service order model and update it there.
     }
 
 

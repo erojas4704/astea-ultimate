@@ -65,6 +65,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             });
 
             const xmlResult = searchResultsToAsteaGibberish(filtered);
+            
 
             return res.send(xmlResult);
         }

@@ -49,7 +49,7 @@ function parseServiceOrderData(data) {
                 }
             }
             if (fieldName === "customer") {
-                if (!value.name) debugger;
+                //if (!value.name) debugger;
                 console.log(fieldName, value);
             }
             result[fieldName] = value

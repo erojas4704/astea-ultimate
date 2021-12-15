@@ -16,7 +16,6 @@ const ServiceOrder = (props) => {
     const { technicians, isLoadingTechnicians } = useTechnicians();
     const { serviceOrder, isLoading } = useServiceOrder(id, props);
 
-    console.log(technicians);
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>
             <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}</div>

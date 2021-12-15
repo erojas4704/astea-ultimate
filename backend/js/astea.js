@@ -245,6 +245,24 @@ async function parseErrorMessage(data) {
     return parseErrorCode(messageJSON.root.MessageAsteaCode);
 }
 
+async function assignTechnician(id, session, technicianId) {
+    const svResp = await retrieveSV(id, false, session, true);
+    const { sessionId } = session;
+    const { stateId, hostName } = svResp.serviceOrder.metadata;
+
+    await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt?${hostName}`,
+        {
+            "stateId": stateId,
+            "sessionId": sessionId,
+            "macroName": "",
+            "bcName": "ServiceOrder",
+            "boAlias": "",
+            "macroParameters": "",
+            
+        },
+        { headers });
+}
+
 async function createInteraction(id, session, message) {
     const svResp = await retrieveSV(id, false, session, true); //Open a new State
     const { sessionID } = session;

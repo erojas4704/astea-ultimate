@@ -141,15 +141,15 @@ async function orderLocatorSearch(session, criteria) {
     );
 
     const json = await parseXMLToJSON(resp.data);
-    try{
-    const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
-    const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
-    const resultsJSON = await parseXMLToJSON(resultsXML);
-    const serviceOrders = await extractFromResults(resultsJSON);
-    Search.create(criteria, serviceOrders); //Search caching
+    try {
+        const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
+        const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
+        const resultsJSON = await parseXMLToJSON(resultsXML);
+        const serviceOrders = await extractFromResults(resultsJSON);
+        Search.create(criteria, serviceOrders); //Search caching
 
-    return serviceOrders;
-    }catch(err){
+        return serviceOrders;
+    } catch (err) {
         console.log(`Error in parsing order locator search results: ${err}`);
         console.log(json);
         throw err;
@@ -192,6 +192,7 @@ async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO f
         formatExecuteMacroBody("retrieve", isInHistory, sessionID, id),
         { headers }
     ); //Execute Astea Macro retrieve
+
 
     if (resp.data.ExceptionDetail) {
         if (isInHistory) {

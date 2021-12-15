@@ -8,6 +8,7 @@ import useTechnicians from "../hooks/useTechnicians";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import InteractionsView from "./InteractionsView";
 import MaterialsView from "./MaterialsView";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ServiceOrder = (props) => {
     const params = useParams();
@@ -15,6 +16,7 @@ const ServiceOrder = (props) => {
     const { technicians, isLoadingTechnicians } = useTechnicians();
     const { serviceOrder, isLoading } = useServiceOrder(id, props);
 
+    console.log(technicians);
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>
             <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}</div>
@@ -35,10 +37,13 @@ const ServiceOrder = (props) => {
                         <div className="order-row form-inline">
                             <div className="form-group form-inline">
                                 <label htmlFor="select-tech" className="label">Technician</label>
-                                <select id="select-tech" className="" defaultValue="" disabled={isLoadingTechnicians}>
+
+                                {technicians? 
+                                <select id="select-tech" value={serviceOrder.technician?.id} className="" defaultValue="" disabled={isLoadingTechnicians}>
                                     <option value="">Unassigned</option>
-                                    {technicians && technicians.map(technician => <option key={technician.id} value={technician.id} selected={technician.id === serviceOrder.technician.id}>{technician.name}</option>)}
-                                </select>
+                                    {technicians.map(technician =>  <option key={technician.id} value={technician.id}>{technician.name}</option>)}
+                                </select> :
+                                <LoadingSpinner />}
                             </div>
                         </div>
                         <div className="divider" />

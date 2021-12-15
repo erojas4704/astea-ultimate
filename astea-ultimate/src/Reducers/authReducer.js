@@ -27,7 +27,7 @@ export default function authReducer(state = DEFAULT_STATE, action) {
             return {
                 ...state,
                 loading: false,
-                sessionId: action.payload.sessionID,
+                sessionId: action.payload.sessionId,
                 encryptedSessionId: action.payload.encryptedSessionID,
                 accessLevel: action.payload.accessLevel,
                 username: action.payload.username

@@ -49,7 +49,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             const XMLCriteria = extractSearchCriteriaFromJSON(json);
             const query = XMLCriteria["Find"][0]["$"]["where_cond1"];
             const { actionGroup, id, name, tag, serial, status } = extractFromAsteaQuery(query);
-            const serviceOrders = await getAllXMLServiceOrders();
+            const serviceOrders = await getAllXMLServiceOrders();//
             const filtered = [];
             Object.values(serviceOrders).forEach(serviceOrder => {
                 if (

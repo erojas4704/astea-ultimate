@@ -19,8 +19,7 @@ const InteractionsView = ({ serviceOrder }) => {
         setNewInteractionText("");
         setAddingInteraction(false);
         setPostingInteraction(false);
-        console.log("Service order changed for interaction ", serviceOrder.id, "interactions " + (interactions?.length || 0), "interactions in order " + serviceOrder.interactions?.length);
-
+        
     }, [serviceOrder]);
 
     const addBlankInteraction = () => {

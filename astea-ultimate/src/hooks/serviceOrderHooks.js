@@ -1,25 +1,27 @@
 //TODO Sometimes orders overwrite the wrong order in localStorage. This is really bad.
-import axios from "axios";
 import { useEffect, useRef } from "react";
 import useAsync from "./useAsync";
 import { getAgeInMinutes } from "../helpers/ServiceOrderUtils";
+import Api from "../api";
+import axios from "axios";
 
 const useServiceOrder = (id, props) => {
-    let cancelTokenSource = useRef();
+    let cancelRef = useRef();
     const local = localStorage.getItem(`serviceOrder-${id}`) ? JSON.parse(localStorage.getItem(`serviceOrder-${id}`)) : null;
 
     const { execute, response, error, loading } = useAsync(
         () => {
-            console.log(`Loading service order ${id}`, shouldLoadServiceOrder(serviceOrder, id, local));
-            cancelTokenSource.current = axios.CancelToken.source();
+            const { promise, cancel } = Api.req(Api.getServiceOrder, id);
+            cancelRef.current = cancel;
             if (shouldLoadServiceOrder(serviceOrder, id, local))
-                return axios.get('/ServiceOrder', { params: { id }, cancelToken: cancelTokenSource.current.token });
-            else return new Promise((r, x) => r()); //TODO ugly hack. Fix it.
+                return promise;
+            else return Promise.resolve(); //Returns empty promise if we shouldn't load a service order //TODO ugly hack. Fix it.
         }
     );
 
     let serviceOrder = response ? response.data : getLocalServiceOrder(local, props, id);
     if (response) {
+        debugger;
         response.data.cachedAt = new Date();
         localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(response.data)); //TODO make service order model and update it there.
     }
@@ -30,7 +32,8 @@ const useServiceOrder = (id, props) => {
         if(id !== serviceOrder?.id) serviceOrder = null;
         execute(); 
         return () => {
-            cancelTokenSource.current.cancel();
+            //On dismount, cancel loading the SV
+            cancelRef.current();
         }
     }, [id]);
     return { serviceOrder, isLoading: loading, error };

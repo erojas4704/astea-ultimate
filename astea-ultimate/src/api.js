@@ -1,11 +1,16 @@
 import axios from "axios";
+import { store } from "./store";
+import { logoutUser } from "./actions/user";
 
-axios.interceptors.response.use(async response => {
-    if (response.status === "401" || response.status === "403") {
+axios.interceptors.response.use(response => response, async error => {
+    console.log(error, error.response.status);
+    if (error.response.status === 401 || error.response.status === 403) {
         //Handle unauthorized
+        console.error("Unauthorized. Logging out.");
+        store.dispatch(logoutUser());
         await Api.logout(); //TODO reauth
     }
-    return response;
+    return error;
 });
 
 class Api {
@@ -79,7 +84,7 @@ class Api {
         else return;
     }
 
-    static async validateSession(){
+    static async validateSession() {
         const resp = await axios.get("/auth/ValidateSession");
         return resp.data.success;
     }

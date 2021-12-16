@@ -245,22 +245,33 @@ async function parseErrorMessage(data) {
     return parseErrorCode(messageJSON.root.MessageAsteaCode);
 }
 
+//TODO might be able to make a generic function for editing service orders.
 async function assignTechnician(id, session, technicianId) {
     const svResp = await retrieveSV(id, false, session, true);
-    const { sessionId } = session;
-    const { stateId, hostName } = svResp.serviceOrder.metadata;
+    const { sessionID } = session;
+    const { stateID, hostName } = svResp.serviceOrder.metadata;
 
-    await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt?${hostName}`,
+    const resp = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?${hostName}`,
         {
-            "stateId": stateId,
-            "sessionId": sessionId,
+            "stateId": stateID,
+            "sessionId": sessionID,
             "macroName": "",
-            "bcName": "ServiceOrder",
-            "boAlias": "",
-            "macroParameters": "",
-            
+            "bcName": "Service_Order",
+            "boAlias": "main",
+            "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>",
+            "updateStateXml": `<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"><main><row status=\"8\" number=\"1\" serverStatus=\"0\" attachmentsNum=\"0\" primaryTable=\"order_line\"><sa_person_id status=\"8\" len=\"30\">${technicianId}</sa_person_id></row></main></root>\r\n`,
+            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateID}'><BO alias='main'></BO><BO alias='demand_material'></BO><BO alias='demand_labor'></BO><BO alias='demand_tool'></BO><BO alias='demand_availability'></BO></GetCurrentState></root>`,
+            "requestStateXPathFilter": "",
+            "saveState": true,
+            "closeState": true,
+            "moduleName": "service_order_maint"
         },
-        { headers });
+        { headers }
+    );
+    
+    const json = await parseXMLToJSON(resp.data['d']);
+    const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //TODO we're refactoring all of this.
+    return serviceOrder;
 }
 
 async function createInteraction(id, session, message) {
@@ -421,4 +432,4 @@ function getOrderMetadata(json) {
     }
 }
 
-module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup, getInteractions, getMaterials, createInteraction };
+module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup, getInteractions, getMaterials, createInteraction, assignTechnician };

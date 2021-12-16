@@ -84,6 +84,22 @@ class Api {
         else return;
     }
 
+    /**
+     * Assigns a technician to a service order.
+     * @param {string} orderId The service order id.
+     * @param {string} technicianId The technician id.
+     */
+    static async assignTechnician(orderId, technicianId) {
+        //const cancelToken = arguments[arguments.length-1] //TODO consider using this
+        //TODO more robust error handling
+        const resp = await axios.patch(`/ServiceOrder/${orderId}/assign`,
+            { technicianId }
+        );
+
+        //Will get a new version of the service order.
+        return resp.data;
+    }
+
     static async validateSession() {
         const resp = await axios.get("/auth/ValidateSession");
         return resp.data.success;

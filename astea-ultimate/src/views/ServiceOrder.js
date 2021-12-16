@@ -9,12 +9,29 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import InteractionsView from "./InteractionsView";
 import MaterialsView from "./MaterialsView";
 import LoadingSpinner from "../components/LoadingSpinner";
+import useAsync from "../hooks/useAsync";
+import Api from "../api";
+import { useState } from "react";
 
 const ServiceOrder = (props) => {
     const params = useParams();
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
     const { serviceOrder, isLoading } = useServiceOrder(id, props);
+    const [toTechnician, setToTechnician] = useState(null);
+    const { execute: assignTechnician,
+        loading: assignPending,
+        response: assignResponse
+    } = useAsync(async () => {
+        return (await Api.assignTechnician(id, toTechnician))
+    });
+
+    const handleTechnicianChange = (event) => {
+        const technicianId = event.target.value;
+        props.onTechnicianChange(technicianId);
+        setToTechnician(technicianId);
+        assignTechnician();
+    }
 
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>
@@ -37,12 +54,12 @@ const ServiceOrder = (props) => {
                             <div className="form-group form-inline">
                                 <label htmlFor="select-tech" className="label">Technician</label>
 
-                                {technicians? 
-                                <select id="select-tech" value={serviceOrder.technician?.id} className="" defaultValue="" disabled={isLoadingTechnicians}>
-                                    <option value="">Unassigned</option>
-                                    {technicians.map(technician =>  <option key={technician.id} value={technician.id}>{technician.name}</option>)}
-                                </select> :
-                                <LoadingSpinner />}
+                                {technicians ?
+                                    <select id="select-tech" onChange={handleTechnicianChange} value={serviceOrder.technician?.id} className="" defaultValue="" disabled={isLoadingTechnicians}>
+                                        <option value="">Unassigned</option>
+                                        {technicians.map(technician => <option key={technician.id} value={technician.id}>{technician.name}</option>)}
+                                    </select> :
+                                    <LoadingSpinner />}
                             </div>
                         </div>
                         <div className="divider" />

@@ -100,6 +100,21 @@ class Api {
         return resp.data;
     }
 
+    static async addAudit(id, location, name, status){
+        const resp = await axios.post(`/Audit`, {
+            id,
+            location,
+            status,
+            name
+        });
+        return resp.data;
+    }
+
+    /**
+     * Makes sure the current login session is still valid.
+     * Returns true if so.
+     * @returns {boolean} True if the session is valid.
+     */
     static async validateSession() {
         const resp = await axios.get("/auth/ValidateSession");
         return resp.data.success;

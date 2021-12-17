@@ -11,5 +11,4 @@ Technician.init({
     modelName: "Technician"
 });
 
-
 module.exports = Technician;

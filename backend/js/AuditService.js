@@ -1,17 +1,20 @@
 const Audit = require('../models/audit');
+
 class AuditService {
-    async create(data) {
+    static async create(data) {
         //TODO error handling and validation too
         const audit = await Audit.create({
-            name: req.body.name,
-            date: new Date(),
-            order_id: req.body.orderId,
-            technician_id: req.body.technicianId
+            name: data.name,
+            order_id: data.id,
+            location: data.location,
+            technician_id: data.technicianId || "erojas1"
+        }).catch(err => {
+            console.log(err);
         });
         return audit;
     }
 
-    async getByName(name) {
+    static async getByName(name) {
         const audits = await Audit.findAll({
             where: {
                 name: name
@@ -20,7 +23,7 @@ class AuditService {
         return audits;
     }
 
-    async getByOrderId(orderId) {
+    static async getByOrderId(orderId) {
         const audits = await Audit.findAll({
             where: {
                 order_id: orderId

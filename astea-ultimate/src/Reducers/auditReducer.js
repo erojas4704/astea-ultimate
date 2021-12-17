@@ -21,6 +21,7 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
                 loading: false,
                 error: null,
                 date: new Date(),
+                name: action.payload.name,
                 orders: action.payload.orders
             }
         case AUDIT_ADD:

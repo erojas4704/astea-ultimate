@@ -5,10 +5,10 @@ const svRoutes = require("./routes/ServiceOrderRoutes.js");
 const customerRoutes = require("./routes/CustomerRoutes.js");
 const technicianRoutes = require("./routes/TechnicianRoutes.js");
 const authRoutes = require("./routes/auth.js");
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const audit = require("./routes/audit.js");
 
 const app = express();
-
 module.exports = app;
 
 //Middleware
@@ -19,6 +19,7 @@ app.use(cookieParser());
 //Routes
 app.use("/Customer", customerRoutes);
 app.use("/ServiceOrder", svRoutes);
+app.use("/Audit", audit);
 app.use("/Technician", technicianRoutes);
 app.use("/auth", authRoutes);
 

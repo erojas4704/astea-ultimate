@@ -1,5 +1,6 @@
 "use strict";
 const AuditService = require("../js/AuditService");
+const express = require("express");
 
 require("dotenv").config();
 const router = new express.Router();
@@ -7,6 +8,7 @@ const router = new express.Router();
 router.post("/", async (req, res, next) => {
     //Create new audit
     const audit = await AuditService.create(req.body);
+    console.log(req.body);
     return res.json(audit);
 });
 

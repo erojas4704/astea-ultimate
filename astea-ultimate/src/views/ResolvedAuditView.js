@@ -8,13 +8,7 @@ import useScanner from "../hooks/useScanner";
 import { findOrderById } from "../helpers/ServiceOrderUtils";
 import AuditTableRow from "../components/AuditTableRow";
 import { FOUND } from "../actions/auditTypes";
-
-
-const sameDay = (a, b) => {
-    if (moment(a).isSame(b, 'day'))
-        return true;
-    return false;
-}
+import { sameDay } from "../helpers/DateUtils";
 
 //TODO needs to be simplified
 export default function ResolvedAuditView() {
@@ -43,11 +37,11 @@ export default function ResolvedAuditView() {
 
     useEffect(() => {
         if (!sameDay(audit.date, new Date())) {
-            console.log("Audit date is not today. Discarding old audit.");
+            console.log("Audit date is not today. Discarding old audit."); //TODO this makes the audit reset at midnight, which is not ideal.
             if (resolvedOrders.length === 0)
                 getResolvedOrders();
             else
-                dispatch(createNewAudit(resolvedOrders));
+                dispatch(createNewAudit(resolvedOrders, `Audit_${moment().format("MM/DD/YY")}`));
         }
     }, [dispatch, audit.date, resolvedOrders, getResolvedOrders])
 

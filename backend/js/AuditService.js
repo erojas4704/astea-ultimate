@@ -2,8 +2,26 @@ const { Op } = require('sequelize/dist');
 const Audit = require('../models/audit');
 
 class AuditService {
-    static async create(data) {
+    static async addAudit(data) {
         //TODO error handling and validation too
+        const existing = await Audit.findOne({
+            where: {
+                [Op.and]: [
+                    { name: data.name },
+                    { order_id: data.id }
+                ]
+            }
+        });
+
+        if (existing) {
+            existing.set({
+                location: data.location,
+                status: data.status,
+                order_id: data.id
+            });
+            await existing.save();
+            return existing;
+        }
         const audit = await Audit.create({
             name: data.name,
             order_id: data.id,
@@ -30,9 +48,7 @@ class AuditService {
             where: {
                 order_id: { [Op.like]: `${orderId}%` }
             }
-        }).catch(err => {
-            console.log(err);
-        });;
+        });
         return audits;
     }
 }

@@ -7,7 +7,7 @@ const router = new express.Router();
 
 router.post("/", async (req, res, next) => {
     //Create new audit
-    const audit = await AuditService.create(req.body);
+    const audit = await AuditService.addAudit(req.body);
     console.log(req.body);
     return res.json(audit);
 });

@@ -111,6 +111,26 @@ class Api {
     }
 
     /**
+     * Gets the audits for a given order id.
+     * @param {string} id Service Order ID.
+     * @returns {array} An array of audits for the order.
+     */
+    static async getAuditsForOrder(id){
+        const resp = await axios.get(`/Audit/order/${id}`);
+        return resp.data;
+    }
+
+    /**
+     * Gets the audits for a given audit name.
+     * @param {string} name 
+     * @returns {array} An array of audits under that name.
+     */
+    static async getAuditByName(name){
+        const resp = await axios.get(`/Audit/${name}`);
+        return resp.data;
+    }
+
+    /**
      * Makes sure the current login session is still valid.
      * Returns true if so.
      * @returns {boolean} True if the session is valid.

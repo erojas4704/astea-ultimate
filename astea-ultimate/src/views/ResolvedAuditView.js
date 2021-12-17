@@ -16,15 +16,8 @@ export default function ResolvedAuditView() {
     const dispatch = useDispatch();
     const [form, setForm] = useState({ id: "", location: "" });
     const audit = useSelector(state => state.audit);
-
     const scan = useScanner();
 
-    useEffect(() => {
-        ( async () => {
-            const audits = await Api.getAuditsForOrder("SV2112020102");
-            console.log(audits);
-        })();
-    });
 
     useEffect(() => {
         if (scan) {

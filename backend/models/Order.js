@@ -6,7 +6,6 @@ class Order extends Model { }
 Order.init({
     id: { type: DataTypes.STRING, primaryKey: true, unique: true },
     open_date: { type: DataTypes.DATE, allowNull: false },
-    cache_date: { type: DataTypes.DATE, allowNull: false },
     is_in_history: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     serial_number: { type: DataTypes.STRING, allowNull: true },
     status_id: { type: DataTypes.INTEGER, allowNull: false },

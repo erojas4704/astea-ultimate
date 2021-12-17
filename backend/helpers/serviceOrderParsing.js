@@ -48,10 +48,10 @@ function parseServiceOrderData(data) {
                     value = obj;
                 }
             }
-            if (fieldName === "customer") {
+            //if (fieldName === "customer") {
                 //if (!value.name) debugger;
-                console.log(fieldName, value);
-            }
+            //    console.log(fieldName, value);
+            //}
             result[fieldName] = value
         }
     }

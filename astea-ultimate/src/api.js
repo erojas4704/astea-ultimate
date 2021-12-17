@@ -100,7 +100,7 @@ class Api {
         return resp.data;
     }
 
-    static async addAudit(id, location, name, status){
+    static async addAudit(id, location, name, status="SD"){
         const resp = await axios.post(`/Audit`, {
             id,
             location,

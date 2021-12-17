@@ -9,6 +9,7 @@ import { findOrderById } from "../helpers/ServiceOrderUtils";
 import AuditTableRow from "../components/AuditTableRow";
 import { FOUND } from "../actions/auditTypes";
 import { sameDay } from "../helpers/DateUtils";
+import Api from "../api";
 
 //TODO needs to be simplified
 export default function ResolvedAuditView() {
@@ -19,12 +20,19 @@ export default function ResolvedAuditView() {
     const scan = useScanner();
 
     useEffect(() => {
+        ( async () => {
+            const audits = await Api.getAuditsForOrder("SV2112020102");
+            console.log(audits);
+        })();
+    });
+
+    useEffect(() => {
         if (scan) {
             console.log("Scan went");
             if (scan.length <= 4)
                 setForm(form => ({ ...form, location: scan }));
             else
-                dispatch(updateAuditOrder(scan, form.location));
+                dispatch(updateAuditOrder(scan, form.location, audit.name));
         }
     }, [scan, dispatch, form.location]);
 
@@ -55,9 +63,9 @@ export default function ResolvedAuditView() {
                 const location = form.location || "SD";
                 //TODO extract method
                 if(audit.orders.find(findOrderById(id))){
-                    dispatch(updateAuditOrder(id, form.location, FOUND));
+                    dispatch(updateAuditOrder(id, location, audit.name, FOUND));
                 }else{
-                    dispatch(addToAudit(id, form.location));
+                    dispatch(addToAudit(id, location));
                 }
             }
         }
@@ -70,7 +78,7 @@ export default function ResolvedAuditView() {
     const submitForm = (id, location) => {
         if (location === "") location = "SD";
         if(audit.orders.find(findOrderById(id))){
-            dispatch(updateAuditOrder(id, location, FOUND));
+            dispatch(updateAuditOrder(id, location, audit.name, FOUND));
         }else{
             dispatch(addToAudit(id, location));
         }

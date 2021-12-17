@@ -7,6 +7,7 @@ Audit.init({
     name: { type: DataTypes.STRING, allowNull: false },
     location: { type: DataTypes.STRING, allowNull: false },
     order_id: { type: DataTypes.STRING, allowNull: false },
+    status: { type: DataTypes.INTEGER, defaultValue: 0},
     technician_id: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -20,5 +21,7 @@ Audit.init({
     sequelize,
     modelName: "Audit"
 });
+
+// Audit.sync({ force: true });
 
 module.exports = Audit;

@@ -3,8 +3,8 @@ import { AUDIT_ADD, AUDIT_NEW, AUDIT_ORDER_LOAD, AUDIT_ORDER_LOAD_FAIL as AUDIT_
 import { getPureId } from "../helpers/ServiceOrderUtils";
 import Api from "../api";
 
-export function updateAuditOrder(id, location, name, status) {
-    Api.addAudit(id, location, name, status); //TODO maybe add status?
+export function updateAuditOrder(id, location, name, status = 0) {
+    Api.addAudit(id, location, name, status);
     return {
         type: AUDIT_UPDATE,
         payload: {

@@ -1,3 +1,4 @@
+const { Op } = require('sequelize/dist');
 const Audit = require('../models/audit');
 
 class AuditService {
@@ -7,15 +8,15 @@ class AuditService {
             name: data.name,
             order_id: data.id,
             location: data.location,
+            status: data.status,
             technician_id: data.technicianId || "erojas1"
-        }).catch(err => {
-            console.log(err);
         });
         return audit;
     }
 
     static async getByName(name) {
         const audits = await Audit.findAll({
+            attributes: ['id', 'name', 'location', 'status', 'order_id', 'createdAt'],
             where: {
                 name: name
             }
@@ -25,10 +26,14 @@ class AuditService {
 
     static async getByOrderId(orderId) {
         const audits = await Audit.findAll({
+            attributes: ['id', 'name', 'location', 'status', 'order_id', 'createdAt'],
             where: {
-                order_id: orderId
+                order_id: { [Op.like]: `${orderId}%` }
             }
-        });
+        }).catch(err => {
+            console.log(err);
+        });;
+        return audits;
     }
 }
 

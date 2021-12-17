@@ -4,11 +4,8 @@ const sequelize = new Sequelize(process.env.DATABASE_URL);
 class Audit extends Model { }
 
 Audit.init({
-    name: { type: DataTypes.STRING, allowNull: false },
-    location: { type: DataTypes.STRING, allowNull: false },
-    order_id: { type: DataTypes.STRING, allowNull: false },
-    status: { type: DataTypes.INTEGER, defaultValue: 0},
-    technician_id: {
+    name: { type: DataTypes.STRING, allowNull: false, unique: true },
+    technician_id: { 
         type: DataTypes.STRING,
         allowNull: false,
         references: {
@@ -22,6 +19,5 @@ Audit.init({
     modelName: "Audit"
 });
 
-// Audit.sync({ force: true });
 
 module.exports = Audit;

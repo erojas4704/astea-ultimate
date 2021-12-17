@@ -4,9 +4,9 @@ const sequelize = new Sequelize(process.env.DATABASE_URL);
 class Audit extends Model { }
 
 Audit.init({
-    name: { type: DataTypes.STRING, allowNull: false, },
+    name: { type: DataTypes.STRING, allowNull: false },
     location: { type: DataTypes.STRING, allowNull: false },
-    order_id: {type: DataTypes.STRING, allowNull: false},
+    order_id: { type: DataTypes.STRING, allowNull: false },
     technician_id: {
         type: DataTypes.STRING,
         allowNull: false,

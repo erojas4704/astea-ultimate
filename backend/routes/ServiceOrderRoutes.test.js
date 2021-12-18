@@ -27,7 +27,7 @@ describe("Pulling orders", () => {
         //TODO this only works in the home environment with a fake database
         expect(order.id).toBe("SV0000000000@@0");
         expect(order.customer.name).toMatch(/Testo Magnifico/i);
-        expect(order.status).toBe("invoiced");
+        expect(order.status).toBe("Invoiced");
     });
 
     test("Get order. GET /ServiceOrder/:id", async () => {
@@ -52,6 +52,8 @@ describe("Pulling orders", () => {
         expect(order).toHaveProperty("openDate");
         expect(order).toHaveProperty("customer.name");
         expect(order).toHaveProperty("customer.id");
+        expect(order).toHaveProperty("technician.name");
+        expect(order).toHaveProperty("technician.id");
         expect(order).toHaveProperty("statusId");
         expect(order).toHaveProperty("serialNumber");
         expect(order).toHaveProperty("tag");

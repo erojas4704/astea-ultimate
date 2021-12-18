@@ -22,20 +22,17 @@ router.get("/raw", async (req, res, next) => {
     }
 });
 
-/** Get a service order by ID */
-router.get("/:id", async (req, res, next) => {
-    //TODO use params here instead
-    const { id } = req.params;
-    const { history } = req.query;
+router.get("/search", async (req, res, next) => {
+    const criteria = req.query;
+    // debugger;
     try {
-        const sv = await retrieveSV(id, history === "y", req.session);
-        return res.send(sv.serviceOrder);
+        return res.send(await orderLocatorSearch(req.session, criteria));
     } catch (e) {
-        console.error(e);
         return next(e);
     }
 });
 
+/** Assign technician to service order */
 router.patch("/:id/assign", async (req, res, next) => {
     const { id } = req.params;
     const { technicianId } = req.body;
@@ -48,6 +45,7 @@ router.patch("/:id/assign", async (req, res, next) => {
         return next(err);
     }
 });
+
 
 /** Create a new interaction */
 router.post("/interactions", async (req, res, next) => {
@@ -84,12 +82,16 @@ router.get("/materials", async (req, res, next) => {
     }
 });
 
-router.get("/search", async (req, res, next) => {
-    const criteria = req.query;
-    // debugger;
+/** Get a service order by ID */
+router.get("/:id", async (req, res, next) => {
+    //TODO use params here instead
+    const { id } = req.params;
+    const { history, loadCached } = req.query;
     try {
-        return res.send(await orderLocatorSearch(req.session, criteria));
+        const sv = await retrieveSV(id, history === "y", req.session, loadCached);
+        return res.send(sv.serviceOrder);
     } catch (e) {
+        console.error(e);
         return next(e);
     }
 });

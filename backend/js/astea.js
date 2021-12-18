@@ -81,14 +81,14 @@ function formatXmlRequest(isInHistory) {
     </root>`;
 }
 
-function formatCommandBody(stateID, sessionID, command, isInHistory = false) {
+function formatCommandBody(stateId, sessionID, command, isInHistory = false) {
     return {
-        "stateId": stateID,
+        "stateId": stateId,
         "sessionId": sessionID,
         "bcName": isInHistory ? "Service_Order_History" : "Service_Order",
         "xmlRequest":
             `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'>
-                <GetCurrentState pageName='${isInHistory ? 'service_request_history_maint' : 'service_request_maint'}' stateID='${stateID}'>
+                <GetCurrentState pageName='${isInHistory ? 'service_request_history_maint' : 'service_request_maint'}' stateID='${stateId}'>
                 <BO alias='${command}'></BO>
                 </GetCurrentState>
             </root>`,
@@ -174,23 +174,25 @@ async function extractFromResults(results) {
     return await Promise.all(promises);
 }
 
-async function retrieveSV(id, isInHistory, session, forceNew = false) {
+async function retrieveSV(id, isInHistory, session, forceNew = false, loadCached = false) {
     //TODO function is too long
     //TODO This function should know if it's in history or not and determine that on its own.
     //Astea treats inHistory and out of history orders as completely different objects.
     //This function should be able to handle both.
 
 
-
-    const cached = forceNew ? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
-    if (cached) {
-        console.log(`Found cached service order. Completeness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
-    }
     const sessionID = session.sessionID;
+    if (loadCached) {
+        let cached = forceNew ? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
+        if (cached) {
+            cached = Object.assign(new ServiceOrder, cached);
+            console.log(`Found cached service order. Completeness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
+        }
 
-    if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
-        console.log("Returning cached");
-        return { serviceOrder: cached };
+        if (cached && cached.getAgeInMinutes() < ORDERS_EXPIRE_IN_MINUTES && cached.completeness > 2) {
+            console.log("Returning cached");
+            return { serviceOrder: cached };
+        }
     }
 
     const resp = await axios.post(
@@ -213,7 +215,6 @@ async function retrieveSV(id, isInHistory, session, forceNew = false) {
 
     const json = await interpretMacroResponse(resp.data['d']); //Convert XML response to Json\
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //2 Has just proper SV and metadata. 3 has interactions, materials and proper SV data
-
     serviceOrder.metadata = getOrderMetadata(json); //Get state-id from the JSON
 
     Database.setServiceOrder(id, serviceOrder); //Update the cache
@@ -255,18 +256,18 @@ async function parseErrorMessage(data) {
 async function assignTechnician(id, session, technicianId) {
     const svResp = await retrieveSV(id, false, session, true);
     const { sessionID } = session;
-    const { stateID, hostName } = svResp.serviceOrder.metadata;
+    const { stateId, hostName } = svResp.serviceOrder.metadata;
 
     const resp = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?${hostName}`,
         {
-            "stateId": stateID,
+            "stateId": stateId,
             "sessionId": sessionID,
             "macroName": "",
             "bcName": "Service_Order",
             "boAlias": "main",
             "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>",
             "updateStateXml": `<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"><main><row status=\"8\" number=\"1\" serverStatus=\"0\" attachmentsNum=\"0\" primaryTable=\"order_line\"><sa_person_id status=\"8\" len=\"30\">${technicianId}</sa_person_id></row></main></root>\r\n`,
-            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateID}'><BO alias='main'></BO><BO alias='demand_material'></BO><BO alias='demand_labor'></BO><BO alias='demand_tool'></BO><BO alias='demand_availability'></BO></GetCurrentState></root>`,
+            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateId}'><BO alias='main'></BO><BO alias='demand_material'></BO><BO alias='demand_labor'></BO><BO alias='demand_tool'></BO><BO alias='demand_availability'></BO></GetCurrentState></root>`,
             "requestStateXPathFilter": "",
             "saveState": true,
             "closeState": true,
@@ -283,24 +284,24 @@ async function assignTechnician(id, session, technicianId) {
 async function createInteraction(id, session, message) {
     const svResp = await retrieveSV(id, false, session, true); //Open a new State
     const { sessionID } = session;
-    const { stateID, hostName } = svResp.serviceOrder.metadata;
+    const { stateId, hostName } = svResp.serviceOrder.metadata;
 
     //Need to get interactions first before creating a new one.
     await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/GetStateUIExt?${hostName}`,
-        { "stateId": stateID, "sessionId": sessionID, "bcName": "Service_Order", "xmlRequest": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='service_request_maint' stateID='${stateID}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`, "moduleName": "service_order_maint" },
+        { "stateId": stateId, "sessionId": sessionID, "bcName": "Service_Order", "xmlRequest": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='service_request_maint' stateID='${stateId}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`, "moduleName": "service_order_maint" },
         { headers }
     );
 
     const createBlankInteractionResp = await axios.post(`https://alliance.microcenter.com/AsteaAlliance110/Web_Framework/BCBase.svc/InteractWithServerExt?${hostName}`,
         {
-            "stateId": stateID,
+            "stateId": stateId,
             "sessionId": sessionID,
             "macroName": "new",
             "bcName": "Service_Order",
             "boAlias": "customer_authorization",
             "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>",
             "updateStateXml": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array><value dt:dt='string'></value></array></xml>",
-            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateID}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`,
+            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateId}'><BO alias='customer_authorization'></BO></GetCurrentState></root>`,
             "requestStateXPathFilter": "//customer_authorization/row[last()]",
             "saveState": false,
             "closeState": false,
@@ -319,7 +320,7 @@ async function createInteraction(id, session, message) {
         </s:Header>
         <s:Body>
         <InteractWithServerExt xmlns="http://astea.services.wcf/">
-            <stateId>${stateID}</stateId>
+            <stateId>${stateId}</stateId>
             <sessionId>${sessionID}</sessionId>
             <macroName/>
             <bcName>Service_Order</bcName>
@@ -370,17 +371,18 @@ async function createInteraction(id, session, message) {
 
 async function getInteractions(id, session, isInHistory = false) {
     let serviceOrder = await Database.getServiceOrder(id); ///TODO need current metadata, probably
+    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, cached);
     if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }
 
-    const { stateID, hostName } = serviceOrder.metadata;
+    const { stateId, hostName } = serviceOrder.metadata;
 
     const command = isInHistory ? "customer_authorization_history" : "customer_authorization";
     const resp = await axios.post(
         `${URLCommandBase}/GetStateUIExt?${hostName}`,
-        formatCommandBody(stateID, session.sessionID, command, isInHistory),
+        formatCommandBody(stateId, session.sessionID, command, isInHistory),
         { headers }
     );
 
@@ -395,17 +397,18 @@ async function getInteractions(id, session, isInHistory = false) {
 
 async function getMaterials(id, session, isInHistory = false) { //TODO maybe use existing state instead of opening a new one?
     let serviceOrder = await Database.getServiceOrder(id);
+    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, cached);
     if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }
 
-    const { stateID, hostName } = serviceOrder.metadata;
+    const {stateId, hostName } = serviceOrder.metadata;
 
     const command = isInHistory ? "material_history" : "demand_material";
     const resp = await axios.post(
         `${URLCommandBase}/GetStateUIExt?${hostName}`,
-        formatCommandBody(stateID, session.sessionID, command, isInHistory),
+        formatCommandBody(stateId, session.sessionID, command, isInHistory),
         { headers }
     );
 
@@ -433,7 +436,7 @@ async function interpretMacroResponse(data) { //TODO function is redundant and d
 
 function getOrderMetadata(json) {
     return {
-        stateID: json.root.$["StateID"],
+        stateId: json.root.$["StateID"],
         hostName: json.root.$["HostName"]
     }
 }

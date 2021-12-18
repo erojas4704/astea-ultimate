@@ -1,9 +1,8 @@
-"use strict";
+
 const fs = require("fs").promises;
-const ServiceOrder = require("../js/serviceOrder");
 const DATA_URL = "./.cache/";
 //TODO make this work against an actual database.
-//For now, it just holds the database in memory.
+//For now, it just holds the database in the filesystem.
 class Database {
     static serviceOrders = {};
     static searches = {};
@@ -28,9 +27,7 @@ class Database {
         if (!data) return;
         try {
             const obj = JSON.parse(data);
-            let sv = Object.assign(new ServiceOrder, obj)
-            //console.log("Found new SV ", sv);
-            return sv;
+            return obj;
         } catch (err) {
             console.log(`Data for service order [${id}] is corrupt. Discarding`);
             fs.unlink(path, err => {

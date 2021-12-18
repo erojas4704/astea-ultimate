@@ -1,10 +1,10 @@
 const fields = {
     "order_id": "id",
-    "request_id": "requestID",
+    "request_id": "requestId",
     "problem_desc": "problem",
     "desc": "problem",
     "order_stat_descr": "status",
-    "order_stat_uniq_id": "statusID",
+    "order_stat_uniq_id": "statusId",
     "prod_descr": "product",
     "serial_no": "serialNumber",
     "open_date": "openDate",
@@ -30,7 +30,6 @@ const fields = {
 }
 
 function parseServiceOrderData(data) {
-    debugger;
     //Loop through all the fields in data, see if we have a translation for them.
     let result = {};
     for (let key in data) {

@@ -25,8 +25,7 @@ const fields = {
     "cc_sa_descr": "technician.name",
     "tagno": "tag",
     "is_in_history": "inHistory",
-    "order_line.order_stat_uniq_id": "status",
-
+    "order_line.order_stat_uniq_id": "statusId",
 }
 
 function parseServiceOrderData(data) {
@@ -47,8 +46,12 @@ function parseServiceOrderData(data) {
                     value = obj;
                 }
             }
+            if (fieldName === "statusId") {
+                if (value === "900")
+                    result["status"] = "Invoiced"; //TODO contingency for history
+            }
             //if (fieldName === "customer") {
-                //if (!value.name) debugger;
+            //if (!value.name) debugger;
             //    console.log(fieldName, value);
             //}
             result[fieldName] = value

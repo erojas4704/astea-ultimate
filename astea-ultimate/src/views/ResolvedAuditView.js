@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Container, Form, Row, Col, Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { updateAuditOrder, createNewAudit, resetAudit, addToAudit } from "../actions/audit";
@@ -9,7 +9,6 @@ import { findOrderById } from "../helpers/ServiceOrderUtils";
 import AuditTableRow from "../components/AuditTableRow";
 import { FOUND } from "../actions/auditTypes";
 import { sameDay } from "../helpers/DateUtils";
-import Api from "../api";
 
 //TODO needs to be simplified
 export default function ResolvedAuditView() {
@@ -18,10 +17,8 @@ export default function ResolvedAuditView() {
     const audit = useSelector(state => state.audit);
     const scan = useScanner();
 
-
     useEffect(() => {
         if (scan) {
-            console.log("Scan went");
             if (scan.length <= 4)
                 setForm(form => ({ ...form, location: scan }));
             else
@@ -52,12 +49,12 @@ export default function ResolvedAuditView() {
             const id = scan;
             if (scan.length <= 4)
                 setForm(form => ({ ...form, location: scan }));
-            else{
+            else {
                 const location = form.location || "SD";
                 //TODO extract method
-                if(audit.orders.find(findOrderById(id))){
+                if (audit.orders.find(findOrderById(id))) {
                     dispatch(updateAuditOrder(id, location, audit.name, FOUND));
-                }else{
+                } else {
                     dispatch(addToAudit(id, location));
                 }
             }
@@ -70,9 +67,9 @@ export default function ResolvedAuditView() {
 
     const submitForm = (id, location) => {
         if (location === "") location = "SD";
-        if(audit.orders.find(findOrderById(id))){
+        if (audit.orders.find(findOrderById(id))) {
             dispatch(updateAuditOrder(id, location, audit.name, FOUND));
-        }else{
+        } else {
             dispatch(addToAudit(id, location));
         }
     }

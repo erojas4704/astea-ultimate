@@ -25,7 +25,9 @@ class ServiceOrder {
     */
     static async retrieve(data, completeness) { //TODO examine this function and document how it works.
         const id = data.order_id[0]._;
-        const current = await Database.getServiceOrder(id);
+        let current = await Database.getServiceOrder(id);
+        if(current) current = Object.assign(new ServiceOrder, current);
+
         if (current && completeness > current.completeness) {
             current.completeness = completeness;
             const parsedData = ServiceOrder.parseServiceOrderJson(data);

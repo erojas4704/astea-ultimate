@@ -23,9 +23,10 @@ router.get("/raw", async (req, res, next) => {
 });
 
 /** Get a service order by ID */
-router.get("/", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
     //TODO use params here instead
-    const { id, history } = req.query;
+    const { id } = req.params;
+    const { history } = req.query;
     try {
         const sv = await retrieveSV(id, history === "y", req.session);
         return res.send(sv.serviceOrder);
@@ -48,6 +49,7 @@ router.patch("/:id/assign", async (req, res, next) => {
     }
 });
 
+/** Create a new interaction */
 router.post("/interactions", async (req, res, next) => {
     const { id, message } = req.body;
     try {
@@ -59,6 +61,7 @@ router.post("/interactions", async (req, res, next) => {
     }
 });
 
+/** Get interactions for an SV */
 router.get("/interactions", async (req, res, next) => {
     const { id, history } = req.query;
     try {

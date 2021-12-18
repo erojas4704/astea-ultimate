@@ -1,5 +1,5 @@
 "use strict";
-const AuditService = require("../js/AuditService");
+const AuditService = require("../services/AuditService");
 const express = require("express");
 
 require("dotenv").config();

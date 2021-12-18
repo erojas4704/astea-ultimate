@@ -1,7 +1,18 @@
 const { Model, DataTypes, Deferrable, Sequelize } = require('sequelize');
+const { parseServiceOrderData } = require('../helpers/serviceOrderParsing');
 const Technician = require('./Technician');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
-class Order extends Model { }
+
+class Order extends Model {
+    /**
+     * Dynamically parses Astea data and returns a service order object.
+     * @param {Object} data
+     * @returns {Order} A service order object
+     */
+    static parse(data) {
+        return Order.build(...parseServiceOrderData(data));
+    }
+}
 
 Order.init({
     id: { type: DataTypes.STRING, primaryKey: true, unique: true },

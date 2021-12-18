@@ -31,8 +31,7 @@ class Api {
      * @param {string} id - The service order id.
     */
     static async getServiceOrder(id, cancelToken = null) {
-        const resp = await axios.get('/ServiceOrder', {
-            params: { id },
+        const resp = await axios.get(`/ServiceOrder/${id}`, {
             cancelToken
         });
 

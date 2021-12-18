@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 /**
  * Accepts an asynchronous function and returns a stateful value.
  * @param {function} callback 
- * @returns {object} {loading, error, response}
+ * @returns {object} {loading, error, response, execute}
  */
 const useAsync = (callback) => {
     const [loading, setLoading] = useState(false);

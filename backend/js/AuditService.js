@@ -4,6 +4,8 @@ const OrderAudit = require('../models/OrderAudit');
 
 class AuditService {
     static async addAudit(data) {
+        console.log(data);
+        if(!data.name) throw new Error("Audit name is required");
         const mainAudit = await Audit.findOne({
             where: {
                 name: data.name

@@ -4,7 +4,7 @@ import { getPureId } from "../helpers/ServiceOrderUtils";
 import Api from "../api";
 
 export function updateAuditOrder(id, location, name, status = 0) {
-    Api.addAudit(id, location, name, status);
+    Api.addAudit(id, name, location, status);
     return {
         type: AUDIT_UPDATE,
         payload: {
@@ -32,13 +32,14 @@ export function resetAudit() {
 }
 
 export function addToAudit(id, location, name) {
-    return async (dispatch) => {
-        dispatch({ type: AUDIT_ADD, payload: { id, location } });
+    return async (dispatch, getState) => {
+        dispatch({ type: AUDIT_ADD, payload: { id, location, name } });
         try {
             dispatch({ type: AUDIT_ORDER_LOAD, payload: { id } });
+            if(!name) name = getState().audit.name; //TODO antipattern
 
             const results = await Api.search({ id: getPureId(id) }); //TODO, instead of search, GET. Might not be feasible because of the way some orders are appended with @@ signs.
-            Api.addAudit(id, location, name);
+            Api.addAudit(id, name, location, NOT_RESOLVED);
             //Maybe stick with search so it doesn't matter if we miss the @@1 or not.
             if (results.length > 0)
                 dispatch({

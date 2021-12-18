@@ -100,7 +100,8 @@ class Api {
         return resp.data;
     }
 
-    static async addAudit(id, location, name, status="SD"){
+    static async addAudit(id, name, location = "SD", status = 0) {
+        if (!name) throw new Error("Audit name is required");
         const resp = await axios.post(`/Audit`, {
             id,
             location,
@@ -115,7 +116,7 @@ class Api {
      * @param {string} id Service Order ID.
      * @returns {array} An array of audits for the order.
      */
-    static async getAuditsForOrder(id){
+    static async getAuditsForOrder(id) {
         const resp = await axios.get(`/Audit/order/${id}`);
         return resp.data;
     }
@@ -125,7 +126,7 @@ class Api {
      * @param {string} name 
      * @returns {array} An array of audits under that name.
      */
-    static async getAuditByName(name){
+    static async getAuditByName(name) {
         const resp = await axios.get(`/Audit/${name}`);
         return resp.data;
     }

@@ -4,12 +4,15 @@ const express = require("express");
 
 require("dotenv").config();
 const router = new express.Router();
-
+``
 router.post("/", async (req, res, next) => {
     //Create new audit
-    const audit = await AuditService.addAudit(req.body);
-    console.log(req.body);
-    return res.json(audit);
+    try {
+        const audit = await AuditService.addAudit(req.body);
+        return res.json(audit);
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /**

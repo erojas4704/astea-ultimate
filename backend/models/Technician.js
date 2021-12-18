@@ -11,4 +11,12 @@ Technician.init({
     modelName: "Technician"
 });
 
+/*
+Technician.create({
+    id: 'erojas1',
+    name: 'Eddie Rojas',
+    access_level: 'admin'
+});
+*/
+
 module.exports = Technician;

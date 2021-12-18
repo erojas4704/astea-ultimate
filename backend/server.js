@@ -1,6 +1,7 @@
 "use strict";
 const app = require("./app");
 const precache = require("./helpers/precache");
+require("dotenv").config();
 
 const PORT = process.env.PORT;
 

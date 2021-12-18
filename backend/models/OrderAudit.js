@@ -22,6 +22,4 @@ OrderAudit.init({
 });
 
 
-// Audit.sync({ force: true });
-
 module.exports = OrderAudit;

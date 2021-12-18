@@ -30,9 +30,9 @@ const fields = {
 }
 
 function parseServiceOrderData(data) {
+    debugger;
     //Loop through all the fields in data, see if we have a translation for them.
     let result = {};
-
     for (let key in data) {
         let fieldName = fields[key];
         if (fieldName) {

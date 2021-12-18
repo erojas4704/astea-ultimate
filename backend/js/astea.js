@@ -158,7 +158,6 @@ async function orderLocatorSearch(session, criteria) {
 }
 
 async function extractFromResults(results) {
-    const serviceOrders = [];
     if (!results.root.row) {
         return []; //Found nothing
     }
@@ -175,7 +174,14 @@ async function extractFromResults(results) {
     return await Promise.all(promises);
 }
 
-async function retrieveSV(id, isInHistory, session, forceNew = false) { //TODO function is too long
+async function retrieveSV(id, isInHistory, session, forceNew = false) {
+    //TODO function is too long
+    //TODO This function should know if it's in history or not and determine that on its own.
+    //Astea treats inHistory and out of history orders as completely different objects.
+    //This function should be able to handle both.
+
+
+
     const cached = forceNew ? undefined : await Database.getServiceOrder(id); //If the cached work order is less than 60 minutes old, we can use the cached version
     if (cached) {
         console.log(`Found cached service order. Completeness: ${cached.completeness} Age: ${cached.getAgeInMinutes()} minuites`);
@@ -268,7 +274,7 @@ async function assignTechnician(id, session, technicianId) {
         },
         { headers }
     );
-    
+
     const json = await parseXMLToJSON(resp.data['d']);
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //TODO we're refactoring all of this.
     return serviceOrder;
@@ -432,4 +438,14 @@ function getOrderMetadata(json) {
     }
 }
 
-module.exports = { retrieveSV, orderLocatorSearch, getTechniciansInActionGroup, getInteractions, getMaterials, createInteraction, assignTechnician };
+module.exports = {
+    retrieveSV,
+    orderLocatorSearch,
+    getTechniciansInActionGroup,
+    getInteractions,
+    getMaterials,
+    createInteraction,
+    assignTechnician,
+    URLExecuteMacro,
+    formatExecuteMacroBody
+};

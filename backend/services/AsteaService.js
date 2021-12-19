@@ -2,8 +2,9 @@ const axios = require("axios");
 const xml2js = require("xml2js");
 const { promisify } = require("util");
 const {
+    headers,
     URLExecuteMacro,
-    formatExecuteMacro: formatMacroBody
+    formatExecuteMacroBody: formatMacroBody
 } = require("../js/astea");
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
@@ -24,19 +25,22 @@ class Astea {
     static async getServiceOrder(id, session) {
         const { sessionId } = session;
         const executeMacro = await asteaRequest(URLExecuteMacro,
-            formatMacroBody("retrieve", "N", sessionId, id),
+            formatMacroBody("retrieve", false, sessionId, id),
             { headers }
         );
 
         if (executeMacro.error) throw new AsteaError(executeMacro.error, 500); //TODO get error code from type.
-        const serviceOrder = Order.parse(executeMacro.data);
-        serviceOrder.save().then(() => {
-            console.log(`Cached service order ${id}`);
-        }).catch(err => {
-            console.error(`Error caching service order ${id}`, err);
-        });
+        const serviceOrder = Order.parse(executeMacro.data).dataValues;
+        Order.upsert(serviceOrder);
 
-        return serviceOrder;
+        //await serviceOrder.update()//Order.upsert(serviceOrder);
+        // serviceOrder.save().then(() => {
+        //     console.log(`Cached service order ${id}`);
+        // }).catch(err => {
+        //     console.error(`Error caching service order ${id}`, err);
+        // });
+
+        return { serviceOrder };
     }
 }
 

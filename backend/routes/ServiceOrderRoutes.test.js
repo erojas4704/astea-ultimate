@@ -2,7 +2,6 @@ const app = require("../app");
 const express = require("express");
 const supertest = require("supertest");
 const cookieParser = require("cookie-parser");
-const Database = require("../database/db");
 
 app.use(express.json());
 app.use(cookieParser());

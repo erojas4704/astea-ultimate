@@ -29,6 +29,8 @@ const fields = {
 }
 
 function parseServiceOrderData(data) {
+    if(data?.root?.main) data = data.root.main[0].row[0]; //If the data is nested in some Astea junk, we remove a layer of nesting.
+
     //Loop through all the fields in data, see if we have a translation for them.
     let result = {};
     for (let key in data) {

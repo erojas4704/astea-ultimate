@@ -450,5 +450,6 @@ module.exports = {
     createInteraction,
     assignTechnician,
     URLExecuteMacro,
-    formatExecuteMacroBody
+    formatExecuteMacroBody,
+    headers
 };

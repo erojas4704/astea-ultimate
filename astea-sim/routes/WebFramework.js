@@ -12,14 +12,19 @@ const asteaMacros = {
     "service_request_maint": getServiceOrder
 }
 
-router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res) => {
-    const json = await parseXMLToJSON(req.body.xmlRequest);
-    const jsonParameters = await parseXMLToJSON(req.body.macroParameters);
-    const macro = extractMacroFromJSON(json);
-    console.log(`Executing macro ${macro} with parameters ${JSON.stringify(jsonParameters)}`);    
-    const data = await asteaMacros[macro](jsonParameters);
+router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res, next) => {
+    try {
+        const json = await parseXMLToJSON(req.body.xmlRequest);
+        const jsonParameters = await parseXMLToJSON(req.body.macroParameters);
+        const macro = extractMacroFromJSON(json);
+        console.log(`Executing macro ${macro} with parameters ${JSON.stringify(jsonParameters)}`);
+        const data = await asteaMacros[macro](jsonParameters);
 
-    return res.send(data);
+        return res.send(data);
+    } catch (err) {
+        console.error(`Simulation failed. \n${err}`);
+        return next(err);
+    }
 });
 
 router.post(`/SecurityManager.svc/dotnet`, async (req, res) => {
@@ -65,7 +70,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
             });
 
             const xmlResult = searchResultsToAsteaGibberish(filtered);
-            
+
 
             return res.send(xmlResult);
         }

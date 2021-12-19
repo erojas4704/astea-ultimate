@@ -7,6 +7,7 @@ const { retrieveSV, orderLocatorSearch, getInteractions, getMaterials, createInt
 const { hasAsteaCredentials } = require("../middleware/asteaAuthentication.js");
 const { parseXMLToJSON } = require("../helpers/xml.js");
 const { AsteaError } = require("../js/AsteaError.js");
+const Astea = require("../services/AsteaService.js");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 router.use(hasAsteaCredentials); //Make sure we have a valid token
@@ -88,7 +89,7 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const { history, loadCached } = req.query;
     try {
-        const sv = await retrieveSV(id, history === "y", req.session, loadCached);
+        const sv = await Astea.getServiceOrder(id, req.session);//await retrieveSV(id, history === "y", req.session, loadCached);
         return res.send(sv.serviceOrder);
     } catch (e) {
         console.error(e);

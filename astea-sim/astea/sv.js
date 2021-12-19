@@ -27,8 +27,8 @@ const getAllServiceOrders = async () => {
 const getAllXMLServiceOrders = async () => {
     const svList = await readdir(rawDirectory);
     let promises = svList.map(async sv => {
-        let data = await readFile(`${rawDirectory}/${sv}`, 'utf8',);
         try {
+            let data = await readFile(`${rawDirectory}/${sv}`, 'utf8',);
             const json = await parseXMLToJSON(data);
             return parseServiceOrderData(json.root.main[0].row[0]);
         } catch (e) {

@@ -57,6 +57,8 @@ describe("Pulling orders", () => {
         expect(order).toHaveProperty("serialNumber");
         expect(order).toHaveProperty("tag");
         expect(order).toHaveProperty("problem");
+        expect(order).toHaveProperty("actionGroup");
+        expect(order).toHaveProperty("warehouse");
         expect(order).toHaveProperty("metadata.HostName");
         expect(order).toHaveProperty("metadata.StateID");
     });
@@ -92,6 +94,8 @@ describe("Pulling orders from cache", () => {
         expect(order).toHaveProperty("serialNumber");
         expect(order).toHaveProperty("tag");
         expect(order).toHaveProperty("problem");
+        expect(order).toHaveProperty("actionGroup");
+        expect(order).toHaveProperty("warehouse");
     });
 })
 

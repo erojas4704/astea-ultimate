@@ -10,6 +10,7 @@ class OrderService {
      */
     static async retrieve(id, session) {
         const cachedOrder = await Order.findOne({ where: { id: id } });
+        if(!cachedOrder) throw new AsteaError("Astea Error", 404, "Order not found");
         const serviceOrder = { ...cachedOrder.dataValues }
         serviceOrder.customer = await cachedOrder.getCustomer();
         serviceOrder.technician = await cachedOrder.getTechnician();

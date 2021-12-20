@@ -39,6 +39,8 @@ class Order extends Model {
         statusId: { type: DataTypes.INTEGER, allowNull: false },
         status: { type: DataTypes.STRING, allowNull: false },
         problem: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' },
+        warehouse: { type: DataTypes.STRING, allowNull: true },
+        actionGroup: { type: DataTypes.STRING, allowNull: true },
         tag: { type: DataTypes.STRING, allowNull: true }
     },
         { sequelize, modelName: 'Order' }
@@ -46,10 +48,8 @@ class Order extends Model {
 }
 
     static associate(models) {
-    //this.Technician = 
     this.belongsTo(models.Technician);
     this.belongsTo(models.Customer);
-    //this.Customer = d
     models.Customer.hasMany(this, { as: 'orders' });
     models.Technician.hasMany(this, { as: 'orders' });
 }

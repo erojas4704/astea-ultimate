@@ -21,7 +21,9 @@ class Api {
         * @returns {promise, cancel} - An object containing the promise and the cancel function.
     */
     static req(callback, ...params) {
+        //TODO second params should be an array for the callback params.
         const cancelTokenSource = axios.CancelToken.source();
+        params.length = callback.length; //Make sure the last parameter is the cancel token.
         const promise = callback(...params, cancelTokenSource.token);
         const cancel = cancelTokenSource.cancel;
         return { promise, cancel }
@@ -30,8 +32,9 @@ class Api {
     /** Returns a cancelable promise to retrieve a service order. 
      * @param {string} id - The service order id.
     */
-    static async getServiceOrder(id, cancelToken = null) {
+    static async getServiceOrder(id, useCached, cancelToken = null) {
         const resp = await axios.get(`/ServiceOrder/${id}`, {
+            params: { cache: useCached ? "y" : null },
             cancelToken
         });
 

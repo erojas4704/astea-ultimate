@@ -7,11 +7,13 @@ import axios from "axios";
 
 const useServiceOrder = (id, props) => {
     let cancelRef = useRef();
+    let localCancelRef = useRef();
     const local = localStorage.getItem(`serviceOrder-${id}`) ? JSON.parse(localStorage.getItem(`serviceOrder-${id}`)) : null;
 
     const { execute, response, error, loading } = useAsync(
         () => {
             const { promise, cancel } = Api.req(Api.getServiceOrder, id);
+
             cancelRef.current = cancel;
             if (shouldLoadServiceOrder(serviceOrder, id, local))
                 return promise;
@@ -19,6 +21,15 @@ const useServiceOrder = (id, props) => {
         }
     );
 
+    const { execute: loadCached, response: cachedResponse, error: cachedError, loading: cachedLoading } = useAsync(
+        () => {
+            const { promise, cancel } = Api.req(Api.getServiceOrder, id, true);
+            localCancelRef.current = cancel;
+            return promise;
+        }
+    );
+
+    //TODO consider why is this out here? This makes no sense to me. This may be getting called every render.
     let serviceOrder = response ? response : getLocalServiceOrder(local, props, id);
     if (response) {
         response.cachedAt = new Date();
@@ -28,14 +39,16 @@ const useServiceOrder = (id, props) => {
 
     useEffect(() => {
         console.log(`Local service order ${id}`, local);
-        if(id !== serviceOrder?.id) serviceOrder = null;
-        execute(); 
+        if (id !== serviceOrder?.id) serviceOrder = null;
+        loadCached();
+        execute();
         return () => {
             //On dismount, cancel loading the SV
             cancelRef.current();
+            localCancelRef.current();
         }
     }, [id]);
-    return { serviceOrder, isLoading: loading, error };
+    return { serviceOrder: (serviceOrder || cachedResponse), isLoading: (loading || cachedLoading), error };
 }
 
 const useInteractions = (serviceOrder) => {
@@ -51,10 +64,10 @@ const useInteractions = (serviceOrder) => {
             else return new Promise((r, x) => r()); //TODO ugly hack. Fix it.
         }
     );
-    
+
     interactions = response ? response.data : serviceOrder.interactions;
 
-    if(response){
+    if (response) {
         serviceOrder.interactions = response.data;
         localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(serviceOrder)); //TODO make service order model and update it there.
     }
@@ -86,7 +99,7 @@ const useMaterials = (serviceOrder) => {
 
     materials = response ? response.data : serviceOrder.materials;
 
-    if(response){
+    if (response) {
         serviceOrder.materials = response.data;
         localStorage.setItem(`serviceOrder-${id}`, JSON.stringify(serviceOrder)); //TODO make service order model and update it there.
     }
@@ -110,9 +123,9 @@ const shouldLoadInteractions = (serviceOrder) => {
 }
 
 const shouldLoadServiceOrder = (serviceOrder, id, local) => {
-    if(local && getAgeInMinutes(local) > 5) console.log(`Service order ${id} is old. Getting new ${getAgeInMinutes(local)}`);
-    if(!local) console.log(`Service order does not exist. Getting new`);
-    if(local && local.completeness < 2) console.log(`Service order ${id} is incomplete. Getting new`);
+    if (local && getAgeInMinutes(local) > 5) console.log(`Service order ${id} is old. Getting new ${getAgeInMinutes(local)}`);
+    if (!local) console.log(`Service order does not exist. Getting new`);
+    if (local && local.completeness < 2) console.log(`Service order ${id} is incomplete. Getting new`);
 
     if (local && local.completeness > 1 && local.id === id && getAgeInMinutes(local) < 5) return false; //TODO force an update after a certain age defined by environment
     return !serviceOrder || serviceOrder.id !== id || serviceOrder.completeness < 3;

@@ -29,10 +29,18 @@ const fields = {
 }
 
 function parseServiceOrderData(data) {
-    if(data?.root?.main) data = data.root.main[0].row[0]; //If the data is nested in some Astea junk, we remove a layer of nesting.
-
     //Loop through all the fields in data, see if we have a translation for them.
     let result = {};
+    if (data?.root?.main) {
+        result.metadata = {
+            StateID: data.root.$["StateID"],
+            HostName: data.root.$["HostName"]
+        }
+        
+        data = data.root.main[0].row[0];
+    }
+    //If the data is nested in some Astea junk, we remove a layer of nesting and snag the metadata while we're at it
+
     for (let key in data) {
         let fieldName = fields[key];
         if (fieldName) {

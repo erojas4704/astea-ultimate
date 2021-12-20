@@ -14,6 +14,7 @@ const asteaMacros = {
 
 router.post(`/BCBase.svc/ExecMacroUIExt`, async (req, res, next) => {
     try {
+        //await forFakeDelay(2 + Math.floor(Math.random() * 7));
         const json = await parseXMLToJSON(req.body.xmlRequest);
         const jsonParameters = await parseXMLToJSON(req.body.macroParameters);
         const macro = extractMacroFromJSON(json);
@@ -79,6 +80,10 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
         console.error(err);
         return next(err);
     }
+});
+
+router.post(`/BCBase.svc/GetStateUIExt`, async (req, res, next) => {
+    return res.send([]); 
 });
 
 module.exports = router;

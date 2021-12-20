@@ -371,7 +371,7 @@ async function createInteraction(id, session, message) {
 
 async function getInteractions(id, session, isInHistory = false) {
     let serviceOrder = await Database.getServiceOrder(id); ///TODO need current metadata, probably
-    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, cached);
+    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, serviceOrder);
     if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
@@ -395,15 +395,17 @@ async function getInteractions(id, session, isInHistory = false) {
     return serviceOrder.interactions;
 }
 
-async function getMaterials(id, session, isInHistory = false) { //TODO maybe use existing state instead of opening a new one?
+async function getMaterials(id, session, isInHistory = false) {
+    if (process.env.LOCATION == "home") return [];
+    //TODO maybe use existing state instead of opening a new one?
     let serviceOrder = await Database.getServiceOrder(id);
-    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, cached);
+    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, serviceOrder);
     if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
         serviceOrder = svResp.serviceOrder;
     }
 
-    const {stateId, hostName } = serviceOrder.metadata;
+    const { stateId, hostName } = serviceOrder.metadata;
 
     const command = isInHistory ? "material_history" : "demand_material";
     const resp = await axios.post(

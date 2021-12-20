@@ -1,5 +1,6 @@
 "use strict";
 require("dotenv").config();
+require("./Models/Database");
 const express = require("express");
 const svRoutes = require("./routes/ServiceOrderRoutes.js");
 const customerRoutes = require("./routes/CustomerRoutes.js");

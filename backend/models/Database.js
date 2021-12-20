@@ -1,27 +1,54 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 
-const Customer = require('./Customer')(sequelize, Sequelize.DataTypes);
-const Order = require('./Order')(sequelize, Sequelize.DataTypes);
-const Technician = require('./Technician')(sequelize, Sequelize.DataTypes);
-const Audit = require('./Audit')(sequelize, Sequelize.DataTypes);
-const OrderAudit = require('./OrderAudit')(sequelize, Sequelize.DataTypes);
+const Customer = require('./Customer');
+const Order = require('./Order');
+const Technician = require('./Technician');
 
+const Audit = require('./Audit');
+const OrderAudit = require('./OrderAudit');
 
+const models = {
+    Customer: Customer.init(sequelize, Sequelize),
+    Order: Order.init(sequelize, Sequelize),
+    Technician: Technician.init(sequelize, Sequelize),
+    Audit: Audit.init(sequelize, Sequelize),
+    OrderAudit: OrderAudit.init(sequelize, Sequelize)
+}
 
+Object.values(models)
+    .filter(model => typeof model.associate === "function")
+    .forEach(model => model.associate(models));
 
 (async () => {
-    await sequelize.sync({ force: true });
-    console.log(Customer);
-    Customer.create({
-        id: 'erojas1',
-        name: 'Eddie Rojas',
-    });
+    Order.sync({alter: true});
+    //await sequelize.sync();
+    // await sequelize.sync({ force: true })
+    //     .then(() => console.log('Database synced'))
+    //     .catch(err => console.error(err));
+    // Customer.create({
+    //     id: 'erojas1',
+    //     name: 'Eddie Rojas',
+    // });
 
     // Technician.create({
     //     id: 'erojas1',
     //     name: 'Eddie Rojas',
     //     access: 'admin',
+    // }).catch(err => console.log(err));
+    // Order.build({
+    //     id: 'SV0123@@1', 
+    //     requestId: 'SV123',
+    //     openDate: new Date(),
+    //     isInHistory: false,
+    //     serialNumber: 'SV0123',
+    //     statusId: 1,
+    //     status: 'Open',
+    //     problem: 'Broken'
     // })
 })();
-module.exports = sequelize;
+
+
+module.exports = {
+    ...models, sequelize
+};

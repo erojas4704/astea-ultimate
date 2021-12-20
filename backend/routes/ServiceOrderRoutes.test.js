@@ -57,10 +57,43 @@ describe("Pulling orders", () => {
         expect(order).toHaveProperty("serialNumber");
         expect(order).toHaveProperty("tag");
         expect(order).toHaveProperty("problem");
-        expect(order).toHaveProperty("metadata.hostName");
-        expect(order).toHaveProperty("metadata.stateId");
-    })
+        expect(order).toHaveProperty("metadata.HostName");
+        expect(order).toHaveProperty("metadata.StateID");
+    });
 });
+
+describe("Pulling orders from cache", () => {
+    test("Get order from cache. GET /ServiceOrder/:id", async () => {
+        const { body: order } = await supertest(app)
+            .get("/ServiceOrder/SV0000000001@@0")
+            .query({ cache: "y" })
+            .set("Cookie", [jwt])
+            .expect(200);
+
+        expect(order.id).toBe("SV0000000001@@0");
+        expect(order.customer.name).toMatch(/Testo Magnifico/i);
+        expect(order.status).toBe("Resolved");
+    });
+
+    test("Make sure order has complete fields", async () => {
+        const { body: order } = await supertest(app)
+            .get("/ServiceOrder/SV0000000001@@0")
+            .query({ cache: "y" })
+            .set("Cookie", [jwt])
+            .expect(200);
+
+        expect(order.requestId).toBe("SV0000000001");
+        expect(order).toHaveProperty("openDate");
+        expect(order).toHaveProperty("customer.name");
+        expect(order).toHaveProperty("customer.id");
+        expect(order).toHaveProperty("technician.name");
+        expect(order).toHaveProperty("technician.id");
+        expect(order).toHaveProperty("statusId");
+        expect(order).toHaveProperty("serialNumber");
+        expect(order).toHaveProperty("tag");
+        expect(order).toHaveProperty("problem");
+    });
+})
 
 describe("Searching orders", () => {
     test("Search for many. GET /ServiceOrder/search", async () => {

@@ -8,10 +8,12 @@ const {
 } = require("../js/astea");
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
+const { Customer } = require("../models/Database");
 
 const parseXMLToJSON = promisify(xml2js.parseString);
 
-/**Automatically parses Astea responses to JSON and extracts errors. */
+/**Automatically parses Astea responses to JSON and extracts errors. 
+*/
 const asteaRequest = async (url, body) => {
     const resp = await axios.post(url, body, { headers });
     if (resp.data.ExceptionDetail)
@@ -30,17 +32,9 @@ class Astea {
         );
 
         if (executeMacro.error) throw new AsteaError(executeMacro.error, 500); //TODO get error code from type.
-        const serviceOrder = Order.parse(executeMacro.data).dataValues;
-        Order.upsert(serviceOrder);
+        const orderData = await Order.parse(executeMacro.data);
 
-        //await serviceOrder.update()//Order.upsert(serviceOrder);
-        // serviceOrder.save().then(() => {
-        //     console.log(`Cached service order ${id}`);
-        // }).catch(err => {
-        //     console.error(`Error caching service order ${id}`, err);
-        // });
-
-        return { serviceOrder };
+        return { serviceOrder: orderData };
     }
 }
 

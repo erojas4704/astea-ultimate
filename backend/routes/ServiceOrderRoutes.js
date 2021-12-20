@@ -8,6 +8,7 @@ const { hasAsteaCredentials } = require("../middleware/asteaAuthentication.js");
 const { parseXMLToJSON } = require("../helpers/xml.js");
 const { AsteaError } = require("../js/AsteaError.js");
 const Astea = require("../services/AsteaService.js");
+const OrderService = require("../services/OrderService.js");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 router.use(hasAsteaCredentials); //Make sure we have a valid token
@@ -38,11 +39,11 @@ router.patch("/:id/assign", async (req, res, next) => {
     const { id } = req.params;
     const { technicianId } = req.body;
 
-    try{
+    try {
         const data = await assignTechnician(id, req.session, technicianId);
         //Should return an updated service order
         return res.send(data);
-    }catch(err){
+    } catch (err) {
         return next(err);
     }
 });
@@ -78,18 +79,20 @@ router.get("/materials", async (req, res, next) => {
         const materials = await getMaterials(id, req.session, history === "y");
         return res.send(materials);
     } catch (e) {
-        console.error(e);
+        // console.error(e);
         return next(e);
     }
 });
 
 /** Get a service order by ID */
 router.get("/:id", async (req, res, next) => {
-    //TODO use params here instead
     const { id } = req.params;
-    const { history, loadCached } = req.query;
+    const { history, cache } = req.query;
     try {
-        const sv = await Astea.getServiceOrder(id, req.session);//await retrieveSV(id, history === "y", req.session, loadCached);
+        const sv = cache ?
+            await OrderService.retrieve(id, req.session, history === "y") :
+            await Astea.getServiceOrder(id, req.session, history === "y");
+
         return res.send(sv.serviceOrder);
     } catch (e) {
         console.error(e);

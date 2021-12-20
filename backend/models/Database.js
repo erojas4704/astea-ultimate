@@ -22,7 +22,7 @@ Object.values(models)
 
 (async () => {
     //Order.sync({alter: true});
-    await sequelize.sync({alter: true}).catch(err => console.log(err));
+    //await sequelize.sync({alter: true}).catch(err => console.log(err));
     // await sequelize.sync({ force: true })
     //     .then(() => console.log('Database synced'))
     //     .catch(err => console.error(err));

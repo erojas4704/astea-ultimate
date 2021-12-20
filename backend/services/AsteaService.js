@@ -25,7 +25,7 @@ const asteaRequest = async (url, body) => {
 
 class Astea {
     static async getServiceOrder(id, session) {
-        const { sessionId } = session;
+        const { sessionID: sessionId } = session;
         const executeMacro = await asteaRequest(URLExecuteMacro,
             formatMacroBody("retrieve", false, sessionId, id),
             { headers }

@@ -16,12 +16,16 @@ class Order extends Model {
 
         (async () => {
             const [o] = await Order.findOrCreate({ where: { id: orderData.id }, defaults: orderData });
-            const [cust] = await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer });
-            const [tech] = await Technician.findOrCreate({ where: { id: technician.id }, defaults: technician });
+            if (customer && customer.id) {
+                const [cust] = customer?.id ? await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer }) : null;
+                o.setCustomer(cust);
+            }
+            if (technician && technician.id) {
+                const [tech] = technician?.id ? await Technician.findOrCreate({ where: { id: technician.id }, defaults: technician }) : null;
+                o.setTechnician(tech);
+            }
             //TODO extract and organize so that the promises run in parallel.
-
-            o.setCustomer(cust);
-            o.setTechnician(tech);
+            //TODO collapse these into one call as well.
 
             o.save();
         })();
@@ -30,29 +34,29 @@ class Order extends Model {
     }
 
     static init = (sequelize, DataTypes) => {
-    return super.init({
-        id: { type: DataTypes.STRING, primaryKey: true, unique: true },
-        requestId: { type: DataTypes.STRING, allowNull: false },
-        openDate: { type: DataTypes.DATE, allowNull: false },
-        isInHistory: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
-        serialNumber: { type: DataTypes.STRING, allowNull: true },
-        statusId: { type: DataTypes.INTEGER, allowNull: false },
-        status: { type: DataTypes.STRING, allowNull: false },
-        problem: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' },
-        warehouse: { type: DataTypes.STRING, allowNull: true },
-        actionGroup: { type: DataTypes.STRING, allowNull: true },
-        tag: { type: DataTypes.STRING, allowNull: true }
-    },
-        { sequelize, modelName: 'Order' }
-    );
-}
+        return super.init({
+            id: { type: DataTypes.STRING, primaryKey: true, unique: true },
+            requestId: { type: DataTypes.STRING, allowNull: false },
+            openDate: { type: DataTypes.DATE, allowNull: false },
+            isInHistory: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+            serialNumber: { type: DataTypes.STRING, allowNull: true },
+            statusId: { type: DataTypes.INTEGER, allowNull: false },
+            status: { type: DataTypes.STRING, allowNull: false },
+            problem: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' },
+            warehouse: { type: DataTypes.STRING, allowNull: true },
+            actionGroup: { type: DataTypes.STRING, allowNull: true },
+            tag: { type: DataTypes.STRING, allowNull: true }
+        },
+            { sequelize, modelName: 'Order' }
+        );
+    }
 
     static associate(models) {
-    this.belongsTo(models.Technician);
-    this.belongsTo(models.Customer);
-    models.Customer.hasMany(this, { as: 'orders' });
-    models.Technician.hasMany(this, { as: 'orders' });
-}
+        this.belongsTo(models.Technician);
+        this.belongsTo(models.Customer);
+        models.Customer.hasMany(this, { as: 'orders' });
+        models.Technician.hasMany(this, { as: 'orders' });
+    }
 }
 
 module.exports = Order;

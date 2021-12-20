@@ -464,5 +464,6 @@ module.exports = {
     assignTechnician,
     URLExecuteMacro,
     formatExecuteMacroBody,
-    headers
+    headers,
+    extractError
 };

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+    <button onclick="getData()">Get Data</button>
+    <script>
+        (async () => {
+            console.log("Started");
+            const resp = await fetch('/login');
+            console.log("Done", resp);
+        })();
+
+        function getData() {
+            (async () => {
+                console.log("Started");
+                const resp = await fetch('/test');
+                console.log("Done", resp);
+            })();
+        }
+    </script>
+</body>
+
+</html>

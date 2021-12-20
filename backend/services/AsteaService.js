@@ -4,7 +4,8 @@ const { promisify } = require("util");
 const {
     headers,
     URLExecuteMacro,
-    formatExecuteMacroBody: formatMacroBody
+    formatExecuteMacroBody: formatMacroBody,
+    extractError
 } = require("../js/astea");
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");

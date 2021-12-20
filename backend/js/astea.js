@@ -125,6 +125,13 @@ function formatTechniciansRequestBody(sessionID, actionGroupID = "Queens") {
     }
 }
 
+function extractError(json){
+    try{
+        const error = json["s:Envelope"]["s:Body"][0]["s:Fault"][0]["detail"][0]["ExceptionDetail"][0]["Type"][0];
+        return error;
+    }catch(err){}//Fail silently
+}
+
 async function orderLocatorSearch(session, criteria) {
     const precached = await Search.get(criteria);
     if (precached) return precached.results;
@@ -142,6 +149,10 @@ async function orderLocatorSearch(session, criteria) {
 
     const json = await parseXMLToJSON(resp.data);
     try {
+        const error = extractError(json);
+        if(error && error === "Astea.Common.Exception.AsteaSessionTimoutException"){
+            throw new AsteaError("Session timed out", 403);
+        }
         const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
         const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
         const resultsJSON = await parseXMLToJSON(resultsXML);

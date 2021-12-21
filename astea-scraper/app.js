@@ -14,7 +14,7 @@ const backend = axios.create({
 
 async function login(username, password) {
     try {
-        const resp = await backend.post("/auth/login", { username, password });
+        const resp = await backend.post("/auth/login", { username, password, forceKick: true });
         return { data: resp.data, token: resp.headers['set-cookie'] };
     } catch (err) {
         console.log("Login failed.");
@@ -23,10 +23,18 @@ async function login(username, password) {
     }
 }
 
+const delay = async (seconds = 1) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, seconds * 1000);
+    });
+}
+
 (async () => {
     const { username, password } = await prompt.get([
         { name: 'username', default: process.env.DEFAULT_USER },
-        { name: 'password', hidden: true }
+        { name: 'password', default: "Erin9714!", hidden: true }
     ]);
 
     console.info("Logging in as %s...", username);
@@ -45,7 +53,7 @@ async function login(username, password) {
     for (let i = 0; i < data.length; i++) {
         const order = data[i];
         backend.get(`/ServiceOrder/${order.id}`);
-        await forFakeDelay(process.env.DELAY);
+        await delay(process.env.DELAY);
         console.log(`Cached ${i + 1}/${data.length}`);
     };
     console.log("Done!");

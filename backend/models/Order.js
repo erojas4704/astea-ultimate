@@ -16,6 +16,7 @@ class Order extends Model {
 
         (async () => {
             const [o] = await Order.findOrCreate({ where: { id: orderData.id }, defaults: orderData });
+            o.set(orderData);
             if (customer && customer.id) {
                 const [cust] = customer?.id ? await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer }) : null;
                 o.setCustomer(cust);
@@ -27,7 +28,7 @@ class Order extends Model {
             //TODO extract and organize so that the promises run in parallel.
             //TODO collapse these into one call as well.
 
-            o.save().catch(err => console.error(err));
+            o.save();//.catch(err => console.error(err));
         })();
 
         return orderData;

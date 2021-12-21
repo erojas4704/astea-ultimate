@@ -41,9 +41,6 @@ async function login(username, password) {
             includeHistory: false
         }
     });
-    let testtt = await backend.get('/ServiceOrder/SV2111290652@@1');
-    console.log(testtt.data);
-    return;
     console.log(`Found ${data.length} orders. Caching...`);
     for (let i = 0; i < data.length; i++) {
         const order = data[i];

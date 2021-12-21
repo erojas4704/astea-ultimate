@@ -25,7 +25,7 @@ async function login(username, password) {
 
 (async () => {
     const { username, password } = await prompt.get([
-        { name: 'username' },
+        { name: 'username', default: process.env.DEFAULT_USER },
         { name: 'password', hidden: true }
     ]);
 
@@ -41,7 +41,9 @@ async function login(username, password) {
             includeHistory: false
         }
     });
-
+    let testtt = await backend.get('/ServiceOrder/SV2111290652@@1');
+    console.log(testtt.data);
+    return;
     console.log(`Found ${data.length} orders. Caching...`);
     for (let i = 0; i < data.length; i++) {
         const order = data[i];

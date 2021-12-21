@@ -8,7 +8,7 @@ const { hasAsteaCredentials } = require("../middleware/asteaAuthentication.js");
 const { parseXMLToJSON } = require("../helpers/xml.js");
 const { AsteaError } = require("../js/AsteaError.js");
 const { customerLookup } = require("../js/asteaCustomers.js");
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; ///TODO ?
 
 router.use(hasAsteaCredentials); //Make sure we have a valid token
 

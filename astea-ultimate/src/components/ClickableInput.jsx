@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateAuditOrder } from "../actions/audit";
 import "./ClickableInput.css";
 
+//TODO Make the dispatch part of an HOC
 export default function ClickableInput({ order }) {
     const input = useRef(null);
     const [focused, setFocused] = useState(false);

@@ -27,7 +27,7 @@ class Order extends Model {
             //TODO extract and organize so that the promises run in parallel.
             //TODO collapse these into one call as well.
 
-            o.save();
+            o.save().catch(err => console.error(err));
         })();
 
         return orderData;

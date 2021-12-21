@@ -49,14 +49,14 @@ function serviceOrderToXML(order) {
     <descr dt:dt="string">${order.problem || ""}</descr>
     <problem_desc dt:dt="string">${order.problem || ""}</problem_desc>
     <order_id dt:dt="string">${order.id || ""}</order_id>
-    <request_id dt:dt="string">${order.requestID || ""}</request_id>
+    <request_id dt:dt="string">${order.requestId || ""}</request_id>
     <is_in_history dt:dt="string">${order.inHistory || "N"}</is_in_history>
     <node_id dt:dt="string">145</node_id>
     <open_date dt:dt="string">${order.createdAt || ""}</open_date>
     <caller_name dt:dt="string">${order.customer.name || ""}</caller_name>
     <caller_person_id dt:dt="string">${order.customer.id || ""}</caller_person_id>
     <actgr_id dt:dt="string">${toActionGroupID(order.actionGroup) || ""}</actgr_id>
-    <order_stat_uniq_id dt:dt="int">${order.statusID || ""}</order_stat_uniq_id>
+    <order_stat_uniq_id dt:dt="int">${order.statusId || ""}</order_stat_uniq_id>
     <order_stat_descr dt:dt="string">${order.status || ""}</order_stat_descr>
     <serial_no dt:dt="string">${order.serialNumber || ""}</serial_no>
     <sa_person_descr dt:dt="string">${order.technician.name || ""}</sa_person_descr>

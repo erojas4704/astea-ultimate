@@ -17,6 +17,7 @@ async function hasAsteaCredentials(req, res, next) {
         };
         return next();
     } catch (err) {
+        err.status = 403;
         return next(err);
     }
 }

@@ -24,21 +24,7 @@ class ServiceOrder {
      * Order with a higher completion factor will overwrite an existing order.
     */
     static async retrieve(data, completeness) { //TODO examine this function and document how it works.
-        const id = data.order_id[0]._;
-        let current = await Database.getServiceOrder(id);
-        if(current) current = Object.assign(new ServiceOrder, current);
-
-        if (current && completeness > current.completeness) {
-            current.completeness = completeness;
-            const parsedData = ServiceOrder.parseServiceOrderJson(data);
-            //TODO this code is duplicated in the constructor.
-    
-            this.completeness = completeness;
-            current.mergeNewDataIntoServiceOrder(parsedData, true);
-            return current;
-        } else {
-            return new ServiceOrder(data, completeness);
-        }
+        return new ServiceOrder(data, completeness);
     }
 
     calculateCompleteness() {

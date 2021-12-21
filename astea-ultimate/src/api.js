@@ -74,16 +74,20 @@ class Api {
 
     /** Log the user in. Returns sessionId if successful, undefined if not. Sets a JWT cookie. */
     static async login(username, password, cancelToken = null) {
-        const resp = await axios.post("/auth/login",
-            { username, password },
-            { cancelToken }
-        );
+        try {
+            const resp = await axios.post("/auth/login",
+                { username, password },
+                { cancelToken }
+            );
 
-        //Login returns {success, sessionID} if successful. 
-        //TODO should return username as well.
-        if (resp.data.success)
-            return { sessionId: resp.data.sessionID }; //TODO sessionID should be sessionId
-        else return;
+            //Login returns {success, sessionID} if successful. 
+            //TODO should return username as well.
+            if (resp.data.success)
+                return { sessionId: resp.data.sessionID }; //TODO sessionID should be sessionId
+            else return;
+        } catch (e) {
+            return;
+        }
     }
 
     /**

@@ -10,7 +10,7 @@ const getColorClass = (order) => {
     if (!order.audit) return "";
     if (order.audit.error) return "table-danger";
     if (order.inHistory === "Y") return "table-warning";
-    if (order.statusID === "500" || order.statusID === "700") return "table-info";
+    if (order.statusId === "500" || order.statusId === "700") return "table-info";
     return "table-warning";
 }
 

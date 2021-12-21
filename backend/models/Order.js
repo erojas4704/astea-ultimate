@@ -25,6 +25,7 @@ class Order extends Model {
                 const [tech] = technician?.id ? await Technician.findOrCreate({ where: { id: technician.id }, defaults: technician }) : null;
                 o.setTechnician(tech);
             }
+            console.log(o);
             //TODO extract and organize so that the promises run in parallel.
             //TODO collapse these into one call as well.
 

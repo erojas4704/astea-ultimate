@@ -1,6 +1,5 @@
 const axios = require('axios');
 const prompt = require('prompt');
-const forFakeDelay = require('../astea-sim/helpers/fakeDelay');
 require('dotenv').config();
 
 prompt.start();

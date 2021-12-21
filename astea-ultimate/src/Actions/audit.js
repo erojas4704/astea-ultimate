@@ -3,15 +3,20 @@ import { AUDIT_ADD, AUDIT_NEW, AUDIT_ORDER_LOAD, AUDIT_ORDER_LOAD_FAIL as AUDIT_
 import { getPureId } from "../helpers/ServiceOrderUtils";
 import Api from "../api";
 
-export function updateAuditOrder(id, location, name, status = 0) {
-    Api.addAudit(id, name, location, status);
-    return {
-        type: AUDIT_UPDATE,
-        payload: {
-            id,
-            location,
-            status
-        }
+export function updateAuditOrder(id, location, name, status, pushToTop = true) {
+    return (dispatch, getState) => {
+        if (!name) name = getState().audit.name;
+
+        Api.addAudit(id, name, location, status);
+        dispatch({
+            type: AUDIT_UPDATE,
+            payload: {
+                id,
+                location,
+                status
+            },
+            pushToTop
+        });
     }
 }
 
@@ -36,7 +41,7 @@ export function addToAudit(id, location, name) {
         dispatch({ type: AUDIT_ADD, payload: { id, location, name } });
         try {
             dispatch({ type: AUDIT_ORDER_LOAD, payload: { id } });
-            if(!name) name = getState().audit.name; //TODO antipattern
+            if (!name) name = getState().audit.name; //TODO antipattern
 
             const results = await Api.search({ id: getPureId(id) }); //TODO, instead of search, GET. Might not be feasible because of the way some orders are appended with @@ signs.
             Api.addAudit(id, name, location, NOT_RESOLVED);

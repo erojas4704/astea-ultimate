@@ -1,0 +1,10 @@
+.disabled {
+    outline: none;
+    border-width: 0px;
+    background-color: #00000000;
+    border-bottom: 1px solid #0000002d;
+}
+
+.text{
+    outline: none;
+}

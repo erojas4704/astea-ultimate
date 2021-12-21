@@ -32,19 +32,19 @@ export default function auditReducer(state = DEFAULT_STATE, action) {
             }
         case AUDIT_UPDATE://TODO cleanings
             const localIndex = state.orders.findIndex(findOrderById(action.payload.id));
-            console.log(localIndex);
             const updatedOrder =
                 localIndex >= 0 ?
                     state.orders[localIndex]
                     : { id: action.payload.id, audit: action.payload };
             updatedOrder.audit = { ...action.payload, ...updatedOrder.audit, location: action.payload.location };
 
+            const newOrders = action.pushToTop ?
+                [updatedOrder, ...state.orders.filter(order => order.id !== updatedOrder.id)] :
+                [...state.orders.map(order => order.id === updatedOrder.id ? updatedOrder : order)];
+
             return {
                 ...state,
-                orders: [
-                    updatedOrder,
-                    ...state.orders.filter(order => order.id !== updatedOrder.id)
-                ]
+                orders: newOrders
             }
         case AUDIT_RESET:
             return DEFAULT_STATE;

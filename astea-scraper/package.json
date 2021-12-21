@@ -7,12 +7,15 @@
     "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "proxy": "http://localhost:6001",
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.24.0",
+    "cli-progress": "^3.9.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "prompt": "^1.2.0"
   }
 }

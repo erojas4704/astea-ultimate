@@ -1,5 +1,5 @@
 "use strict";
-const app = require("./app");
+const app = require("./ioBasicTesting");
 require("dotenv").config();
 
 const PORT = 4052;

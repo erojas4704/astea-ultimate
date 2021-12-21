@@ -65,6 +65,7 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
                         || (tag && serviceOrder.tag?.includes(tag))
                         || (serial && serviceOrder.serial?.includes(serial))
                         || (status && serviceOrder.statusID?.includes(status))
+                        || (actionGroup && serviceOrder.actionGroup?.includes(actionGroup))
                     )
                     && (!actionGroup || (actionGroup && serviceOrder.actionGroup?.includes(actionGroup)))
                 ) filtered.push(serviceOrder);

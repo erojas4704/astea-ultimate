@@ -45,6 +45,8 @@ class Order extends Model {
             status: { type: DataTypes.STRING, allowNull: false },
             problem: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' },
             warehouse: { type: DataTypes.STRING, allowNull: true },
+            orderType: { type: DataTypes.STRING, allowNull: true },
+            product: { type: DataTypes.STRING, allowNull: true},
             actionGroup: { type: DataTypes.STRING, allowNull: true },
             tag: { type: DataTypes.STRING, allowNull: true }
         },

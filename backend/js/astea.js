@@ -125,11 +125,11 @@ function formatTechniciansRequestBody(sessionID, actionGroupID = "Queens") {
     }
 }
 
-function extractError(json){
-    try{
+function extractError(json) {
+    try {
         const error = json["s:Envelope"]["s:Body"][0]["s:Fault"][0]["detail"][0]["ExceptionDetail"][0]["Type"][0];
         return error;
-    }catch(err){}//Fail silently
+    } catch (err) { }//Fail silently
 }
 
 async function orderLocatorSearch(session, criteria) {
@@ -150,7 +150,7 @@ async function orderLocatorSearch(session, criteria) {
     const json = await parseXMLToJSON(resp.data);
     try {
         const error = extractError(json);
-        if(error && error === "Astea.Common.Exception.AsteaSessionTimoutException"){
+        if (error && error === "Astea.Common.Exception.AsteaSessionTimoutException") {
             throw new AsteaError("Session timed out", 403);
         }
         const resultsEncodedXML = json["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0]; //Make these nasties a little cleaner.
@@ -177,7 +177,6 @@ async function extractFromResults(results) {
         const id = svRawData.order_id[0]._;
         return new Promise(async (resolve, reject) => {
             const serviceOrder = await ServiceOrder.retrieve(svRawData, 1);
-            Database.setServiceOrder(id, serviceOrder);
             resolve(serviceOrder);
         });
     });
@@ -228,7 +227,6 @@ async function retrieveSV(id, isInHistory, session, forceNew = false, loadCached
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //2 Has just proper SV and metadata. 3 has interactions, materials and proper SV data
     serviceOrder.metadata = getOrderMetadata(json); //Get state-id from the JSON
 
-    Database.setServiceOrder(id, serviceOrder); //Update the cache
     return { serviceOrder, json };
 }
 
@@ -381,12 +379,8 @@ async function createInteraction(id, session, message) {
 }
 
 async function getInteractions(id, session, isInHistory = false) {
-    let serviceOrder = await Database.getServiceOrder(id); ///TODO need current metadata, probably
-    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, serviceOrder);
-    if (!serviceOrder || serviceOrder.completeness < 3) {
         const svResp = await retrieveSV(id, isInHistory, session);
-        serviceOrder = svResp.serviceOrder;
-    }
+        const serviceOrder = svResp.serviceOrder;
 
     const { stateId, hostName } = serviceOrder.metadata;
 
@@ -401,7 +395,6 @@ async function getInteractions(id, session, isInHistory = false) {
     serviceOrder.parseInteractions(json);
     serviceOrder.calculateCompleteness(); //Call this instead of setting it
 
-    Database.setServiceOrder(id, serviceOrder); //Update the cache
 
     return serviceOrder.interactions;
 }
@@ -409,12 +402,8 @@ async function getInteractions(id, session, isInHistory = false) {
 async function getMaterials(id, session, isInHistory = false) {
     if (process.env.LOCATION == "home") return [];
     //TODO maybe use existing state instead of opening a new one?
-    let serviceOrder = await Database.getServiceOrder(id);
-    if (serviceOrder) serviceOrder = Object.assign(new ServiceOrder, serviceOrder);
-    if (!serviceOrder || serviceOrder.completeness < 3) {
-        const svResp = await retrieveSV(id, isInHistory, session);
-        serviceOrder = svResp.serviceOrder;
-    }
+    const svResp = await retrieveSV(id, isInHistory, session);
+    const serviceOrder = svResp.serviceOrder;
 
     const { stateId, hostName } = serviceOrder.metadata;
 
@@ -429,7 +418,6 @@ async function getMaterials(id, session, isInHistory = false) {
     const json = await interpretMacroResponse(resp.data['d']);
     serviceOrder.parseMaterials(json);
     serviceOrder.calculateCompleteness(); //Call this instead of setting it
-    Database.setServiceOrder(id, serviceOrder); //Update the cache
 
     return serviceOrder.materials;
 }

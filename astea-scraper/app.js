@@ -7,7 +7,7 @@ prompt.start();
 const backend = axios.create({
     proxy: {
         host: 'localhost',
-        port: 6001
+        port: process.env.SERVER_PORT
     }
 })
 
@@ -46,7 +46,7 @@ async function login(username, password) {
     for (let i = 0; i < data.length; i++) {
         const order = data[i];
         backend.get(`/ServiceOrder/${order.id}`);
-        await forFakeDelay(.2);
+        await forFakeDelay(process.env.DELAY);
         console.log(`Cached ${i + 1}/${data.length}`);
     };
     console.log("Done!");

@@ -3,7 +3,6 @@ import "./OrderView.css";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 import { capitalizeNames } from "../helpers/StringUtils";
-import { useServiceOrder } from "../hooks/serviceOrderHooks";
 import useTechnicians from "../hooks/useTechnicians";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import InteractionsView from "./InteractionsView";
@@ -11,13 +10,27 @@ import MaterialsView from "./MaterialsView";
 import LoadingSpinner from "../components/LoadingSpinner";
 import useAsync from "../hooks/useAsync";
 import Api from "../api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { loadOrder, getOrderById } from "./orderSlice";
 
 const ServiceOrder = (props) => {
+    const dispatch = useDispatch();
     const params = useParams();
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
-    const { serviceOrder, isLoading } = useServiceOrder(id, props);
+    const { order, status, error } = useSelector((state) => getOrderById(state, id));
+    //TEMPORARY HACK because these states are immutable and can't be updated. Once we have
+    //interactions and materials properly implemented, we can remove this.
+    const serviceOrder = {...order};
+    const isLoading = status === "pending";
+
+    useEffect(() => {
+        dispatch(loadOrder({ id }));
+    }, [id])
+
+
+
     const [toTechnician, setToTechnician] = useState(null);
     const { execute: assignTechnician,
         loading: assignPending,
@@ -35,7 +48,7 @@ const ServiceOrder = (props) => {
 
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>
-            <div style={{ textAlign: "left", marginBottom: "14px" }} className="divider">Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}</div>
+            <div style={{ textAlign: "left", marginLeft: '4px', marginBottom: "14px" }} className="divider">Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}</div>
             {serviceOrder && (
                 <div className="order-details">
                     <div className="order-col" style={{ flexGrow: "1", marginBottom: "2px" }}>
@@ -83,11 +96,10 @@ const ServiceOrder = (props) => {
                         <MaterialsView serviceOrder={serviceOrder} />
                     </div>
                     <div className="order-col" style={{ flexGrow: "3" }}>
-                        <div className="label">Issue</div>
+                        <div className="label">Description</div>
                         <div className="value">
                             {serviceOrder.problem}
                             {serviceOrder.problem?.length <= 60 && <>...</>}
-                            {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}
                         </div>
                         <div className="order-row">
                             <div className="label">Open Date</div>

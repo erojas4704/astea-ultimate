@@ -12,7 +12,7 @@ import useAsync from "../hooks/useAsync";
 import Api from "../api";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { loadOrder, getOrderById } from "./orderSlice";
+import { loadOrder, getOrderById, assignTechnician } from "./orderSlice";
 
 const ServiceOrder = (props) => {
     const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const ServiceOrder = (props) => {
 
     //TEMPORARY HACK because these states are immutable and can't be updated. Once we have
     //interactions and materials properly implemented, we can remove this.
-    const serviceOrder = order? {...order} : summary;
+    const serviceOrder = order ? { ...order } : summary;
     const isLoading = status === "pending";
 
     useEffect(() => {
@@ -32,20 +32,9 @@ const ServiceOrder = (props) => {
     }, [id])
 
 
-
-    const [toTechnician, setToTechnician] = useState(null);
-    const { execute: assignTechnician,
-        loading: assignPending,
-        response: assignResponse
-    } = useAsync(async () => {
-        return (await Api.assignTechnician(id, toTechnician))
-    });
-
     const handleTechnicianChange = (event) => {
         const technicianId = event.target.value;
-        props.onTechnicianChange(technicianId);
-        setToTechnician(technicianId);
-        assignTechnician();
+        dispatch(assignTechnician({ id, technicianId }));
     }
 
     return (
@@ -68,13 +57,14 @@ const ServiceOrder = (props) => {
                         <div className="order-row form-inline">
                             <div className="form-group form-inline">
                                 <label htmlFor="select-tech" className="label">Technician</label>
-
+                                {serviceOrder.technician?.status === "pending" && <LoadingSpinner variant="warning" />}
                                 {technicians ?
-                                    <select id="select-tech" onChange={handleTechnicianChange} value={serviceOrder.technician?.id} className="" defaultValue="" disabled={isLoadingTechnicians}>
+                                    <select id="select-tech" onChange={handleTechnicianChange} value={serviceOrder.technician?.id || ""} className="" defaultValue="" disabled={isLoadingTechnicians}>
                                         <option value="">Unassigned</option>
                                         {technicians.map(technician => <option key={technician.id} value={technician.id}>{technician.name}</option>)}
                                     </select> :
                                     <LoadingSpinner />}
+
                             </div>
                         </div>
                         <div className="divider" />

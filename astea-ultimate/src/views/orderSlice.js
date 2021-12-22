@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import Api from '../api';
 
 //TODO createAsyncThunk instead when you learn it
@@ -34,20 +34,20 @@ export const orderSlice = createSlice({
         }
     },
     extraReducers: {
-        ['orders/loadOrder/pending']: (state, action) => {
+        'orders/loadOrder/pending': (state, action) => {
             state[action.payload.id] = state[action.payload.id] || {};
             state[action.payload.id].status = "pending";
         },
-        ['orders/loadOrder/fulfilled']: (state, action) => {
+        'orders/loadOrder/fulfilled': (state, action) => {
             state[action.payload.id].order = action.payload;
             state[action.payload.id].status = "complete";
         },
-        ['orders/loadOrder/rejected']: (state, action) => {
+        'orders/loadOrder/rejected': (state, action) => {
             state[action.payload.id] = state[action.payload.id] || {};
             state[action.payload.id].status = "error";
             state[action.payload.id].error = action.payload.error;
         },
-        ['orders/loadOrder/cached']: (state, action) => {
+        'orders/loadOrder/cached': (state, action) => {
             state[action.payload.id] = state[action.payload.id] || {};
             if(state[action.payload.id === "pending"]) //Overwrite the pending status with the cached order
                 state[action.payload.id].order = action.payload;

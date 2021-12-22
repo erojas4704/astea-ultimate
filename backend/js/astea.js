@@ -286,6 +286,7 @@ async function assignTechnician(id, session, technicianId) {
     );
 
     const json = await parseXMLToJSON(resp.data['d']);
+    debugger;
     const serviceOrder = await ServiceOrder.retrieve(json.root.main[0].row[0], 2); //TODO we're refactoring all of this.
     return serviceOrder;
 }

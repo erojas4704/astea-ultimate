@@ -20,9 +20,11 @@ const ServiceOrder = (props) => {
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
     const { order, status, error } = useSelector((state) => getOrderById(state, id));
+    const summary = useSelector(state => state.locator.orders[id]);
+
     //TEMPORARY HACK because these states are immutable and can't be updated. Once we have
     //interactions and materials properly implemented, we can remove this.
-    const serviceOrder = {...order};
+    const serviceOrder = order? {...order} : summary;
     const isLoading = status === "pending";
 
     useEffect(() => {

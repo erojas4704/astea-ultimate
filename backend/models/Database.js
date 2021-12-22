@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
-    logging: false
+    //logging: false
 });
 
 const Customer = require('./Customer');
@@ -10,13 +10,15 @@ const Technician = require('./Technician');
 
 const Audit = require('./Audit');
 const OrderAudit = require('./OrderAudit');
+const Interaction = require('./Interaction');
 
 const models = {
     Customer: Customer.init(sequelize, Sequelize),
     Order: Order.init(sequelize, Sequelize),
     Technician: Technician.init(sequelize, Sequelize),
     Audit: Audit.init(sequelize, Sequelize),
-    OrderAudit: OrderAudit.init(sequelize, Sequelize)
+    OrderAudit: OrderAudit.init(sequelize, Sequelize),
+    //Interaction: Interaction.init(sequelize, Sequelize)
 }
 
 Object.values(models)
@@ -25,7 +27,9 @@ Object.values(models)
 
 (async () => {
     //Order.sync({alter: true});
-    //await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    //await Order.sync({alter: true}).catch(err => console.log(err));
+    //console.log("snyc")
     // await sequelize.sync({ force: true })
     //     .then(() => console.log('Database synced'))
     //     .catch(err => console.error(err));

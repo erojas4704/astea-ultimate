@@ -14,8 +14,10 @@ class Order extends Model {
         const orderData = parseServiceOrderData(data);
         const { customer, technician } = orderData;
 
+
         (async () => {
-            const [o] = await Order.findOrCreate({ where: { id: orderData.id }, defaults: orderData });
+            //return; //TODO EXTREMELY BROKEN AND IDK WHY
+            const [o] = await this.findOrCreate({ where: { id: orderData.id }, defaults: orderData });
             o.set(orderData);
             if (customer && customer.id) {
                 const [cust] = customer?.id ? await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer }) : null;
@@ -46,7 +48,7 @@ class Order extends Model {
             problem: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' },
             warehouse: { type: DataTypes.STRING, allowNull: true },
             orderType: { type: DataTypes.STRING, allowNull: true },
-            product: { type: DataTypes.STRING, allowNull: true},
+            product: { type: DataTypes.STRING, allowNull: true },
             actionGroup: { type: DataTypes.STRING, allowNull: true },
             tag: { type: DataTypes.STRING, allowNull: true }
         },

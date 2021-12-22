@@ -3,7 +3,7 @@ require("dotenv").config();
 const ASTEA_BASE_URL = process.env.ASTEA_BASE_URL;
 const URLCommandBase = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/`;
 const URLExecuteMacro = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/ExecMacroUIExt`;
-const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
+const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt`;
 const URLSearch = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
 const URLRetrieveXML = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/RetrieveXMLExt`
 
@@ -81,6 +81,7 @@ function formatXmlRequest(isInHistory) {
     </root>`;
 }
 
+//TODO refactor this to take an object with optional parameters
 function formatCommandBody(stateId, sessionID, command, isInHistory = false) {
     return {
         "stateId": stateId,
@@ -454,5 +455,7 @@ module.exports = {
     URLExecuteMacro,
     formatExecuteMacroBody,
     headers,
-    extractError
+    extractError,
+    formatCommandBody,
+    URLCommandBase
 };

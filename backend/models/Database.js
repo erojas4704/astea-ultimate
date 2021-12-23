@@ -10,13 +10,15 @@ const Technician = require('./Technician');
 
 const Audit = require('./Audit');
 const OrderAudit = require('./OrderAudit');
+const Interaction = require('./Interaction');
 
 const models = {
     Customer: Customer.init(sequelize, Sequelize),
     Order: Order.init(sequelize, Sequelize),
     Technician: Technician.init(sequelize, Sequelize),
     Audit: Audit.init(sequelize, Sequelize),
-    OrderAudit: OrderAudit.init(sequelize, Sequelize)
+    OrderAudit: OrderAudit.init(sequelize, Sequelize),
+    Interaction: Interaction.init(sequelize, Sequelize)
 }
 
 Object.values(models)
@@ -24,8 +26,8 @@ Object.values(models)
     .forEach(model => model.associate(models));
 
 (async () => {
-    //Order.sync({alter: true});
     //await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    //Order.sync({alter: true});
     // await sequelize.sync({ force: true })
     //     .then(() => console.log('Database synced'))
     //     .catch(err => console.error(err));

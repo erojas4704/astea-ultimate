@@ -454,5 +454,7 @@ module.exports = {
     URLExecuteMacro,
     formatExecuteMacroBody,
     headers,
-    extractError
+    extractError,
+    formatCommandBody,
+    URLCommandBase
 };

@@ -65,7 +65,7 @@ router.post("/interactions", async (req, res, next) => {
 router.get("/interactions", async (req, res, next) => {
     const { id, history } = req.query;
     try {
-        const interactions = await getInteractions(id, req.session, history === "y");
+        const interactions = await Astea.getInteractions(id, req.session, history === "y");
         return res.send(interactions);
     } catch (e) {
         console.error(e);

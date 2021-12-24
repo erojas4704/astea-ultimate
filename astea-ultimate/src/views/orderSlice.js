@@ -21,6 +21,16 @@ export const loadOrder = ({ id }) => {
     }
 };
 
+export const retrieveInteractions = createAsyncThunk(
+    'orders/retrieveInteractions',
+    async ({ id }) => await Api.getInteractions(id)
+)
+
+export const addInteraction = createAsyncThunk(
+    'orders/addInteraction',
+    async ({ id, message }) => await Api.createInteraction(id, message)
+);
+
 export const assignTechnician = createAsyncThunk(
     'orders/assignTechnician',
     async ({ id, technicianId }) => await Api.assignTechnician(id, technicianId)
@@ -54,6 +64,40 @@ export const orderSlice = createSlice({
                 state[id].order.technician.error = action.payload;
                 state[id].order.technician.status = "error";
             })
+            .addCase(retrieveInteractions.pending, (state, action) => {
+                const id = action.meta.arg.id;
+                if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
+                state[id].interactions = {
+                    interactions: [],
+                    status: "pending"
+                }
+            })
+            .addCase(retrieveInteractions.fulfilled, (state, action) => {
+                const id = action.meta.arg.id;
+                if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
+                state[id].interactions = {
+                    ...state[id].interactions,
+                    interactions: action.payload || [],
+                    status: "complete"
+                }
+            })
+            .addCase(retrieveInteractions.rejected, (state, action) => {
+                const id = action.meta.arg.id;
+                if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
+                state[id].interactions = {
+                    interactions: [],
+                    status: "error",
+                    error: action.payload
+                }
+            })
+            // .addCase(addInteraction.pending, (state, action) => {
+            //     const id = action.meta.arg.id;
+            //     if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
+            //     state[id].interactions = {
+            //         ...state[id].interactions,
+            //         interactions: [...state[id].interactions.interactions, ] //TODO good god this is ugly
+            //     }
+            // });
             .addCase('orders/loadOrder/fulfilled', (state, action) => {
                 state[action.payload.id].order = action.payload;
                 state[action.payload.id].status = "complete";

@@ -26,7 +26,7 @@ Object.values(models)
     .forEach(model => model.associate(models));
 
 (async () => {
-    //await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    await sequelize.sync({ alter: true }).catch(err => console.log(err));
     //Order.sync({alter: true});
     // await sequelize.sync({ force: true })
     //     .then(() => console.log('Database synced'))

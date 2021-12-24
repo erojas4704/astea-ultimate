@@ -13,6 +13,7 @@ const fields = {
     "actgr_descr": "actionGroup",
     "cc_actgr_descr": "actionGroup",
     "is_in_history": "isInHistory",
+    "cc_callt_descr": "type",
     "cc_cust_company_descr": "customer.name",
     "cc_cust_company_id": "customer.id",
     "cc_site_company_descr": "customer.name",

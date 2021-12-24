@@ -53,6 +53,8 @@ router.patch("/:id/assign", async (req, res, next) => {
 router.post("/interactions", async (req, res, next) => {
     const { id, message } = req.body;
     try {
+        await new Promise(r => {setTimeout(r, 3000)});
+        return res.send("atta boy");
         const interactionResp = await createInteraction(id, req.session, message);
         return res.send(interactionResp);
     }

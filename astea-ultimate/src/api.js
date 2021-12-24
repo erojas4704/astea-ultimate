@@ -32,13 +32,12 @@ class Api {
     /** Returns a cancelable promise to retrieve a service order. 
      * @param {string} id - The service order id.
     */
-    static async getServiceOrder(id, useCached, cancelToken = null) {
+    static async getServiceOrder(id, useCached, history=false, cancelToken = null) {
         const resp = await axios.get(`/ServiceOrder/${id}`, {
-            params: { cache: useCached ? "y" : null },
+            params: { cache: useCached ? "y" : null, history },
             cancelToken
         });
-
-        if (resp.error) throw resp.error;
+        if (resp.error || !resp.data) throw resp.message;
         return resp.data;
     }
 

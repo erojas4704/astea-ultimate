@@ -4,10 +4,11 @@ import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
 
 export default function OrderListing({ order, onSelect, selected }) {
     const navigate = useNavigate();
+    console.log(order.isInHistory);
     return (
         <tr
             onClick={() => { navigate(`astea/ServiceOrder/${order.id}`); onSelect(order.id) }}
-            className={order.inHistory === "Y" ? 'in-history' : ''}
+            className={order.isInHistory? 'in-history' : ''}
             style={{ cursor: 'pointer', backgroundColor: selected === order.id ? '#fff1db' : '' }}
         >
             <td>

@@ -13,9 +13,11 @@ class Order extends Model {
     static async parse(data) {
         const orderData = parseServiceOrderData(data);
         const { customer, technician } = orderData;
+        orderData.isInHistory = orderData.statusId == 900; //TODO hack because only Astea searches pull up status history.
 
         (async () => {
             const [o] = await Order.findOrCreate({ where: { id: orderData.id }, defaults: orderData });
+
             o.set(orderData);
             if (customer && customer.id) {
                 const [cust] = customer?.id ? await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer }) : null;

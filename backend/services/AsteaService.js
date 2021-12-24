@@ -31,13 +31,21 @@ const asteaRequest = async (url, body, options = {}) => {
 }
 
 class Astea {
-    static async getServiceOrder(id, session) {
+    static async getServiceOrder(id, session, history = false) {
         const { sessionID: sessionId } = session;
-        const executeMacro = await asteaRequest(
-            URLExecuteMacro,
-            formatMacroBody("retrieve", false, sessionId, id),
-            { headers }
-        );
+
+        const pull = async (checkHistory) => {
+            let resp = await asteaRequest(
+                URLExecuteMacro,
+                formatMacroBody("retrieve", checkHistory, sessionId, id),
+                { headers }
+            );
+
+            if (resp.error && checkHistory === false) resp = await pull(true);
+            return resp;
+        }
+
+        const executeMacro = await pull(history);
 
         if (executeMacro.error) throw new AsteaError(executeMacro.error, 500); //TODO get error code from type.
         const orderData = await Order.parse(executeMacro.data);
@@ -64,6 +72,15 @@ class Astea {
         Interaction.parse(interactions, serviceOrder);
         return interactions;
     }
+
+    static async createInteraction(id, session, message) {
+        const { HostName, StateID } = (await this.getServiceOrder(id, session)).serviceOrder;
+        const { error, data } = await asteaRequest(
+            URLInteractWithServer
+        );
+    }
+
+
 }
 
 module.exports = Astea;

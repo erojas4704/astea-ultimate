@@ -401,6 +401,7 @@ async function getInteractions(id, session, isInHistory = false) {
 }
 
 async function getMaterials(id, session, isInHistory = false) {
+    return [];
     if (process.env.LOCATION == "home") return [];
     //TODO maybe use existing state instead of opening a new one?
     const svResp = await retrieveSV(id, isInHistory, session);

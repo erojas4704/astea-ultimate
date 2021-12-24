@@ -68,19 +68,6 @@ class Api {
         return resp.data;
     }
 
-    /** Returns a cancelable promise to retrieve interactions.
-     * @param {string} id - The service order id.
-     */
-    static async getInteractions(id, cancelToken = null) {
-        const resp = await axios.get('/ServiceOrder/interactions', {
-            params: { id },
-            cancelToken
-        });
-
-        if (resp.error) throw resp.error;
-        return resp.data;
-    }
-
     /** Creates an interaction for the given service order.
      * @param {string} id The service order id.
      * @param {string} message The message to send.

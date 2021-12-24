@@ -3,7 +3,7 @@ const express = require("express");
 const axios = require("axios");
 
 const router = new express.Router();
-const { retrieveSV, orderLocatorSearch, getInteractions, getMaterials, createInteraction, assignTechnician } = require("../js/astea.js");
+const { retrieveSV, orderLocatorSearch, getInteractions, getMaterials, createInteraction, assignTechnician, invoice } = require("../js/astea.js");
 const { hasAsteaCredentials } = require("../middleware/asteaAuthentication.js");
 const { parseXMLToJSON } = require("../helpers/xml.js");
 const { AsteaError } = require("../js/AsteaError.js");
@@ -48,6 +48,16 @@ router.patch("/:id/assign", async (req, res, next) => {
     }
 });
 
+router.post("/:id/invoice", async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const data = await invoice(id, req.session);
+        return res.send(data);
+    } catch (err) {
+        return next(err);
+    }
+});
+
 
 /** Create a new interaction */
 router.post("/interactions", async (req, res, next) => {
@@ -85,6 +95,7 @@ router.get("/materials", async (req, res, next) => {
         return next(e);
     }
 });
+
 
 /** Get a service order by ID */
 router.get("/:id", async (req, res, next) => {

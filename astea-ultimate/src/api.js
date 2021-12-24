@@ -42,6 +42,22 @@ class Api {
         return resp.data;
     }
 
+    /** Returns a cancelable promise to retrieve interactions for a service order.
+     * @param {string} id - The service order id.
+     * @param {boolean} useCached - Whether to use cached data.
+     * @param {cancelToken} cancelToken - A cancel token.
+     * @returns {promise} - A promise to retrieve the interactions.
+     */
+    static async getInteractions(id, useCached, cancelToken = null) {
+        const resp = await axios.get('/ServiceOrder/interactions', {
+            params: { id, cache: useCached ? "y" : null },
+            cancelToken
+        });
+
+        if (resp.error) throw resp.error;
+        return resp.data;
+    }
+
     static async search(query, cancelToken = null) {
         const resp = await axios.get('/ServiceOrder/search', {
             params: { ...query },
@@ -63,6 +79,20 @@ class Api {
 
         if (resp.error) throw resp.error;
         return resp.data;
+    }
+
+    /** Creates an interaction for the given service order.
+     * @param {string} id The service order id.
+     * @param {string} message The message to send.
+     */
+    static async createInteraction(id, message, cancelToken = null) {
+        const resp = await axios.post("/ServiceOrder/Interactions",
+            { id, message },
+            { cancelToken }
+        );
+
+        if (resp.error) throw resp.error;
+        return resp.data
     }
 
     /** Log the user out. Returns true if successful. */

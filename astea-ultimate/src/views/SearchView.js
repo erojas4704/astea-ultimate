@@ -5,16 +5,18 @@ import { Link, useParams } from "react-router-dom";
 import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSearch, search } from "../actions/locator";
+import OrderListing from "../components/OrderListing";
 
 const SearchView = () => {
     const results = useSelector(state => state.locator.data);
     const loading = useSelector(state => state.locator.loading);
+    const orders = useSelector(state => state.orders);
 
     const dispatch = useDispatch();
     const [searchInput, setSearchInput] = useState("");
     const [includeHistory, setIncludeHistory] = useState(false);
     const [selected, setSelected] = useState(useParams().id || '');
-    
+
     //TODO maybe a search hook that simplifies all this crap
 
     useEffect(() => {
@@ -65,16 +67,12 @@ const SearchView = () => {
                     </thead>
                     <tbody>
                         {results.map(result =>
-                            <tr key={result.id}
-                                className={result.inHistory === "Y" ? 'in-history' : ''}
-                                style={selected === result.id ? { backgroundColor: '#fff1db' } : null}>
-                                <td>
-                                    <Link onClick={() => setSelected(result.id)} to={{ pathname: `/astea/ServiceOrder/${result.id}`, state: { data: result } }} >{result.id}</Link>
-                                </td>
-                                <td>{nameToInitials(result.technician?.name) || ""}</td>
-                                <td className="col-name">{capitalizeNames(result.customer?.name) || capitalizeNames(result.caller?.name) || capitalizeNames(result.company?.name) || ""}</td>
-                                <td>{moment(result.openDate).format("MM/DD/yy")}</td>
-                            </tr>)}
+                            <OrderListing
+                                selected={selected === result.id}
+                                onSelect={() => setSelected(result.id)} key={result.id} 
+                                order={orders[result.id]?.order || result}
+                            />
+                        )}
                     </tbody>
                 </table>
             </div>

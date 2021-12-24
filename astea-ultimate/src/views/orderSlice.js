@@ -23,7 +23,13 @@ export const loadOrder = ({ id }) => {
 
 export const retrieveInteractions = createAsyncThunk(
     'orders/retrieveInteractions',
-    async ({ id }) => await Api.getInteractions(id)
+    async ({ id }, thunkAPI) => {
+        Api.getInteractions(id, true)
+            .then(interactions => {
+                thunkAPI.dispatch({ type: 'orders/retrieveInteractions/cached', payload: interactions });
+            });
+        return await Api.getInteractions(id);
+    }
 )
 
 export const addInteraction = createAsyncThunk(
@@ -66,7 +72,7 @@ export const orderSlice = createSlice({
             })
             .addCase(retrieveInteractions.pending, (state, action) => {
                 const id = action.meta.arg.id;
-                if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
+                if (!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
                 state[id].interactions = {
                     interactions: [],
                     status: "pending"
@@ -74,7 +80,7 @@ export const orderSlice = createSlice({
             })
             .addCase(retrieveInteractions.fulfilled, (state, action) => {
                 const id = action.meta.arg.id;
-                if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
+                if (!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
                 state[id].interactions = {
                     ...state[id].interactions,
                     interactions: action.payload || [],
@@ -83,21 +89,35 @@ export const orderSlice = createSlice({
             })
             .addCase(retrieveInteractions.rejected, (state, action) => {
                 const id = action.meta.arg.id;
-                if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
-                state[id].interactions = {
-                    interactions: [],
-                    status: "error",
-                    error: action.payload
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        status: "error",
+                        error: action.payload
+                    }
                 }
             })
-            // .addCase(addInteraction.pending, (state, action) => {
-            //     const id = action.meta.arg.id;
-            //     if(!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
-            //     state[id].interactions = {
-            //         ...state[id].interactions,
-            //         interactions: [...state[id].interactions.interactions, ] //TODO good god this is ugly
-            //     }
-            // });
+            .addCase(addInteraction.pending, (state, action) => {
+                const id = action.meta.arg.id;
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        status: "pending"
+                    }
+                }
+            })
+            .addCase(`orders/retrieveInteractions/cached`, (state, action) => {
+                const id = action.meta.arg.id;
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        interactions: action.payload,
+                        ...state[id].interactions,
+                    }
+                }
+            })
             .addCase('orders/loadOrder/fulfilled', (state, action) => {
                 state[action.payload.id].order = action.payload;
                 state[action.payload.id].status = "complete";

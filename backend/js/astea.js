@@ -3,7 +3,7 @@ require("dotenv").config();
 const ASTEA_BASE_URL = process.env.ASTEA_BASE_URL;
 const URLCommandBase = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/`;
 const URLExecuteMacro = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/ExecMacroUIExt`;
-const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt?SkhMc20wbi9JemxhR1N1ZWhObzhHUT09X3JVRm53QTRCbHpWRVFLSWlPUkFvZGc9PQ2`;
+const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt`;
 const URLSearch = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
 const URLRetrieveXML = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/RetrieveXMLExt`
 
@@ -230,6 +230,48 @@ async function retrieveSV(id, isInHistory, session, forceNew = false, loadCached
     return { serviceOrder, json };
 }
 
+async function invoice(id, session) {
+    const sessionID = session.sessionID;
+    const svResp = await retrieveSV(id, false, session, true);
+    const { hostName, stateId } = svResp.serviceOrder.metadata;
+
+    const resp = await axios.post(
+        `${URLInteractWithServer}?${hostName}`,
+        {
+            "stateId": stateId,
+            "sessionId": sessionID,
+            "macroName": "OrderCompletion",
+            "bcName": "Service_Order",
+            "boAlias": "main",
+            "macroParameters": "<xml xmlns:dt='urn:schemas-microsoft-com:datatypes'><array></array></xml>",
+            "updateStateXml": "<root xmlns:dt=\"urn:schemas-microsoft-com:datatypes\"></root>\r\n",
+            "requestStateXml": `<root xmlns:dt='urn:schemas-microsoft-com:datatypes'><GetCurrentState pageName='' stateID='${stateId}'><BO alias='main'></BO></GetCurrentState></root>`,
+            "requestStateXPathFilter": "",
+            "saveState": true,
+            "closeState": true,
+            "moduleName": "service_order_maint"
+        },  
+        {
+            headers: {
+                "SOAPAction": "http://astea.services.wcf/IBCBaseContract/InteractWithServerExt",
+                "Accept-Encoding": "gzip, deflate",
+                "Host": "alliance.microcenter.com",
+                "Expect": "100-continue",
+                "currentprofile": "Prod"
+            }
+        }
+    ); //Execute Astea Macro retrieve
+
+    if (resp.data.ExceptionDetail) {
+        console.log(JSON.stringify(resp.data));
+        const error = await parseErrorMessage(resp.data);
+        throw new AsteaError(resp.data.ExceptionDetail.Type, error?.status || 500, error?.message || `[${id}]: Astea threw an exception. \n ${resp.data.ExceptionDetail.Type}`);
+    }
+
+    return resp.data['d'];
+}
+
+
 function saveRawData(id, data) {
     fs.writeFile(`./.cache/${id}.xml`, data, { flag: 'a' }, function (err) {
         if (err) throw err;
@@ -380,8 +422,8 @@ async function createInteraction(id, session, message) {
 }
 
 async function getInteractions(id, session, isInHistory = false) {
-        const svResp = await retrieveSV(id, isInHistory, session);
-        const serviceOrder = svResp.serviceOrder;
+    const svResp = await retrieveSV(id, isInHistory, session);
+    const serviceOrder = svResp.serviceOrder;
 
     const { stateId, hostName } = serviceOrder.metadata;
 
@@ -457,5 +499,6 @@ module.exports = {
     headers,
     extractError,
     formatCommandBody,
-    URLCommandBase
+    URLCommandBase,
+    invoice
 };

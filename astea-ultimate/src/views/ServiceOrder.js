@@ -28,7 +28,7 @@ const ServiceOrder = (props) => {
     const isLoading = status === "pending";
 
     useEffect(() => {
-        dispatch(loadOrder({ id }));
+        dispatch(loadOrder({ id, history: summary?.inHistory ==="Y" }));
     }, [id])
 
 

@@ -2,16 +2,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Api from '../api';
 
 //TODO createAsyncThunk instead when you learn it
-export const loadOrder = ({ id }) => {
+export const loadOrder = ({ id, history }) => {
     return async dispatch => {
         dispatch({ type: 'orders/loadOrder/pending', payload: { id } });
         try {
             //Get cached order
-            const order = await Api.getServiceOrder(id, true);
+            const order = await Api.getServiceOrder(id, true, history);
             dispatch({ type: 'orders/loadOrder/cached', payload: order });
         } catch (err) { }//Cached Orders fail silently. We catch it here to avoid the error being caught by the slice.
         try {
-            const order = await Api.getServiceOrder(id);
+            const order = await Api.getServiceOrder(id, false, history);
+            console.log("GOT ORDA", order);
             dispatch({ type: 'orders/loadOrder/fulfilled', payload: order });
         } catch (err) {
             dispatch({ type: 'orders/loadOrder/rejected', payload: { id, error: err } });
@@ -151,6 +152,7 @@ export const orderSlice = createSlice({
                     state[id].interactions.interactions = action.payload;
             })
             .addCase('orders/loadOrder/fulfilled', (state, action) => {
+                console.log(action);
                 state[action.payload.id].order = action.payload;
                 state[action.payload.id].status = "complete";
             })

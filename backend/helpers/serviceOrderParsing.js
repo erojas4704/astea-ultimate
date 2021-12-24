@@ -24,7 +24,6 @@ const fields = {
     "sa_person_descr": "technician.name",
     "cc_sa_descr": "technician.name",
     "tagno": "tag",
-    "is_in_history": "inHistory",
     "order_line.order_stat_uniq_id": "statusId",
 }
 
@@ -36,7 +35,7 @@ function parseServiceOrderData(data) {
             StateID: data.root.$["StateID"],
             HostName: data.root.$["HostName"]
         }
-        
+
         data = data.root.main[0].row[0];
     }
     //If the data is nested in some Astea junk, we remove a layer of nesting and snag the metadata while we're at it
@@ -59,6 +58,12 @@ function parseServiceOrderData(data) {
             if (fieldName === "statusId") {
                 if (value === "900")
                     result["status"] = "Invoiced"; //TODO contingency for history
+            }
+            if (fieldName === "isInHistory") {
+                if (value.toLowerCase() === "y")
+                    value = true;
+                else
+                    value = false;
             }
             //if (fieldName === "customer") {
             //if (!value.name) debugger;

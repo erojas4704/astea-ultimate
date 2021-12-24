@@ -4,7 +4,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { capitalizeNames } from "../helpers/StringUtils";
 import useTechnicians from "../hooks/useTechnicians";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faCircleNotch, faFileInvoiceDollar } from "@fortawesome/free-solid-svg-icons";
 import InteractionsView from "./InteractionsView";
 import MaterialsView from "./MaterialsView";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -13,6 +13,8 @@ import Api from "../api";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadOrder, getOrderById, assignTechnician } from "./orderSlice";
+import { Col, Row } from "react-bootstrap";
+import axios from "axios";
 
 const ServiceOrder = (props) => {
     const dispatch = useDispatch();
@@ -28,7 +30,8 @@ const ServiceOrder = (props) => {
     const isLoading = status === "pending";
 
     useEffect(() => {
-        dispatch(loadOrder({ id, history: summary?.inHistory ==="Y" }));
+        dispatch(loadOrder({ id, history: summary?.inHistory === "Y" }));
+        setIsBeingInvoiced(false);
     }, [id])
 
 
@@ -37,9 +40,30 @@ const ServiceOrder = (props) => {
         dispatch(assignTechnician({ id, technicianId }));
     }
 
+    const [isBeingInvoiced, setIsBeingInvoiced] = useState(false);
+    const handleInvoice = async () => {
+        setIsBeingInvoiced(true);
+        await axios.post(`/ServiceOrder/${id}/invoice`);
+        setIsBeingInvoiced(false);
+    }
+
+    if (isBeingInvoiced) return (
+        <>
+            Invoicing...
+            <LoadingSpinner />
+        </>
+    )
+
     return (
         <div className="sv-view" style={{ paddingTop: "14px" }}>
-            <div style={{ textAlign: "left", marginLeft: '4px', marginBottom: "14px" }} className="divider">Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}</div>
+            <Row style={{ textAlign: "left", marginLeft: '4px', marginBottom: "14px" }} className="divider">
+                <Col>
+                    Order {id} {isLoading && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}
+                </Col>
+                <Col className="d-flex flex-row-reverse mx-4">
+                    {order?.statusId == 500 && <FontAwesomeIcon icon={faFileInvoiceDollar} style={{ cursor: 'pointer' }} onClick={handleInvoice} />}
+                </Col>
+            </Row>
             {serviceOrder && (
                 <div className="order-details">
                     <div className="order-col" style={{ flexGrow: "1", marginBottom: "2px" }}>

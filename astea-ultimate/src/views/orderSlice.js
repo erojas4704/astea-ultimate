@@ -24,10 +24,10 @@ export const loadOrder = ({ id }) => {
 export const retrieveInteractions = createAsyncThunk(
     'orders/retrieveInteractions',
     async ({ id }, thunkAPI) => {
-        // Api.getInteractions(id, true)
-        //     .then(interactions => {
-        //         thunkAPI.dispatch({ type: 'orders/retrieveInteractions/cached', payload: interactions });
-        //     });
+        Api.getInteractions(id, true)
+            .then(interactions => {
+                thunkAPI.dispatch({ id, type: 'orders/retrieveInteractions/cached', payload: interactions });
+            });
         return await Api.getInteractions(id);
     }
 )
@@ -138,14 +138,17 @@ export const orderSlice = createSlice({
                 }
             })
             .addCase(`orders/retrieveInteractions/cached`, (state, action) => {
-                const id = action.meta.arg.id;
+                const id = action.id; //TODO weird case
                 state[id] = {
-                    ...state[id],
                     interactions: {
-                        interactions: action.payload,
+                        interactions: [],
                         ...state[id].interactions,
-                    }
+                    },
+                    ...state[id]
                 }
+
+                if (state[id].interactions.interactions.length === 0)
+                    state[id].interactions.interactions = action.payload;
             })
             .addCase('orders/loadOrder/fulfilled', (state, action) => {
                 state[action.payload.id].order = action.payload;

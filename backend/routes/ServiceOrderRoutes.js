@@ -53,7 +53,7 @@ router.patch("/:id/assign", async (req, res, next) => {
 router.post("/interactions", async (req, res, next) => {
     const { id, message } = req.body;
     try {
-        await new Promise(r => {setTimeout(r, 3000)});
+        await new Promise(r => { setTimeout(r, 3000) });
         return res.send("atta boy");
         const interactionResp = await createInteraction(id, req.session, message);
         return res.send(interactionResp);
@@ -65,9 +65,11 @@ router.post("/interactions", async (req, res, next) => {
 
 /** Get interactions for an SV */
 router.get("/interactions", async (req, res, next) => {
-    const { id, history } = req.query;
+    const { id, history, cache } = req.query;
     try {
-        const interactions = await Astea.getInteractions(id, req.session, history === "y");
+        const interactions = cache ?
+            await OrderService.getInteractionsFor(id) :
+            await Astea.getInteractions(id, req.session, history === "y");
         return res.send(interactions);
     } catch (e) {
         console.error(e);
@@ -92,7 +94,7 @@ router.get("/:id", async (req, res, next) => {
     const { history, cache } = req.query;
     try {
         const sv = cache ?
-            await OrderService.retrieve(id, req.session, history === "y") :
+            await OrderService.retrieve(id) :
             await Astea.getServiceOrder(id, req.session, history === "y");
 
         return res.send(sv.serviceOrder);

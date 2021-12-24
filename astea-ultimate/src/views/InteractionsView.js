@@ -3,15 +3,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import { useInteractions } from "../hooks/serviceOrderHooks";
+import { addInteraction, retrieveInteractions } from "./orderSlice";
 import "./OrderView.css";
 
 const InteractionsView = ({ serviceOrder }) => {
-    const { interactions, loading, error } = useInteractions(serviceOrder);
     const [addingInteraction, setAddingInteraction] = useState(false);
     const [newInteractionText, setNewInteractionText] = useState("");
     const [postingInteraction, setPostingInteraction] = useState(false);
+    const dispatch = useDispatch();
+
+    const interactionsData = useSelector(state => state.orders[serviceOrder.id]?.interactions);
+
+    const { interactions, status, error } = interactionsData || {};
 
 
     useEffect(() => {
@@ -19,8 +25,9 @@ const InteractionsView = ({ serviceOrder }) => {
         setNewInteractionText("");
         setAddingInteraction(false);
         setPostingInteraction(false);
-        
-    }, [serviceOrder]);
+
+        dispatch(retrieveInteractions({ id: serviceOrder.id }));
+    }, [serviceOrder.id]);
 
     const addBlankInteraction = () => {
         setAddingInteraction(true);
@@ -28,6 +35,7 @@ const InteractionsView = ({ serviceOrder }) => {
     }
 
     const submitInteraction = async (e) => {
+        /*
         e.preventDefault();
         const message = newInteractionText;
         setNewInteractionText("");
@@ -44,6 +52,9 @@ const InteractionsView = ({ serviceOrder }) => {
         );
         newInteraction.uploading = false;
         setPostingInteraction(false);
+        */
+       dispatch(addInteraction({ id: serviceOrder.id, message: newInteractionText }));
+       setNewInteractionText("");
     }
 
     //TODO allow adding rapid fire interactions. Maybe instead just add the new one to the thing with a red spinner for uploading.
@@ -53,14 +64,14 @@ const InteractionsView = ({ serviceOrder }) => {
             Interactions
         </div>
         {error && <div className="error">{error.toString()}</div>}
-        {loading && <FontAwesomeIcon className="fa-spin sv-spinner" style={{ fontSize: "26px" }} icon={faCircleNotch} />}
+        {status === "pending" && <FontAwesomeIcon className="fa-spin sv-spinner" style={{ fontSize: "26px" }} icon={faCircleNotch} />}
 
         {interactions && interactions.map(interaction => (
             <div className="interaction" key={uuid()}>
                 <div className="interaction-header">
                     <div className="interaction-author">{interaction.author}</div>
                     <div className="interaction-date">{moment(interaction.date).format('MM/DD/yyyy  h:mm a')}</div>
-                    {interaction.uploading && <FontAwesomeIcon className="fa-spin sv-spinner mx-2" style={{ fontSize: "26px" , color: "#d63031"}} icon={faCircleNotch} />}
+                    {interaction.uploading && <FontAwesomeIcon className="fa-spin sv-spinner mx-2" style={{ fontSize: "26px", color: "#d63031" }} icon={faCircleNotch} />}
                 </div>
                 <div className="interaction-message">
                     {interaction.message}

@@ -86,6 +86,7 @@ async function parseLoginResponseXML(xml) {
             message: parseError(jsonMessage.root.Message),
             code: jsonMessage.root.Code
         }
+        console.log(jsonMessage);
         throw new AsteaError(error, 401, error.message);
     } else {
         const jsonMessage = await getClientVarsFromLoginResponse(resp);

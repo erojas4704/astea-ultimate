@@ -147,7 +147,7 @@ export const orderSlice = createSlice({
                     ...state[id]
                 }
 
-                if (state[id].interactions.interactions.length === 0)
+                if (state[id].interactions.interactions?.length === 0)
                     state[id].interactions.interactions = action.payload;
             })
             .addCase('orders/loadOrder/fulfilled', (state, action) => {

@@ -24,17 +24,17 @@ export const loadOrder = ({ id }) => {
 export const retrieveInteractions = createAsyncThunk(
     'orders/retrieveInteractions',
     async ({ id }, thunkAPI) => {
-        Api.getInteractions(id, true)
-            .then(interactions => {
-                thunkAPI.dispatch({ type: 'orders/retrieveInteractions/cached', payload: interactions });
-            });
+        // Api.getInteractions(id, true)
+        //     .then(interactions => {
+        //         thunkAPI.dispatch({ type: 'orders/retrieveInteractions/cached', payload: interactions });
+        //     });
         return await Api.getInteractions(id);
     }
 )
 
 export const addInteraction = createAsyncThunk(
     'orders/addInteraction',
-    async ({ id, message }) => await Api.createInteraction(id, message)
+    async ({ id, message, user }) => await Api.createInteraction(id, message)
 );
 
 export const assignTechnician = createAsyncThunk(
@@ -74,7 +74,7 @@ export const orderSlice = createSlice({
                 const id = action.meta.arg.id;
                 if (!state[id]) state[id] = {}; //TODO find a way to avoid having this everywhere
                 state[id].interactions = {
-                    interactions: [],
+                    ...state[id].interactions,
                     status: "pending"
                 }
             })
@@ -104,7 +104,36 @@ export const orderSlice = createSlice({
                     ...state[id],
                     interactions: {
                         ...state[id].interactions,
-                        status: "pending"
+                        interactions: [
+                            ...state[id].interactions.interactions,
+                            { author: action.meta.arg.user, message: action.meta.arg.message, status: "pending" }
+                        ]
+                    }
+                }
+            })
+            .addCase(addInteraction.rejected, (state, action) => {
+                const id = action.meta.arg.id;//TODO big mess here
+                const interactionsArr = state[id].interactions.interactions;
+                const interactionIndex = interactionsArr.findIndex(interaction => interaction.message === action.meta.arg.message);
+                interactionsArr[interactionIndex].status = "complete";
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        interactions: interactionsArr
+                    }
+                }
+            })
+            .addCase(addInteraction.fulfilled, (state, action) => {
+                const id = action.meta.arg.id;
+                const interactionsArr = state[id].interactions.interactions;
+                const interactionIndex = interactionsArr.findIndex(interaction => interaction.message === action.meta.arg.message);
+                interactionsArr[interactionIndex].status = "done";
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        interactions: interactionsArr
                     }
                 }
             })

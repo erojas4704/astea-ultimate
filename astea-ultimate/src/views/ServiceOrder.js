@@ -54,6 +54,10 @@ const ServiceOrder = (props) => {
                             <div className="label">Warehouse</div>
                             <div className="value">{serviceOrder.warehouse}</div>
                         </div>
+                        {serviceOrder.tag && <div className="order-row">
+                            <div className="label">Tag</div>
+                            <div className="value">{serviceOrder.tag}</div>
+                        </div>}
                         <div className="order-row form-inline">
                             <div className="form-group form-inline">
                                 <label htmlFor="select-tech" className="label">Technician</label>
@@ -81,7 +85,7 @@ const ServiceOrder = (props) => {
                             <div className="value">{serviceOrder.serialNumber}</div>
                         </div>
                         <div className="order-row">
-                            <div className="label">Type</div>
+                            <div className="label">Request</div>
                             <div className="value">{serviceOrder.type}</div>
                         </div>
                         <div className="divider" />

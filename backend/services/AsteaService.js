@@ -80,7 +80,13 @@ class Astea {
         );
     }
 
+    static async getMaterials(id, session){
 
+    }
 }
+
+
+
+
 
 module.exports = Astea;

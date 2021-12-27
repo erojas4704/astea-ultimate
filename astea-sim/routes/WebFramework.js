@@ -87,4 +87,10 @@ router.post(`/BCBase.svc/GetStateUIExt`, async (req, res, next) => {
     return res.send([]); 
 });
 
+/*
+router.post('/DataViewMgr.svc/RetrieveXMLExt', (req, res, next) => {
+    const XMLCriteria = req.body
+    return res.send([]);
+});
+*/
 module.exports = router;

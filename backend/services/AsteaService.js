@@ -1,3 +1,4 @@
+require("dotenv").config();
 const axios = require("axios");
 const xml2js = require("xml2js");
 const { promisify } = require("util");
@@ -9,11 +10,14 @@ const {
     formatExecuteMacroBody: formatMacroBody,
     formatCommandBody,
     URLCommandBase,
-    extractError
+    URLSearch,
+    extractError,
+    URLRetrieveXML
 } = require("../js/astea");
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
-const { Customer, Interaction } = require("../models/Database");
+const { Customer, Interaction, Material } = require("../models/Database");
+const { jsonAsteaQuery, entities } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -23,6 +27,7 @@ const parseXMLToJSON = promisify(xml2js.parseString);
 const asteaRequest = async (url, body, options = {}) => {
     if (options.HostName) url = `${url}?${options.HostName}`; //Extract Method FormatURL
     const resp = await axios.post(url, body, { headers });
+    debugger;
     if (resp.data.ExceptionDetail)
         return { error: resp.data.ExceptionDetail.Type };
 
@@ -80,8 +85,17 @@ class Astea {
         );
     }
 
-    static async getMaterials(id, session){
+    static async getMaterials(id, session) {
 
+    }
+
+    static async materialSearch(criteria, session) {
+        const body = jsonAsteaQuery(session, entities.MATERIAL, criteria);
+        const { error, data } = await asteaRequest(URLRetrieveXML, body);
+        if(error) throw new AsteaError(error, 500);
+        const materials = Material.extractFromJSON(data);
+        Material.parse(materials);
+        return data;
     }
 }
 

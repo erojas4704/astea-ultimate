@@ -500,5 +500,7 @@ module.exports = {
     extractError,
     formatCommandBody,
     URLCommandBase,
-    invoice
+    invoice,
+    URLRetrieveXML,
+    URLSearch
 };

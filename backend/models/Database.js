@@ -11,6 +11,8 @@ const Technician = require('./Technician');
 const Audit = require('./Audit');
 const OrderAudit = require('./OrderAudit');
 const Interaction = require('./Interaction');
+const PurchaseRequisition = require('./PurchaseRequisition');
+const Material = require('./Material');
 
 const models = {
     Customer: Customer.init(sequelize, Sequelize),
@@ -18,7 +20,9 @@ const models = {
     Technician: Technician.init(sequelize, Sequelize),
     Audit: Audit.init(sequelize, Sequelize),
     OrderAudit: OrderAudit.init(sequelize, Sequelize),
-    Interaction: Interaction.init(sequelize, Sequelize)
+    Interaction: Interaction.init(sequelize, Sequelize),
+    PurchaseRequisition: PurchaseRequisition.init(sequelize, Sequelize),
+    Material: Material.init(sequelize, Sequelize)
 }
 
 Object.values(models)

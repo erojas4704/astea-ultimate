@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const { AsteaError } = require('../js/AsteaError');
 const SECRET_KEY = process.env.SECRET_KEY;
 
+//TODO refactor. shouldn't have to destruct this
+
 async function hasAsteaCredentials(req, res, next) {
     //Request headers must have a token with a session-id
     try {

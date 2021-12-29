@@ -32,7 +32,7 @@ class Api {
     /** Returns a cancelable promise to retrieve a service order. 
      * @param {string} id - The service order id.
     */
-    static async getServiceOrder(id, useCached, history=false, cancelToken = null) {
+    static async getServiceOrder(id, useCached, history = false, cancelToken = null) {
         const resp = await axios.get(`/ServiceOrder/${id}`, {
             params: { cache: useCached ? "y" : null, history },
             cancelToken
@@ -92,7 +92,7 @@ class Api {
     static async login(username, password, cancelToken = null) {
         try {
             const resp = await axios.post("/auth/login",
-                { username, password },
+                { username, password, forceKick: true },
                 { cancelToken }
             );
 

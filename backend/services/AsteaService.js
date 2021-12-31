@@ -17,7 +17,7 @@ const {
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
 const { Customer, Interaction, Material } = require("../models/Database");
-const { jsonAsteaQuery, entities } = require("./ServiceUtils");
+const { jsonAsteaQuery, entities, getOrderStateBody } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -89,10 +89,28 @@ class Astea {
 
     }
 
+    static async getDemands(id, session) {
+        //We need an open state.
+    }
+
+    /**
+     * Get demands, materials, and interactions from an order.
+     * @param {string} id Order ID
+     * @param {Object} session Astea session
+     */
+    static async getAll(id, session) {
+        const { HostName, StateID } = (await this.getServiceOrder(id, session)).serviceOrder;
+        const xmlRequest = getOrderStateBody(
+            StateID,
+            session.sessionID,
+            ["customer_authorization", ]
+        )
+    }
+
     static async materialSearch(criteria, session) {
         const body = jsonAsteaQuery(session, entities.MATERIAL, criteria);
         const { error, data } = await asteaRequest(URLRetrieveXML, body);
-        if(error) throw new AsteaError(error, 500);
+        if (error) throw new AsteaError(error, 500);
         const materials = Material.extractFromJSON(data);
         Material.parse(materials);
         return data;

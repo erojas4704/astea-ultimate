@@ -1,9 +1,30 @@
-export const ERROR_CODES = {
-    "A2LOG904" : "'Service Agent' is not an active employee or was not found in the database. Please remove its value and use the lookup.",
-    "A2STC013" : "Record Unavailable. Either you do not have permissions to view the record, or the record does not exist. This order may be in history.",
-    "A2GEN017" : "Account is logged already logged in.",
-    "A2BCM001" : "Check one of the following reasons: Incorrect macro parameters, Insufficient macro parameters, BC or BO creation failure, BO does not belong to BC, Incorrect action name",
-    "A2LDM001" : "There are unfulfilled demands attached to the order.",
-    "A2DBM021" : "A Database error occurred. \n \n\rContact your DB Administrator or check one of the following reasons: \n\rDatabase is not running \n\rIncorrect connection string \n\rIncorrect SQL statement \n\rIncorrect database structure"
+const ERRORS = {
+    "A2LOG904": {
+        message: "'Service Agent' is not an active employee or was not found in the database. Please remove its value and use the lookup."
+    },
+    "A2STC013": {
+        message: "Record Unavailable. Either you do not have permissions to view the record, or the record does not exist. This order may be in history.",
+        status: 404
+    },
+    "A2GEN017": {
+        message: "Account is logged already logged in.",
+        status: 401
+    },
+    "A2BCM001": {
+        message: `Check one of the following reasons: 
+        Incorrect macro parameters, Insufficient macro parameters, BC or BO creation failure, BO does not belong to BC, or incorrect action name.`
+    },
+    "A2LDM001": {
+        message: "There are unfulfilled demands attached to the order."
+    },
+    "A2DBM021": {
+        message: `A Database error occurred.
+        Contact your DB Administrator or check one of the following reasons: 
+        Database is not running 
+        Incorrect connection string 
+        Incorrect SQL statement 
+        Incorrect database structure`
+    }
 }
 
+module.exports = ERRORS;

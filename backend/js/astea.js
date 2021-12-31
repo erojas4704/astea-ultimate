@@ -6,6 +6,7 @@ const URLExecuteMacro = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/ExecMacroUIE
 const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt`;
 const URLSearch = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
 const URLRetrieveXML = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/RetrieveXMLExt`
+const URLGetStateUI = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/GetStateUI`;
 
 const axios = require("axios");
 const xml2js = require("xml2js");
@@ -502,5 +503,6 @@ module.exports = {
     URLCommandBase,
     invoice,
     URLRetrieveXML,
-    URLSearch
+    URLSearch,
+    URLGetStateUI
 };

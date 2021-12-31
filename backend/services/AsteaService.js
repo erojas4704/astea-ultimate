@@ -18,7 +18,7 @@ const {
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
 const { Customer, Interaction, Material } = require("../models/Database");
-const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules } = require("./ServiceUtils");
+const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -28,9 +28,8 @@ const parseXMLToJSON = promisify(xml2js.parseString);
 const asteaRequest = async (url, body, options = {}) => {
     if (options.HostName) url = `${url}?${options.HostName}`; //Extract Method FormatURL
     const resp = await axios.post(url, body, { headers });
-    debugger;
     if (resp.data.ExceptionDetail)
-        return { error: resp.data.ExceptionDetail.Type };
+        return { error: new AsteaError(resp.data) };
 
     const json = await parseXMLToJSON(resp.data['d']);
     return { raw: resp.data['d'], data: json };
@@ -111,8 +110,9 @@ class Astea {
             stateId,
             session.sessionID,
             serviceModules.serviceOrder,
-            [states.interactions, states.demands, states.materials]
+            [states.interactions, states.expenses, states.materials]
         );
+        
 
         const { error, data } = await asteaRequest(
             URLGetStateUI,
@@ -120,7 +120,7 @@ class Astea {
             { HostName: hostName } //TODO naming uniformity for HostName
         );
 
-        if (error) throw new AsteaError(error, 500);
+        if (error) throw error;
         return data;
     }
 

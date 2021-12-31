@@ -97,6 +97,22 @@ router.get("/materials", async (req, res, next) => {
 });
 
 
+router.get("/:id/details", async (req, res, next) => {
+    const { id } = req.params;
+    const { history, cache } = req.query;
+    try {
+        const data = await Astea.getStateDetails(
+            id,
+            req.session,
+            Astea.getAllDetailsFromOrder
+        );
+        return res.send(data);
+    } catch (e) {
+        return next(e);
+    }
+});
+
+
 /** Get a service order by ID */
 router.get("/:id", async (req, res, next) => {
     const { id } = req.params;

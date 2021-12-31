@@ -79,6 +79,12 @@ const paramHandling = {
     }
 }
 
+const states = {
+    "interactions": "customer_authorization",
+    "materials": "demand_materials",
+    "expenses": "demand_expenses"
+}
+
 /**
  * Forms an XML body for an Astea query to retrieve information.
  * @param {Object} session - Astea session object.
@@ -117,13 +123,31 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
     return sanitizeXML(xml);
 }
 
+/**
+ * Creates a query that gets specific order details from Astea, known as "states". This can be used 
+ * to retrieve specific order data, such as interactions, materials, and demands.
+ * @param {string} stateId - The state ID of the order. This is needed for order queries to work.
+ * @param {string} pageName - The name of the page we're getting data from. Orders fall under "service_request_maint".
+ * @param {Array} requestedData - The data we're requesting. Look at the States enum for potential data to request. [states.interactions, states.materials, etc].
+ */
+function getOrderStateBody(stateId, pageName, requestedData) {
+    const strData = requestedData.map(data => `<BO alias="${data}"></BO>`).join("");
+    const XML = `
+        <root>
+            <GetCurrentState>
+            ${strData}
+            </GetCurrentState>
+        </root>
+    `
+}
+
 function convertToAsteaParams(searchParams) {
     const convertedParams = {};
     for (const key in searchParams) {
         if (params.hasOwnProperty(key)) {
             const value = searchParams[key];
             convertedParams[params[key]] = value;
-        }else{
+        } else {
             convertedParams[key] = value;
         }
     }
@@ -149,4 +173,4 @@ function sanitizeXML(xml) {
 }
 
 
-module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities };
+module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states };

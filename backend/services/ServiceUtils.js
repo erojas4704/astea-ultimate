@@ -79,6 +79,14 @@ const paramHandling = {
     }
 }
 
+const serviceModules = {
+    serviceOrder: {
+        bcName: "Service_Order",
+        moduleName: "service_order_maint",
+        pageName: "service_request_maint"
+    }
+}
+
 const states = {
     "interactions": "customer_authorization",
     "materials": "demand_materials",
@@ -103,7 +111,7 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
     console.log(keys);
     const operators = keys.map(key => paramHandling[key].comparison).join(";");
     const types = keys.map(key => paramHandling[key].type).join(";");
-    const isReplaceAlias = keys.map(key => "Y").join(";"); //I don't know what this does at all.
+    const isReplaceAlias = keys.map(key => "Y").join(";"); //I don't know what this isReplaceAlias tag does at all.
 
     //TODO getLookupRecordCount what is it for?
     const xml =
@@ -127,20 +135,37 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
  * Creates a query that gets specific order details from Astea, known as "states". This can be used 
  * to retrieve specific order data, such as interactions, materials, and demands.
  * @param {string} stateId - The state ID of the order. This is needed for order queries to work.
+ * @param {string} sessionId - Session ID of the user.
  * @param {string} pageName - The name of the page we're getting data from. Orders fall under "service_request_maint".
- * @param {Array} requestedData - The data we're requesting. Look at the States enum for potential data to request. [states.interactions, states.materials, etc].
+ * @param {Object} serviceModule - The name of the module, best retrieved from ServiceUtils.serviceModules.
+ * @param {Array} dataToRequest - The data we're requesting. Look at the States enum for potential data to request. [states.interactions, states.materials, etc].
  */
-function getOrderStateBody(stateId, pageName, requestedData) {
-    const strData = requestedData.map(data => `<BO alias="${data}"></BO>`).join("");
-    const XML = `
+function getOrderStateBody(stateId, sessionId, serviceModule, dataToRequest) {
+    if(typeof dataToRequest === "string") dataToRequest = [dataToRequest];
+
+    const strData = dataToRequest.map(data => `<BO alias="${data}"></BO>`).join("");
+    const xmlRequest = `
         <root>
-            <GetCurrentState>
+            <GetCurrentState pageName='${serviceModule.pageName}' stateID='${stateId}'>
             ${strData}
             </GetCurrentState>
         </root>
-    `
+    `;
+
+    return {
+        stateId,
+        sessionId,
+        bcName: serviceModule.bcName,
+        moduleName: serviceModule.moduleName,
+        xmlRequest
+    }
 }
 
+/**
+ * Converts our, friendlier and more legible parameters to Astea-friendly parameters.
+ * @param {Object} searchParams Object whose keys are the parameters we want to convert.
+ * @returns The Astea-friendly version of the parameters.
+ */
 function convertToAsteaParams(searchParams) {
     const convertedParams = {};
     for (const key in searchParams) {
@@ -173,4 +198,4 @@ function sanitizeXML(xml) {
 }
 
 
-module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states };
+module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states, serviceModules };

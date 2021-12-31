@@ -12,12 +12,13 @@ const {
     URLCommandBase,
     URLSearch,
     extractError,
-    URLRetrieveXML
+    URLRetrieveXML,
+    URLGetStateUI
 } = require("../js/astea");
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
 const { Customer, Interaction, Material } = require("../models/Database");
-const { jsonAsteaQuery, entities, getOrderStateBody } = require("./ServiceUtils");
+const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -85,12 +86,19 @@ class Astea {
         );
     }
 
-    static async getMaterials(id, session) {
-
-    }
-
-    static async getDemands(id, session) {
-        //We need an open state.
+    /**
+     * A higher order function used to wrap a method to retrieve information from a service order.
+     * This function will first retrieve a HostName and StateID from the order, which are necessary when working with Astea
+     * so that we may manipulate it then.
+     * @param {string} id 
+     * @param {Object} session 
+     * @param {function} callback A callback derived from the following signature: (order, session, hostName, stateId)
+     * @returns {Promise<Object>}
+     */
+    static async getStateDetails(id, session, callback){
+        const { serviceOrder } = await this.getServiceOrder(id, session);
+        const { HostName, StateID } = serviceOrder.metadata;
+        return await callback(serviceOrder, session, HostName, StateID);
     }
 
     /**
@@ -98,13 +106,22 @@ class Astea {
      * @param {string} id Order ID
      * @param {Object} session Astea session
      */
-    static async getAll(id, session) {
-        const { HostName, StateID } = (await this.getServiceOrder(id, session)).serviceOrder;
-        const xmlRequest = getOrderStateBody(
-            StateID,
+    static async getAllDetailsFromOrder(order, session, hostName, stateId) {
+        const body = getOrderStateBody(
+            stateId,
             session.sessionID,
-            ["customer_authorization", ]
-        )
+            serviceModules.serviceOrder,
+            [states.interactions, states.demands, states.materials]
+        );
+
+        const { error, data } = await asteaRequest(
+            URLGetStateUI,
+            body,
+            { HostName: hostName } //TODO naming uniformity for HostName
+        );
+
+        if (error) throw new AsteaError(error, 500);
+        return data;
     }
 
     static async materialSearch(criteria, session) {

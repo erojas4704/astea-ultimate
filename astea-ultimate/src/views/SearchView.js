@@ -1,8 +1,6 @@
-import moment from "moment";
 import "./SearchView.css";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { capitalizeNames, nameToInitials } from "../helpers/StringUtils";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSearch, search } from "../actions/locator";
 import OrderListing from "../components/OrderListing";

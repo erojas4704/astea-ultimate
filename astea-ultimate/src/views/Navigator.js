@@ -6,10 +6,11 @@ import React, { useState } from "react";
 import AgingView from "./AgingView";
 import RequisitionView from "./RequisitionView";
 import OptionsView from "./OptionsView";
-import PartsView from "./PartsView";
+import PartsView from "./PartsView.jsx";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setModule } from "../actions/nav";
+import { Col, Container } from "react-bootstrap";
 
 //TODO help
 const Navigator = () => {
@@ -43,15 +44,13 @@ const Navigator = () => {
                 <Link className="module-link" to="/astea/ServiceOrder/new"><NavModule icon={faPlus} enabled={false}>New Service Order</NavModule></Link>
             </nav>
             {/*These are navigation modules to help search and narrow down information*/}
-            <div className="side-container">
-                {expanded && <div className="homeview">
+                {expanded && <Col className="homeview">
                     {module === "SearchView" && <SearchView />}
                     {module === "AgingView" && <AgingView />}
                     {module === "RequisitionView" && <RequisitionView />}
                     {module === "OptionsView" && <OptionsView />}
                     {module === "PartsView" && <PartsView />}
-                </div>}
-            </div>
+                </Col>}
         </div>
     );
 };

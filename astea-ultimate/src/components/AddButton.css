@@ -1,0 +1,7 @@
+.add-button{
+    color: #999;
+}
+
+.add-button:hover{
+    color: rgb(53, 164, 255);
+}

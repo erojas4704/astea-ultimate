@@ -17,7 +17,7 @@ export default function NavTableRow({ columns, data, selected, onClick }) {
                     column.onClick ? e => { e.stopPropagation(); column.onClick(data) } : null
 
                 return (
-                    <td key={i} onClick={columnClickCallback} >
+                    <td key={i} onClick={columnClickCallback} className={column.className} >
                         {column.route ?
                             <Link to={{ pathname: parseLink(column.route, data) }}>{inner}</Link>
                             : inner}

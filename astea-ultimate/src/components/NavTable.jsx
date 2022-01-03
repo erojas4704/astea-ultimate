@@ -17,7 +17,7 @@ export default function NavTable({ columns, data, route }) {
     }
 
     return (
-        <Table size="sm" responsive hover>
+        <Table size="sm" responsive hover={route}>
             <thead>
                 <tr>
                     {columns.map(column => (

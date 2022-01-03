@@ -7,6 +7,7 @@ export function resetSearch() {
 
 export function search(term, includeHistory) {
     let params;
+
     if (typeof term === "string") {
         params = {
             all: term,
@@ -20,6 +21,10 @@ export function search(term, includeHistory) {
             actionGroup: "QNTech" //TODO get from user or even better settings
         }
     }
+    
+    if (params.includeHistory === "") delete params.includeHistory;
+    else params.includeHistory = includeHistory === "Y";
+
 
     return async dispatch => {
         dispatch({

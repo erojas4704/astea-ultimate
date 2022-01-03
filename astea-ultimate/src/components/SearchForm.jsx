@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 
-export default function Search({ placeholder, handleSubmit, children, loading, handleChange }) {
+export default function SearchForm({ placeholder, handleSubmit, children, loading, handleChange, sidebar }) {
     const [searchInput, setSearchInput] = useState('');
 
     return (<>
-        <Form inline className="p-1" onSubmit={handleSubmit}>
-            <Form.Group>
+        <Form className="p-1 d-flex" onSubmit={handleSubmit}>
+            <Form.Group className="w-100">
                 <Form.Control
                     type="text"
                     className="rounded-pill"
@@ -21,7 +21,8 @@ export default function Search({ placeholder, handleSubmit, children, loading, h
                     }}
                 />
             </Form.Group>
-            {children}
+            {sidebar}
         </Form>
+        {children}
     </>)
 }

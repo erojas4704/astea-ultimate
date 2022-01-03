@@ -41,6 +41,7 @@ class Api {
         return resp.data;
     }
 
+
     /** Returns a cancelable promise to retrieve interactions for a service order.
      * @param {string} id - The service order id.
      * @param {boolean} useCached - Whether to use cached data.
@@ -57,9 +58,25 @@ class Api {
         return resp.data;
     }
 
+    /** Returns a cancelable promise to search for service orders.
+     * @param {Object} query - Criteria to search for.
+     */
     static async search(query, cancelToken = null) {
         const resp = await axios.get('/ServiceOrder/search', {
             params: { ...query },
+            cancelToken
+        });
+
+        if (resp.error) throw resp.error;
+        return resp.data;
+    }
+
+    /** Returns a cancelable promise to search for materials
+     * @param {Object} query - Criteria to search for.
+     */
+    static async searchMaterials(query, useCached, limit=100, cancelToken = null) {
+        const resp = await axios.get('/materials/search', {
+            params: { ...query, cache: useCached ? "y" : null, limit },
             cancelToken
         });
 

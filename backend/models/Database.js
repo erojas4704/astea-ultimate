@@ -31,6 +31,18 @@ Object.values(models)
     .forEach(model => model.associate(models));
 
 (async () => {
+
+    // for (let i = 4; i < 200; i++) {
+    //     await Material.create({
+    //         id: 'TM-' + i.toFixed(0).padStart(3, '0'),
+    //         vendor: "Homebrew",
+    //         description: "Test Material generic.",
+    //         class: "Test",
+    //         serialized: false,
+    //         isInventory: true,
+    //         searchKey: i.toFixed(0).padStart(3, '0')
+    //     });
+    // }
     //await sequelize.sync({ alter: true }).catch(err => console.log(err));
     //Order.sync({alter: true});
     // await sequelize.sync({ force: true })

@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import Api from "../api";
 import NavTable from "../components/NavTable";
 import SearchForm from "../components/SearchForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddButton from "../components/AddButton";
 import { useMatch } from "react-router-dom";
 

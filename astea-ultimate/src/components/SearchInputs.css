@@ -1,0 +1,13 @@
+.search-input-mini{
+    cursor: pointer;
+    display: inline-flex;
+    background-color: #f0f0f0;
+    padding: 0.2rem;
+    border-radius: 0.5rem;
+    opacity: 0.8;
+    align-items: center;
+}
+
+.search-input-mini:hover{
+    background-color: #e0e0e0;
+}

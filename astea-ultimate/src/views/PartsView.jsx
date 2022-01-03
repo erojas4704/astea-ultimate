@@ -1,8 +1,13 @@
-import Search from "../components/Search";
+import { useEffect, useState } from "react";
+import Api from "../api";
+import NavTable from "../components/NavTable";
+import SearchForm from "../components/SearchForm";
 
 const PartsView = () => {
     const columns = [
-        { label: 'Part', key: 'id' }
+        { label: 'Part', key: 'id', width: "20%", link: true },
+        { label: 'Search Key', key: 'searchKey', width: "20%"  },
+        { label: 'Description', key: 'description' }
     ]
 
     const onSearchSubmit = (search) => {
@@ -13,15 +18,24 @@ const PartsView = () => {
         console.log("Change", change);
     }
 
+    const [materials, setMaterials] = useState([]);
+    useEffect(() => {
+        (async () => {
+            const materials = await Api.searchMaterials({ id: 'TM-' }, true);
+            console.log(materials);
+            setMaterials(materials);
+        })();
+    }, [])
+
+
     return (
         <>
-            <Search
+            <SearchForm
                 handleSubmit={onSearchSubmit}
                 handleChange={onSearchChange}
-                placeholder="SP-"
-            >
-                <button className="btn btn-primary">Search</button>
-            </Search>
+                placeholder="Part Number">
+            </SearchForm>
+            <NavTable columns={columns} data={materials} route="astea/material/"/>
         </>
     )
 }

@@ -2,10 +2,14 @@ import { useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 
 export default function SearchForm({ placeholder, handleSubmit, children, loading, handleChange, sidebar }) {
-    const [searchInput, setSearchInput] = useState('');
+    const [form, setForm] = useState({});
 
     return (<>
-        <Form className="p-1 d-flex" onSubmit={handleSubmit}>
+        <Form className="p-1 d-flex"
+            style={{marginRight: "1rem"}}
+            onSubmit={(e) => { e.preventDefault(); handleSubmit(form) }}
+            onChange={handleChange}
+        >
             <Form.Group className="w-100">
                 <Form.Control
                     type="text"
@@ -13,16 +17,15 @@ export default function SearchForm({ placeholder, handleSubmit, children, loadin
                     name="search"
                     id="search"
                     placeholder={placeholder}
-                    value={searchInput}
+                    value={form.search}
                     disabled={loading}
                     onChange={e => {
-                        handleChange(e.target.value);
-                        setSearchInput(e.target.value)
+                        setForm({ ...form, search: e.target.value });
                     }}
                 />
             </Form.Group>
             {sidebar}
         </Form>
-        {children}
+        {children} {/* TODO These children will not work with the form! */}
     </>)
 }

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSearch, search } from "../actions/locator";
 import OrderListing from "../components/OrderListing";
+import HistoryInput from "../components/HistoryInput";
 
 const SearchView = () => {
     const results = useSelector(state => state.locator.data);
@@ -26,8 +27,8 @@ const SearchView = () => {
         //TODO maybe filter the current results based on what's here?
     };
 
-    const historyChangeHandler = evt => {
-        setIncludeHistory(evt.target.checked);
+    const historyChangeHandler = value => {
+        setIncludeHistory(value);
     };
 
     const handleSubmit = e => {
@@ -42,10 +43,9 @@ const SearchView = () => {
             <form onSubmit={handleSubmit} className="form-inline">
                 <div className="input-group ">
                     <input type="text" className=" form-control rounded-pill m-1" name="search" id="search" placeholder="Search by name or SV number" value={searchInput} onChange={changeHandler} disabled={loading} />
-                    <label className="form-check-label mx-2 my-auto">
-                        <input onChange={historyChangeHandler} type="checkbox" className="form-check-input" name="includeHistory" value="" selected={includeHistory} /> History
-                    </label>
+                    <HistoryInput name="includeHistory" onChange={historyChangeHandler} />
                 </div>
+
             </form>
             <div className="results">
                 <table className="results-table table table-hover table-sm">
@@ -67,7 +67,8 @@ const SearchView = () => {
                         {results.map(result =>
                             <OrderListing
                                 selected={selected === result.id}
-                                onSelect={() => setSelected(result.id)} key={result.id} 
+                                onSelect={() => { setSelected(result.id) }}
+                                key={result.id}
                                 order={orders[result.id]?.order || result}
                             />
                         )}

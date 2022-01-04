@@ -20,7 +20,6 @@ const PartsView = () => { //TODO rename to MaterialsView
     }
 
     const onSearchChange = (change) => {
-        console.log("Change", change);
     }
 
     useEffect(() => {

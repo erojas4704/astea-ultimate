@@ -17,7 +17,7 @@ const {
 } = require("../js/astea");
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
-const { Customer, Interaction, Material } = require("../models/Database");
+const { Customer, Interaction, Material, Expense } = require("../models/Database");
 const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
@@ -125,6 +125,12 @@ class Astea {
             body,
             { HostName: hostName } //TODO naming uniformity for HostName
         );
+
+        const materials = Material.extractFromJSON(data);
+        const expenses = Expense.extractFromJSON(data);
+        const interactions = Interaction.extractFromJSON(data);
+
+        return { materials, expenses, interactions };
 
         if (error) throw error;
         return data;

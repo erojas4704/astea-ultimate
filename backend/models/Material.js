@@ -1,20 +1,25 @@
 const { Model } = require('sequelize');
+const { extractValues } = require('../js/astea');
+
+const materialKeys = {
+    id: 'bpart_id',
+    description: 'descr',
+    vendor: 'model_id',
+    class: 'pclass3_id',
+    serialized: 'is_serialized',
+    isInventory: 'is_inventory',
+    searchKey: 'search_key'
+}
 
 class Material extends Model {
     static extractFromJSON(data) {
-        const rawMaterialArray = data.root.row;
-        if(!rawMaterialArray) return [];
-        
+        const rawMaterialArray = data.root?.demand_material ?
+            data.root.demand_material[0].row :
+            data.root.row;
+        if (!rawMaterialArray) return [];
+
         //TODO extract this to a similar thing like where we extract fields from Astea
-        const materials = rawMaterialArray.map(material => ({
-            id: material.bpart_id[0]._,
-            description: material.descr[0]._,
-            vendor: material.model_id[0]._,
-            class: material.pclass3_id[0]._,
-            serialized: material.is_serialized[0]._,
-            isInventory: material.is_inventory[0]._,
-            searchKey: material.search_key[0]._
-        }));
+        const materials = rawMaterialArray.map(material => extractValues(material, materialKeys));
 
         return materials;
     }

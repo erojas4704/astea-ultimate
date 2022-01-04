@@ -4,10 +4,13 @@ import NavTable from "../components/NavTable";
 import SearchForm from "../components/SearchForm";
 import AddButton from "../components/AddButton";
 import { useMatch } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { searchMaterials } from "../reducers/materialSlice";
 
 const PartsView = () => { //TODO rename to MaterialsView
     const currentPathIsOrder = useMatch('/astea/ServiceOrder/:id');
-    const [materials, setMaterials] = useState([]);
+    const materials = useSelector( state => Object.values(state.materials.search.materials));
+    const dispatch = useDispatch()
 
     const addToServiceOrder = (data) => {
         //Add a part to the service order if it's currently open.
@@ -15,19 +18,13 @@ const PartsView = () => { //TODO rename to MaterialsView
         //Maybe add a modal?
     }
 
-    const onSearchSubmit = (search) => {
-        console.log("Submitted", search);
+    const onSearchSubmit = (form) => {
+        console.log("Submitted", form.search);
+        dispatch(searchMaterials({ id: form.search }));
     }
 
     const onSearchChange = (change) => {
     }
-
-    useEffect(() => {
-        (async () => {
-            const materials = await Api.searchMaterials({ id: 'SP-' }, false);
-            setMaterials(materials);
-        })();
-    }, [])
 
     const columns = [
         { label: 'Part', key: 'id', width: "20%", route: `astea/material/{id}` },
@@ -39,7 +36,7 @@ const PartsView = () => { //TODO rename to MaterialsView
     if (currentPathIsOrder) //Add a button to add a part to the service order if one is currently open.
         columns.push({ content: <AddButton />, width: "5%", onClick: addToServiceOrder });
 
-        //Removed route so that it doesn't go to the part detail page. under NavTable route="astea/materials/{id}"
+    //Removed route so that it doesn't go to the part detail page. under NavTable route="astea/materials/{id}"
     return (
         <>
             <SearchForm
@@ -47,7 +44,7 @@ const PartsView = () => { //TODO rename to MaterialsView
                 handleChange={onSearchChange}
                 placeholder="Part Number">
             </SearchForm>
-            <NavTable columns={columns} data={materials}  />
+            <NavTable columns={columns} data={materials} />
         </>
     )
 }

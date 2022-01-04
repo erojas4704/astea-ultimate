@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 
 export default function SearchForm({ placeholder, handleSubmit, children, loading, handleChange, sidebar }) {
-    const [form, setForm] = useState({});
+    const [form, setForm] = useState({
+        search: ""
+    });
 
     return (<>
         <Form className="p-1 d-flex"

@@ -28,23 +28,34 @@ export const materialSlice = createSlice({
             state[material.id] = {
                 data: material
             };
-        },
-        extraReducers(builder) {
-            builder
-                .addCase(searchMaterials.pending, (state) => {
-                    state.search.materials = {};
-                    state.search.status = "pending";
-                })
-                .addCase("materials/searchMaterials/cached", (state, action) => {
-                    if (state.search.status === "pending") {
-                        state.search.materials = action.payload;
-                    }
-                })
-                .addCase(searchMaterials.fulfilled, (state, action) => {
-                    state.search.status = "complete";
-                    state.search.materials = action.payload;
-                })
         }
+    },
+    extraReducers(builder) {
+        builder
+            .addCase(searchMaterials.pending, (state) => {
+                state.search.materials = {};
+                state.search.status = "pending";
+            })
+            .addCase(searchMaterials.fulfilled, (state, action) => {
+                state.search.status = "complete";
+                if(!action.payload) action.payload = []; //TODO this is a hack. because error handling does not work.
+                state.search.materials = action.payload.reduce((acc, material) => {
+                    acc[material.id] = material;
+                    return acc;
+                }, state.search.materials);
+            })
+            .addCase(searchMaterials.rejected, (state, action) => {
+                state.search.status = "error";
+                state.search.error = action.payload;
+            })
+            .addCase("materials/searchMaterials/cached", (state, action) => {
+                if (state.search.status === "pending") {
+                    state.search.materials = action.payload.reduce((acc, material) => {
+                        acc[material.id] = material;
+                        return acc;
+                    }, state.search.materials);
+                }
+            })
     }
 });
 

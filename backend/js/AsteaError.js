@@ -10,6 +10,7 @@ class AsteaError extends Error {
             try {
                 const json = parser.parse(error.ExceptionDetail.Message);
                 const errorCode = json.root.MessageAsteaCode;
+                this.stack = ""; 
                 this.type = "AsteaError";
                 this.status = ERRORS[errorCode].status || 500;
                 this.message = ERRORS[errorCode].message || "An unknown error occurred.";

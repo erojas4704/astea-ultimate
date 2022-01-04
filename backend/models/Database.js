@@ -14,8 +14,10 @@ const OrderAudit = require('./OrderAudit');
 const Interaction = require('./Interaction');
 const PurchaseRequisition = require('./PurchaseRequisition');
 const Material = require('./Material');
+const Expense = require('./Expense');
 
 const models = {
+    sequelize,
     Customer: Customer.init(sequelize, Sequelize),
     Order: Order.init(sequelize, Sequelize),
     Technician: Technician.init(sequelize, Sequelize),
@@ -23,7 +25,8 @@ const models = {
     OrderAudit: OrderAudit.init(sequelize, Sequelize),
     Interaction: Interaction.init(sequelize, Sequelize),
     PurchaseRequisition: PurchaseRequisition.init(sequelize, Sequelize),
-    Material: Material.init(sequelize, Sequelize)
+    Material: Material.init(sequelize, Sequelize),
+    Expense: Expense.init(sequelize, Sequelize)
 }
 
 Object.values(models)
@@ -43,7 +46,7 @@ Object.values(models)
     //         searchKey: i.toFixed(0).padStart(3, '0')
     //     });
     // }
-    //await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    await sequelize.sync({ alter: true }).catch(err => console.log(err));
     //Order.sync({alter: true});
     // await sequelize.sync({ force: true })
     //     .then(() => console.log('Database synced'))

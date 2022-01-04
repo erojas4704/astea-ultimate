@@ -33,7 +33,6 @@ export const materialSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(searchMaterials.pending, (state) => {
-                state.search.materials = {};
                 state.search.status = "pending";
             })
             .addCase(searchMaterials.fulfilled, (state, action) => {

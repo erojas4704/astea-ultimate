@@ -74,13 +74,14 @@ class Api {
     /** Returns a cancelable promise to search for materials
      * @param {Object} query - Criteria to search for.
      */
-    static async searchMaterials(query, useCached, limit=100, cancelToken = null) {
+    static async searchMaterials(query, useCached, limit = 100, cancelToken = null) {
         const resp = await axios.get('/materials/search', {
             params: { ...query, cache: useCached ? "y" : null, limit },
             cancelToken
         });
 
-        if (resp.error) throw resp.error;
+        if(resp.data.error) throw resp.data.error;
+
         return resp.data;
     }
 

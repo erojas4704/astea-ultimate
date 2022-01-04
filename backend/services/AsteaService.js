@@ -33,6 +33,7 @@ const asteaRequest = async (url, body, options = {}) => {
     if (options.HostName) url = `${url}?${options.HostName}`; //Extract Method FormatURL
     const reqHeaders = options.headers ? { ...headers, ...options.headers } : headers; //Headers overrides
 
+
     const resp = await axios.post(url, body, { headers: reqHeaders });
     if (resp.data.ExceptionDetail)
         return { error: new AsteaError(resp.data) };
@@ -119,7 +120,6 @@ class Astea {
             [states.interactions, states.expenses, states.materials]
         );
 
-
         const { error, data } = await asteaRequest(
             URLGetStateUI,
             body,
@@ -136,7 +136,7 @@ class Astea {
         if (error) throw new AsteaError(error, 500);
         const materials = Material.extractFromJSON(data);
         Material.parse(materials);
-        return data;
+        return materials;
     }
 }
 

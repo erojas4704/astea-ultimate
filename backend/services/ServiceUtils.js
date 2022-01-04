@@ -35,7 +35,7 @@ const queryPairs = {
 }
 
 const params = {
-    partNumber: "bpart_id", /**The Astea part number, usually preceeded by a SP- */
+    id: "bpart_id", /**The Astea part number, usually preceeded by a SP- */
     warehouseId: "a_warehouse_id",
     inventoryType: "a_inv_type_id",
 
@@ -49,7 +49,7 @@ const params = {
 
 const paramHandling = {
     //Materials
-    [params.partNumber]: {
+    [params.id]: {
         comparison: "like",
         type: "string"
     },
@@ -89,8 +89,8 @@ const serviceModules = {
 
 const states = {
     "interactions": "customer_authorization",
-    "materials": "demand_materials",
-    "expenses": "demand_expenses"
+    "materials": "demand_material",
+    "expenses": "demand_expense"
 }
 
 /**
@@ -108,7 +108,6 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
     const keys = Object.keys(searchParams);
     const sortBy = keys[0];
     const paramsQuery = keys.map(key => `${key}="${searchParams[key]}"`).join(" ");
-    console.log(keys);
     const operators = keys.map(key => paramHandling[key].comparison).join(";");
     const types = keys.map(key => paramHandling[key].type).join(";");
     const isReplaceAlias = keys.map(key => "Y").join(";"); //I don't know what this isReplaceAlias tag does at all.
@@ -143,7 +142,7 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
 function getOrderStateBody(stateId, sessionId, serviceModule, dataToRequest) {
     if(typeof dataToRequest === "string") dataToRequest = [dataToRequest];
 
-    const strData = dataToRequest.map(data => `<BO alias="${data}"></BO>`).join("");
+    const strData = dataToRequest.map(data => `<BO alias='${data}'></BO>`).join("");
     const xmlRequest = `
         <root>
             <GetCurrentState pageName='${serviceModule.pageName}' stateID='${stateId}'>
@@ -157,7 +156,7 @@ function getOrderStateBody(stateId, sessionId, serviceModule, dataToRequest) {
         sessionId,
         bcName: serviceModule.bcName,
         moduleName: serviceModule.moduleName,
-        xmlRequest
+        xmlRequest: xmlRequest.replace(/\s+/g, " ").replace(/\n/g, "")
     }
 }
 

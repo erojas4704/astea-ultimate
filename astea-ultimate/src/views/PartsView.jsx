@@ -5,7 +5,7 @@ import SearchForm from "../components/SearchForm";
 import AddButton from "../components/AddButton";
 import { useMatch } from "react-router-dom";
 
-const PartsView = () => {
+const PartsView = () => { //TODO rename to MaterialsView
     const currentPathIsOrder = useMatch('/astea/ServiceOrder/:id');
     const [materials, setMaterials] = useState([]);
 
@@ -25,7 +25,7 @@ const PartsView = () => {
 
     useEffect(() => {
         (async () => {
-            const materials = await Api.searchMaterials({ id: 'TM-' }, true);
+            const materials = await Api.searchMaterials({ id: 'SP-' }, false);
             setMaterials(materials);
         })();
     }, [])

@@ -3,7 +3,8 @@ const { Model } = require('sequelize');
 class Material extends Model {
     static extractFromJSON(data) {
         const rawMaterialArray = data.root.row;
-
+        if(!rawMaterialArray) return [];
+        
         //TODO extract this to a similar thing like where we extract fields from Astea
         const materials = rawMaterialArray.map(material => ({
             id: material.bpart_id[0]._,

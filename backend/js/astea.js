@@ -480,6 +480,14 @@ async function interpretMacroResponse(data) { //TODO function is redundant and d
     return json;
 }
 
+function extractValues(data, keys) {
+    return Object.keys(keys).reduce((acc, key) => {
+        const asteaKey = keys[key];
+        if(data[asteaKey]) acc[asteaKey] = data[asteaKey][0]._;
+        return acc;
+    }, {});
+}
+
 function getOrderMetadata(json) {
     return {
         stateId: json.root.$["StateID"],
@@ -504,5 +512,6 @@ module.exports = {
     invoice,
     URLRetrieveXML,
     URLSearch,
-    URLGetStateUI
+    URLGetStateUI,
+    extractValues
 };

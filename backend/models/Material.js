@@ -30,7 +30,13 @@ class Material extends Model {
         //TODO rename all parse functions because they don't actually parse.
         materials.forEach(async (data) => {
             const id = data.id;
-            const material = await Material.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+            try {
+                await Material.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+            }
+            catch (err) {
+                console.log(`Could not cache expense ${id}.`);
+                console.log(err);
+            }
         });
     }
 

@@ -483,7 +483,7 @@ async function interpretMacroResponse(data) { //TODO function is redundant and d
 function extractValues(data, keys) {
     return Object.keys(keys).reduce((acc, key) => {
         const asteaKey = keys[key];
-        if(data[asteaKey]) acc[asteaKey] = data[asteaKey][0]._;
+        if(data[asteaKey]) acc[key] = data[asteaKey][0]._;
         return acc;
     }, {});
 }

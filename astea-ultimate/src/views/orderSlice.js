@@ -12,7 +12,6 @@ export const loadOrder = ({ id, history }) => {
         } catch (err) { }//Cached Orders fail silently. We catch it here to avoid the error being caught by the slice.
         try {
             const order = await Api.getServiceOrder(id, false, history);
-            console.log("GOT ORDA", order);
             dispatch({ type: 'orders/loadOrder/fulfilled', payload: order });
         } catch (err) {
             dispatch({ type: 'orders/loadOrder/rejected', payload: { id, error: err } });
@@ -31,7 +30,18 @@ export const retrieveInteractions = createAsyncThunk(
             });
         return await Api.getInteractions(id);
     }
-)
+);
+
+export const retrieveDetails = createAsyncThunk(
+    'orders/retrieveDetails',
+    async ({ id }, thunkAPI) => {
+        Api.getDetails(id, true)
+            .then(details => {
+                thunkAPI.dispatch({ id, type: 'orders/retrieveDetails/cached', payload: details });
+            });
+        return await Api.getDetails(id);
+    }
+);
 
 export const addInteraction = createAsyncThunk(
     'orders/addInteraction',
@@ -96,6 +106,87 @@ export const orderSlice = createSlice({
                         ...state[id].interactions,
                         status: "error",
                         error: action.payload
+                    }
+                }
+            })
+            .addCase(retrieveDetails.pending, (state, action) => {
+                const id = action.meta.arg.id;
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        status: "pending"
+                    },
+                    materials: {
+                        ...state[id].materials,
+                        status: "pending"
+                    },
+                    expenses: {
+                        ...state[id].expenses,
+                        status: "pending"
+                    }
+                }
+            })
+            .addCase(retrieveDetails.fulfilled, (state, action) => {
+                const id = action.meta.arg.id;
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        interactions: action.payload.interactions || [],
+                        status: "complete"
+                    },
+                    materials: {
+                        ...state[id].materials,
+                        materials: action.payload.materials || [],
+                        status: "complete"
+                    },
+                    expenses: {
+                        ...state[id].expenses,
+                        expenses: action.payload.expenses || [],
+                        status: "complete"
+                    }
+                }
+            })
+            .addCase(retrieveDetails.rejected, (state, action) => {
+                const id = action.meta.arg.id;
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        ...state[id].interactions,
+                        error: action.payload,
+                        status: "error"
+                    },
+                    materials: {
+                        ...state[id].materials,
+                        error: action.payload,
+                        status: "error"
+                    },
+                    expenses: {
+                        ...state[id].expenses,
+                        error: action.payload,
+                        status: "error"
+                    }
+                }
+            })
+            .addCase('orders/retrieveDetails/cached', (state, action) => {
+                const id = action.id; //TODO weird case
+                if(!action.payload) return; //TODO error handling
+                //TODO compare dates on information
+
+                state[id] = {
+                    ...state[id],
+                    interactions: {
+                        interactions: action.payload.interactions,
+                        ...state[id].interactions,
+                    },
+                    materials: {
+                        materials: action.payload.materials,
+                        ...state[id].materials,
+                    },
+                    expenses: {
+                        expenses: action.payload.expenses,
+                        ...state[id].expenses,
                     }
                 }
             })

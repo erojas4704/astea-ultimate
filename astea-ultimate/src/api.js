@@ -58,6 +58,16 @@ class Api {
         return resp.data;
     }
 
+    static async getDetails(id, useCached, cancelToken = null) {
+        const resp = await axios.get(`/ServiceOrder/${id}/details`, {
+            params: { cache: useCached ? "y" : null },
+            cancelToken
+        });
+        
+        if (resp.error) throw resp.error;
+        return resp.data;
+    }
+
     /** Returns a cancelable promise to search for service orders.
      * @param {Object} query - Criteria to search for.
      */

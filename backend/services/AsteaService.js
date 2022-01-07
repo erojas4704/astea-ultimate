@@ -130,10 +130,9 @@ class Astea {
         const expenses = Expense.extractFromJSON(data);
         const interactions = Interaction.extractFromJSON(data);
 
+        Expense.parse(expenses);
+        Material.parse(materials);
         return { materials, expenses, interactions };
-
-        if (error) throw error;
-        return data;
     }
 
     static async materialSearch(criteria, session) {

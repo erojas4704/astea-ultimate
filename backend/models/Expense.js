@@ -12,7 +12,7 @@ class Expense extends Model {
         const rawExpenseArray = data.root?.demand_expense ?
             data.root.demand_expense[0].row :
             data.root.row;
-            
+
         if (!rawExpenseArray) return [];
 
         //TODO extract this to a similar thing like where we extract fields from Astea
@@ -21,7 +21,7 @@ class Expense extends Model {
 
         return expenses;
     }
-    
+
 
     /**Interprets an array of expenses and adds them to the database. 
      * Interaction IDs are the order ID plus their indeces.*/
@@ -29,7 +29,12 @@ class Expense extends Model {
         //TODO rename all parse functions because they don't actually parse.
         expenses.forEach(async (data) => {
             const id = data.id;
-            await Expense.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+            try {
+                await Expense.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+            } catch (err) {
+                console.log(`Could not cache expense ${id}.`);
+                console.log(err);
+            }
         });
     }
 

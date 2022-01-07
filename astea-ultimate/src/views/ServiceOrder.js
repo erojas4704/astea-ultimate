@@ -12,7 +12,7 @@ import useAsync from "../hooks/useAsync";
 import Api from "../api";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { loadOrder, getOrderById, assignTechnician } from "./orderSlice";
+import { loadOrder, getOrderById, assignTechnician, retrieveDetails } from "./orderSlice";
 import { Col, Row } from "react-bootstrap";
 import axios from "axios";
 
@@ -21,7 +21,7 @@ const ServiceOrder = (props) => {
     const params = useParams();
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
-    const { order, status, error } = useSelector((state) => getOrderById(state, id));
+    const { order, status, error, interactions, materials, expenses } = useSelector((state) => getOrderById(state, id));
     const summary = useSelector(state => state.locator.orders[id]);
 
     //TEMPORARY HACK because these states are immutable and can't be updated. Once we have
@@ -31,6 +31,7 @@ const ServiceOrder = (props) => {
 
     useEffect(() => {
         dispatch(loadOrder({ id, history: summary?.inHistory === "Y" }));
+        dispatch(retrieveDetails({ id }));
         setIsBeingInvoiced(false);
     }, [id])
 
@@ -113,7 +114,7 @@ const ServiceOrder = (props) => {
                             <div className="value">{serviceOrder.type}</div>
                         </div>
                         <div className="divider" />
-                        <MaterialsView serviceOrder={serviceOrder} />
+                        <MaterialsView materialsData={materials} />
                     </div>
                     <div className="order-col" style={{ flexGrow: "3" }}>
                         <div className="label">Description</div>

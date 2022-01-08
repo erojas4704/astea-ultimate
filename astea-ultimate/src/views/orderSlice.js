@@ -267,5 +267,5 @@ export const orderSlice = createSlice({
 
 export const { setOrder } = orderSlice.actions;
 /** Gets an order by ID reference. Returns a blank object if no order is found */
-export const getOrderById = (state, id) => state.orders[id] || {};
+export const getOrderById = (state, id) => state.orders[id] || { interactions: {}, materials: {}, expenses: {} };
 export default orderSlice.reducer;

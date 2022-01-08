@@ -8,6 +8,7 @@ import NewServiceOrder from "./views/NewServiceOrder";
 import ResolvedAuditView from './views/ResolvedAuditView';
 import { useSelector } from 'react-redux';
 import RequireAuth from './components/RequireAuth';
+import ServiceOrderView from './views/ServiceOrderView';
 
 function App() {
     const auth = useSelector(state => state.auth);
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/login" element={<LoginView />} />
                     <Route path="/astea" element={<RequireAuth />}>
                         <Route path="/astea/ServiceOrder/new" element={<NewServiceOrder />} />
+                        <Route path="/astea/ServiceOrder2/:id" element={<ServiceOrderView />} />
                         <Route path="/astea/ServiceOrder/:id" element={<ServiceOrder />} />
                         <Route path="/astea/ResolvedAudit" element={<ResolvedAuditView />} />
                     </Route>

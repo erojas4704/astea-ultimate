@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { loadOrder, getOrderById, assignTechnician, retrieveDetails } from "./orderSlice";
 import { Col, Row } from "react-bootstrap";
 import axios from "axios";
+import ExpensesView from "../components/ExpensesView";
 
 const ServiceOrder = (props) => {
     const dispatch = useDispatch();

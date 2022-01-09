@@ -129,6 +129,10 @@ export const orderSlice = createSlice({
             })
             .addCase(retrieveDetails.fulfilled, (state, action) => {
                 const id = action.meta.arg.id;
+                if(!action.payload){
+                    return
+                }
+                console.log("MEGA PAYLOAD", action.payload);
                 state[id] = {
                     ...state[id],
                     interactions: {

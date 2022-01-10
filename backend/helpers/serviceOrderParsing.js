@@ -66,6 +66,9 @@ function parseServiceOrderData(data) {
                 else
                     value = false;
             }
+            if(fieldName === "problem"){
+                value = value || ""; //TODO hack if the value is null.
+            }
             //if (fieldName === "customer") {
             //if (!value.name) debugger;
             //    console.log(fieldName, value);

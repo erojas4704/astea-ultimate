@@ -1,0 +1,48 @@
+<root xmlns:dt="urn:schemas-microsoft-com:datatypes" StateID="bcd72231-8229-4cdd-b723-460abe82e4fc" HoldingUser="" ComponentName="Service_Order" HostName="ZkllcWJGQUV3TE9tdjl6TFlQb0N1Zz09X2hZNjljbngyNUZ6KzVVclQwUnpvN3c9PQ2" SessionID="dbc157f1-2739-4279-9490-f3b2da2de4f9Prod">
+    <demand_expense hasMore="no" primaryKeys="demand_id" parentAlias="main" joinKeys="order_id" parentKeys="order_id" totalRows="1" isRetrieved="Y">
+        <row status="0" number="1" serverStatus="3">
+            <cc_is_unknown status="0" />
+            <actgr_id status="0" len="30" />
+            <actual_dt status="0" dt:dt="date">2022-01-08</actual_dt>
+            <actual_tm status="0" dt:dt="time">18:36:34</actual_tm>
+            <adjustment_price status="0" dt:dt="float" />
+            <bpart_category_id status="0" len="30">EXPENSES</bpart_category_id>
+            <bpart_descr status="0" len="60">Labor Expense for Store Stock</bpart_descr>
+            <bpart_gcl_id status="0" len="30">Expense</bpart_gcl_id>
+            <bpart_id status="0" len="50">StoreStock-Labor</bpart_id>
+            <cc_adjustment_price status="0" dt:dt="float" />
+            <cc_price status="0" dt:dt="float" />
+            <cc_sa_descr status="0">Morris Digier</cc_sa_descr>
+            <cc_total_price status="0" dt:dt="float" />
+            <cc_vendor_descr status="0" />
+            <comment_text status="0" len="2147483647" />
+            <cost status="0" dt:dt="float">0</cost>
+            <currency_id status="0" len="12">USD</currency_id>
+            <del_flag status="0" len="1" />
+            <demand_id status="0" dt:dt="int">99163369</demand_id>
+            <demand_source status="0" len="2" />
+            <is_billable status="0" len="1">Y</is_billable>
+            <is_external status="0" len="1">N</is_external>
+            <is_fullfiled status="0" len="1">Y</is_fullfiled>
+            <is_std_populated status="0" len="1" />
+            <is_taxable status="0" len="1">Y</is_taxable>
+            <item_bpart_id status="0" len="50">641112</item_bpart_id>
+            <order_id status="0" len="40">SV2201080952@@1</order_id>
+            <order_items_bpart_id status="0" len="50">641112</order_items_bpart_id>
+            <order_items_id status="0" dt:dt="int">292431</order_items_id>
+            <payment_type_id status="0" len="30" />
+            <price status="0" dt:dt="float">0.01</price>
+            <proj_task_id status="0" dt:dt="int" />
+            <qty status="0" dt:dt="float">1</qty>
+            <rb_is_fixed status="0" len="1" />
+            <rb_percent_fix status="0" len="1" />
+            <sa_person_id status="0" len="30">mdigier</sa_person_id>
+            <sequence_no status="0" dt:dt="int">1</sequence_no>
+            <serial_no status="0" len="30">Invalid-CL0101499-145</serial_no>
+            <tagno status="0" len="30">CL0101499-145</tagno>
+            <total_cost status="0" dt:dt="float">0</total_cost>
+            <total_price status="0" dt:dt="float">0.01</total_price>
+            <vendor_id status="0" len="30" />
+        </row>
+    </demand_expense>
+</root>

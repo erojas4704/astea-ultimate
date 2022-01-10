@@ -6,14 +6,14 @@ export default function OrderListing({ order, onSelect, selected }) {
     const navigate = useNavigate();
     return (
         <tr
-            onClick={() => { navigate(`astea/ServiceOrder/${order.id}`); onSelect(order.id) }}
+            onClick={() => { navigate(`astea/ServiceOrder2/${order.id}`); onSelect(order.id) }}
             className={order.isInHistory? 'in-history' : ''}
             style={{ cursor: 'pointer', backgroundColor: selected ? '#fff1db' : '' }}
         >
             <td>
                 <Link
                     onClick={() => onSelect(order.id)}
-                    to={{ pathname: `/astea/ServiceOrder/${order.id}`, state: { data: order } }}
+                    to={{ pathname: `/astea/ServiceOrder2/${order.id}`, state: { data: order } }}
                 >{order.id}
                 </Link>
             </td>

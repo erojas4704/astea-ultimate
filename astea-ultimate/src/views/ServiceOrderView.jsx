@@ -1,6 +1,6 @@
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Card, Col, Container, Dropdown, Row, Spinner } from "react-bootstrap";
+import { Card, Col, Container, Dropdown, Row, Spinner, Accordion, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { capitalizeNames } from "../helpers/StringUtils";
@@ -28,12 +28,12 @@ export default function ServiceOrderView() {
 
 
     return (
-        <Container fluid className="mt-2 mx-2">
+        <Container fluid className="pt-2 mx-2 sv-view">
             <CutoffTester />
 
             <Row style={{ textAlign: "left", marginBottom: "14px" }} className="divider">
                 <Col>
-                    Order {id} {status === "pending" && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} />}
+                    Order {id} {status === "pending" && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} style={{ position: "absolute" }} />}
                 </Col>
                 <Col className="d-flex flex-row-reverse mx-4">
                     End
@@ -70,7 +70,7 @@ export default function ServiceOrderView() {
                                     {order.tag && <>
                                         <Col sm={6} lg={3} className="label">Tag</Col>
                                         <Col className="value">{order.tag}</Col>
-                                        </>
+                                    </>
                                     }
                                 </Row>
                                 <Row className="mt-3 d-flex align-items-center">
@@ -116,8 +116,38 @@ export default function ServiceOrderView() {
                         </Card.Body>
                     </Card>
                     <Card className="mb-4" style={{ minHeight: "8rem" }}>
-                        Materials
                         <Card.Body>
+                            <Card.Title>
+                                <Row>
+                                    <Col>Demands</Col>
+
+                                    {materials.status === "pending" &&
+                                        <Col className="d-flex flex-row-reverse mx-4"><Spinner animation="border" role="status" /></Col>
+                                    }
+                                </Row>
+
+                            </Card.Title>
+                            <Card.Text>
+                                {materials.materials &&
+                                    <Table striped bordered hover size="sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Description</th>
+                                                <th>Price</th>
+                                                <th>Is Billable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {[...expenses.expenses, ...materials.materials].map(mat => (
+                                                <tr key={mat.id}>
+                                                    <td>{mat.id}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                }
+                            </Card.Text>
                         </Card.Body>
                     </Card>
 

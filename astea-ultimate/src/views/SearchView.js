@@ -69,7 +69,7 @@ const SearchView = () => {
                                 selected={selected === result.id}
                                 onSelect={() => { setSelected(result.id) }}
                                 key={result.id}
-                                order={orders[result.id]?.order || result}
+                                order={result}
                             />
                         )}
                     </tbody>

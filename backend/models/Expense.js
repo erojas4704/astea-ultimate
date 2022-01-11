@@ -44,11 +44,17 @@ class Expense extends Model {
             const id = data.id;
             const orderId = data.orderId;
             try {
-                const order = orderId ? await Order.findByPk(orderId) : null;
+                const order = orderId ? await Order.findByPk(orderId, { include: Expense }) : null;
                 const expense = await Expense.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
                 if (order) {
-                    console.log("ORDA",order);
-                    order.addExpense(expense, { through: { ...data } });
+                    //console.log("ORDA",order);
+                    const orderExpenses = await order.getExpenses();
+                    const orderExpense = orderExpenses.find(e => e.id === id);
+                    if (orderExpense) {
+                        orderExpense.dataValues = data;
+                    } else {
+                        await order.createExpense({...expense}).catch(err => console.log(err));
+                    }
                     //expense.setOrder(order);
                 }
             } catch (err) {
@@ -79,7 +85,7 @@ class Expense extends Model {
             totalPrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
         });
         models.Order.belongsToMany(models.Expense, { through: OrderExpense });
-        this.belongsToMany(models.Order, { through: OrderExpense });
+        models.Expense.belongsToMany(models.Order, { through: OrderExpense });
     }
 
 }

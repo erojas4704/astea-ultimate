@@ -101,11 +101,13 @@ router.get("/:id/details", async (req, res, next) => {
     const { id } = req.params;
     const { history, cache } = req.query;
     try {
-        const data = await Astea.getStateDetails(
-            id,
-            req.session,
-            Astea.getAllDetailsFromOrder
-        );
+        const data = cache ?
+            await OrderService.getDetailsFor(id) :
+            await Astea.getStateDetails(
+                id,
+                req.session,
+                Astea.getAllDetailsFromOrder
+            );
         return res.send(data);
     } catch (e) {
         return next(e);

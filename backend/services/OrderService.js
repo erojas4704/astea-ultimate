@@ -1,4 +1,6 @@
+const { Op } = require("sequelize/dist");
 const { AsteaError } = require("../js/AsteaError");
+const Customer = require("../models/Customer");
 const { Interaction, Technician, Expense, Material } = require("../models/Database");
 const Order = require("../models/Order");
 
@@ -19,6 +21,75 @@ class OrderService {
         serviceOrder.interactions = await cachedOrder.getInteractions() || [];
 
         return { serviceOrder }
+    }
+
+    static async search(criteria) {
+        //TODO dynamically grab all columns and search for them
+        const query = {
+            where: {
+                [Op.or]: []
+            }
+        }
+
+        const ignoreKeys = [
+            "createdAt",
+            "updatedAt",
+            "openDate",
+            "statusId",
+            "isInHistory"
+        ];
+
+        const additionalKeys = [
+            "customerName",
+            "technicianName"
+        ]
+
+        const foreignKeys = {
+            "customerName": {
+                model: Customer,
+                targetKey: "name"
+            },
+            "technicianName": {
+                model: Technician,
+                targetKey: "name"
+            }
+        }
+
+        if (criteria.all) {
+            for (let key in Order.rawAttributes) {
+                if (ignoreKeys.includes(key)) continue;
+
+                query.where[Op.or].push({ [key]: { [Op.iLike]: `%${criteria.all}%` } });
+            }
+            delete criteria.all
+        }
+
+        query.where = {
+            ...query.where,
+            [Op.and]: {
+                id: {
+                    [Op.iLike]: `%%`
+                }
+            }
+        }
+
+        query.include = [{
+            model: Customer,
+            where: {
+                name: {
+                    [Op.iLike]: `%${criteria.all}%`
+                }
+            },
+            required: false
+        }]
+
+        //TODO left off here
+        console.log(query);
+
+        const orders = await Order.findAll(query)
+            .catch(err => console.log(`Error running search. ${err}`));
+
+        return orders;
     }
 
     /**
@@ -53,13 +124,12 @@ class OrderService {
             ]
         });
 
+        const interactions = await cachedOrder.getInteractions() || [];
+
         return {
-            materials: cachedOrder.dataValues.materials?.map(
-                material => ({...material.dataValues, ...material.dataValues.OrderMaterial})
-            ) || [],
-            expenses: cachedOrder.dataValues.expenses?.map(
-                expense => ({...expense.dataValues, ...expense.dataValues.OrderExpense})
-            ) || [],
+            interactions,
+            materials: cachedOrder.Materials || [],
+            expenses: cachedOrder.Expenses || []
         }
     }
 }

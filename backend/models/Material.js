@@ -1,5 +1,6 @@
-const { Model } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const { extractValues } = require('../js/astea');
+const Order = require('./Order');
 
 const materialKeys = {
     id: 'bpart_id',
@@ -8,7 +9,23 @@ const materialKeys = {
     class: 'pclass3_id',
     serialized: 'is_serialized',
     isInventory: 'is_inventory',
-    searchKey: 'search_key'
+    searchKey: 'search_key',
+
+    document: 'cc_orig_doc_id',
+    quantity: 'qty',
+    cost: 'cost',
+    price: 'cc_price',
+    totalPrice: 'cc_total_price',
+    warehouse: 'fr_warehouse_id',
+    origin: 'cc_orig_doc_id',
+    isBillable: {
+        asteaKey: 'is_billable',
+        value: (value) => value === 'Y'
+    },
+    isFulfilled: {
+        asteaKey: 'is_fulfilled',
+        value: (value) => value === 'Y'
+    }
 }
 
 class Material extends Model {
@@ -24,22 +41,36 @@ class Material extends Model {
         return materials;
     }
 
+
     /**Interprets an array of materials and adds them to the database. 
      * Interaction IDs are the order ID plus their indeces.*/
-    static parse(materials) {
+     static parse(materials, orderId) {
         //TODO rename all parse functions because they don't actually parse.
         materials.forEach(async (data) => {
             const id = data.id;
             try {
-                await Material.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
-            }
-            catch (err) {
-                console.log(`Could not cache expense ${id}.`);
+                const order = orderId ? await Order.findByPk(orderId, {include: Material}) : null;
+                const [material] = await Material.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+
+                if (order) {
+                    const orderMaterials = await order.getMaterials();
+                    const orderMaterial = orderMaterials.find(e => e.dataValues.id === id);
+
+                    if (orderMaterial) {
+                        orderMaterial.dataValues = data;
+                    } else {
+                        await order.addMaterial(
+                            material,
+                            { through: data }
+                        ).catch(err => console.log(err));
+                    }
+                }
+            } catch (err) {
+                console.log(`Could not cache material ${id}.`);
                 console.log(err);
             }
         });
     }
-
     static init = (sequelize, DataTypes) => {
         return super.init({
             id: { type: DataTypes.STRING, primaryKey: true, unique: true },
@@ -59,7 +90,19 @@ class Material extends Model {
     static associate(models) {
         //Any order can have any number of products
         //Any purchase requisition can have any number of products
-        this.belongsToMany(models.Order, { through: 'OrderMaterial' });
+        const OrderMaterial = models.sequelize.define('OrderMaterial', {
+            quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
+            isBillable: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+            isFulfilled: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+            isTaxable: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+            technicianId: { type: DataTypes.STRING, allowNull: false, defaultValue: "" },
+            totalPrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
+            cost: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
+            price: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
+            origin: { type: DataTypes.STRING, allowNull: false, defaultValue: 0 }
+        });
+        models.Order.belongsToMany(models.Material, { through: OrderMaterial });
+        models.Material.belongsToMany(models.Order, { through: OrderMaterial });
         this.belongsToMany(models.PurchaseRequisition, { through: 'PurchaseRequisitionMaterial' });
     }
 

@@ -14,6 +14,9 @@ class OrderService {
         const serviceOrder = { ...cachedOrder.dataValues }
         serviceOrder.customer = await cachedOrder.getCustomer();
         serviceOrder.technician = await cachedOrder.getTechnician();
+        serviceOrder.materials = await cachedOrder.getMaterials() || [];
+        serviceOrder.expenses = await cachedOrder.getExpenses() || [];
+        serviceOrder.interactions = await cachedOrder.getInteractions() || [];
 
         return { serviceOrder }
     }

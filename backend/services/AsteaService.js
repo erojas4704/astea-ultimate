@@ -126,12 +126,13 @@ class Astea {
             { HostName: hostName } //TODO naming uniformity for HostName
         );
 
+
         const materials = Material.extractFromJSON(data);
         const expenses = Expense.extractFromJSON(data);
         const interactions = Interaction.extractFromJSON(data);
 
-        Expense.parse(expenses);
-        Material.parse(materials);
+        Expense.parse(expenses, order.id);
+        Material.parse(materials, order.id);
         return { materials, expenses, interactions };
     }
 

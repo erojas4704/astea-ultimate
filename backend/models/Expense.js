@@ -9,6 +9,7 @@ const expenseKeys = {
     cost: 'cost',
     orderId: 'order_id',
     quantity: 'qty',
+    technicianId: 'sa_person_id',
     isBillable: {
         asteaKey: 'is_billable',
         value: (value) => value === 'Y'
@@ -29,7 +30,7 @@ class Expense extends Model {
 
         //TODO extract this to a similar thing like where we extract fields from Astea
         const expenses = rawExpenseArray.map(expense => extractValues(expense, expenseKeys));
-        console.log("Expenses", expenses);
+        //console.log("Expenses", expenses);
         //Set demand attrs here?
 
         return expenses;
@@ -38,24 +39,26 @@ class Expense extends Model {
 
     /**Interprets an array of expenses and adds them to the database. 
      * Interaction IDs are the order ID plus their indeces.*/
-    static parse(expenses) {
+    static parse(expenses, orderId) {
         //TODO rename all parse functions because they don't actually parse.
         expenses.forEach(async (data) => {
             const id = data.id;
-            const orderId = data.orderId;
             try {
-                const order = orderId ? await Order.findByPk(orderId, { include: Expense }) : null;
-                const expense = await Expense.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+                const order = orderId ? await Order.findByPk(orderId, {include: Expense}) : null;
+                const [expense] = await Expense.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+
                 if (order) {
-                    //console.log("ORDA",order);
                     const orderExpenses = await order.getExpenses();
-                    const orderExpense = orderExpenses.find(e => e.id === id);
+                    const orderExpense = orderExpenses.find(e => e.dataValues.id === id);
+
                     if (orderExpense) {
                         orderExpense.dataValues = data;
                     } else {
-                        await order.createExpense({...expense}).catch(err => console.log(err));
+                        await order.addExpense(
+                            expense,
+                            { through: data }
+                        ).catch(err => console.log(err));
                     }
-                    //expense.setOrder(order);
                 }
             } catch (err) {
                 console.log(`Could not cache expense ${id}.`);
@@ -77,7 +80,7 @@ class Expense extends Model {
     static associate(models) {
         //TODO is this even viable?
         const OrderExpense = models.sequelize.define('OrderExpense', {
-            quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+            quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
             isBillable: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
             isFulfilled: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
             isTaxable: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },

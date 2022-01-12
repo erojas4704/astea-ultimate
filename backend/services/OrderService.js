@@ -1,5 +1,5 @@
 const { AsteaError } = require("../js/AsteaError");
-const { Interaction, Technician } = require("../models/Database");
+const { Interaction, Technician, Expense, Material } = require("../models/Database");
 const Order = require("../models/Order");
 
 class OrderService {
@@ -37,6 +37,30 @@ class OrderService {
         })
 
         return interactions;
+    }
+
+    /**
+     * Retrieves all a service order with cached details
+     * @param {string} id Work order ID
+     * @param {Object} session Session object with user info and sessionId
+     */
+    static async getDetailsFor(id) {
+        const cachedOrder = await Order.findOne({
+            where: { id: id },
+            include: [
+                { model: Expense },
+                { model: Material },
+            ]
+        });
+
+        return {
+            materials: cachedOrder.dataValues.materials?.map(
+                material => ({...material.dataValues, ...material.dataValues.OrderMaterial})
+            ) || [],
+            expenses: cachedOrder.dataValues.expenses?.map(
+                expense => ({...expense.dataValues, ...expense.dataValues.OrderExpense})
+            ) || [],
+        }
     }
 }
 

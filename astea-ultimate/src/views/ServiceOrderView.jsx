@@ -119,7 +119,7 @@ export default function ServiceOrderView() {
                         <Card.Body>
                             <Card.Title>
                                 <Row>
-                                    <Col>Demands</Col>
+                                     <Col>Demands</Col>
 
                                     {materials.status === "pending" &&
                                         <Col className="d-flex flex-row-reverse mx-4"><Spinner animation="border" role="status" /></Col>

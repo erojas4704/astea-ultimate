@@ -4,6 +4,7 @@ const { sanitizeData } = require('../helpers/serviceOrderParsing');
 class Interaction extends Model {
     static extractFromJSON(data) {
         data = sanitizeData(data.root);
+        if(!data.customer_authorization) return [];
         const rawInteractionArray = data.customer_authorization[0].row;
         if (!rawInteractionArray) return [];
 

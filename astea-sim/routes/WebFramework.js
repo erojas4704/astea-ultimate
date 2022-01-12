@@ -83,8 +83,18 @@ router.post(`/DataViewMgr.svc/dotnet`, async (req, res, next) => {
     }
 });
 
-router.post(`/BCBase.svc/GetStateUIExt`, async (req, res, next) => {
-    return res.send([]); 
+router.post(`/BCBase.svc/GetStateUIExt?:HostName`, async (req, res, next) => {
+    if (req.body.moduleName === "service_order_maint") {
+        //Parse XML Request to a JSON object
+        console.log(req.body);
+        const json = await parseXMLToJSON(req.body.xmlRequest);
+        //console.log(json);
+        //TODO actually read the request
+        const testData = await fs.readFile('./xml/materials-expenses.xml', 'utf8');
+        return res.json({d: testData});
+    } else {
+        return res.send("dog shit");
+    }
 });
 
 /*

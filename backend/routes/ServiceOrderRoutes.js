@@ -26,9 +26,15 @@ router.get("/raw", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
     const criteria = req.query;
-    // debugger;
+    const cache = criteria.cache === "y";
+    delete criteria.cache;
+    
     try {
-        return res.send(await orderLocatorSearch(req.session, criteria));
+        return res.send(
+            cache ?
+                await OrderService.search(criteria) :
+                await orderLocatorSearch(req.session, criteria)
+        );
     } catch (e) {
         return next(e);
     }

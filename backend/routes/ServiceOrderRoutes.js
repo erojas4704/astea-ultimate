@@ -28,7 +28,7 @@ router.get("/search", async (req, res, next) => {
     const criteria = req.query;
     const cache = criteria.cache === "y";
     delete criteria.cache;
-    
+
     try {
         return res.send(
             cache ?

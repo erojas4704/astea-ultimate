@@ -1,4 +1,4 @@
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faCircleNotch, faDollarSign } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, Col, Container, Dropdown, Row, Spinner, Accordion, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -119,7 +119,7 @@ export default function ServiceOrderView() {
                         <Card.Body>
                             <Card.Title>
                                 <Row>
-                                     <Col>Demands</Col>
+                                    <Col>Demands</Col>
 
                                     {materials.status === "pending" &&
                                         <Col className="d-flex flex-row-reverse mx-4"><Spinner animation="border" role="status" /></Col>
@@ -132,16 +132,25 @@ export default function ServiceOrderView() {
                                     <Table striped bordered hover size="sm">
                                         <thead>
                                             <tr>
-                                                <th></th>
+                                                <th>ID</th>
                                                 <th>Description</th>
                                                 <th>Price</th>
-                                                <th>Is Billable</th>
+                                                <th>Billable</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {[...expenses.expenses, ...materials.materials].map(mat => (
                                                 <tr key={mat.id}>
                                                     <td>{mat.id}</td>
+                                                    <td>{mat.description}</td>
+                                                    <td>{mat.price}</td>
+                                                    <td>{mat.isBillable ?
+                                                        <FontAwesomeIcon icon={faDollarSign} color="Green"/> :
+                                                        <span className="fa-layers fa-fw">
+                                                            <FontAwesomeIcon icon={faDollarSign} color="Tomato"/>
+                                                            <FontAwesomeIcon icon={faBan} color="Tomato"/>
+                                                        </span>
+                                                    }</td>
                                                 </tr>
                                             ))}
                                         </tbody>

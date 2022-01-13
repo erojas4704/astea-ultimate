@@ -123,13 +123,26 @@ class OrderService {
                 { model: Material },
             ]
         });
-
         const interactions = await cachedOrder.getInteractions() || [];
+
+        function extract(key){
+            const pluralKey = `${key}s`;
+            console.log(cachedOrder.dataValues[key]);
+            if(!cachedOrder[pluralKey]) return [];
+            return cachedOrder[pluralKey].map(
+                item => {
+                    const obj = {...item.dataValues, ...item[`Order${key}`].dataValues}
+                    delete obj[`Order${key}`];
+                    return obj;
+                }
+            );
+        }
+        console.log("MATERIALS", cachedOrder.Materials);
 
         return {
             interactions,
-            materials: cachedOrder.Materials || [],
-            expenses: cachedOrder.Expenses || []
+            materials: extract("Material"),
+            expenses: extract("Expense")
         }
     }
 }

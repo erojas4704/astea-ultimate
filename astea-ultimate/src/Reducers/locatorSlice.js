@@ -12,13 +12,13 @@ const INITIAL_STATE = {
 //TODO make a createAsyncThunk function that does both the cached and the non-cached versions to avoid duplication of code.
 export const search = createAsyncThunk(
     "locator/search",
-    async (query, thunkAPI) => {
+    async ({ query, includeHistory }, thunkAPI) => {
         Api.search(query, true)
             .then(results => {
                 thunkAPI.dispatch({ type: "locator/search/cached", payload: results });
             });
         const resp = await Api.search(query);
-        if(resp.error) throw resp.error;
+        if (resp.error) throw resp.error;
         return resp;
     }
 )
@@ -37,9 +37,9 @@ export const locatorSlice = createSlice({
             .addCase('locator/search/cached', (state, action) => {
                 //If status is pending, we will set our results to our cached results.
                 //We will also overwrite any summaries that don't exist, but we won't overwrite any that do.
+                state.results = [...state.results, ...action.payload]; 
+                //TODO consider the implications of using locally stored data as well as Astea data.
                 if (state.status === "pending") {
-                    if (!action.payload) action.payload = []; //TODO this is a hack. because error handling does not work for our cache
-                    state.results = action.payload;
                     state.summaries = action.payload.reduce((acc, result) => {
                         acc[result.id] = result;
                         return acc;
@@ -48,7 +48,7 @@ export const locatorSlice = createSlice({
             })
             .addCase(search.fulfilled, (state, action) => {
                 state.status = "complete";
-                console.log(action.payload);
+                state.results = [...state.results, ...action.payload];
                 //Add the results to the summaries by ID
                 state.summaries = action.payload.reduce((acc, result) => {
                     acc[result.id] = result;

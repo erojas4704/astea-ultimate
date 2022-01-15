@@ -9,9 +9,7 @@ import OrderListing from "../components/OrderListing";
 import HistoryInput from "../components/HistoryInput";
 
 const SearchView = () => {
-    const results = useSelector(state => state.locator.data);
-    const loading = useSelector(state => state.locator.loading);
-    const orders = useSelector(state => state.orders);
+    const {results, status} = useSelector(state => state.locator);
 
     const dispatch = useDispatch();
     const [searchInput, setSearchInput] = useState("");
@@ -35,7 +33,11 @@ const SearchView = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(search(searchInput, includeHistory));
+        //TODO dynamically build up the search based on input
+        dispatch(search({
+            query: { all: searchInput },
+            includeHistory
+        }));
         //TODO call a method to get a cached search result if the search is redudant while we wait for the newer results.
     }
 
@@ -44,10 +46,17 @@ const SearchView = () => {
         <div className="search-view" style={{ height: '100%' }}>
             <form onSubmit={handleSubmit} className="form-inline">
                 <div className="input-group ">
-                    <input type="text" className=" form-control rounded-pill m-1" name="search" id="search" placeholder="Search by name or SV number" value={searchInput} onChange={changeHandler} disabled={loading} />
+                    <input type="text"
+                        className="form-control rounded-pill m-1"
+                        name="search"
+                        id="search"
+                        placeholder="Search by name or SV number"
+                        value={searchInput}
+                        onChange={changeHandler}
+                        disabled={status === "pending"}
+                    />
                     <HistoryInput name="includeHistory" onChange={historyChangeHandler} />
                 </div>
-
             </form>
             <div className="results">
                 <table className="results-table table table-hover table-sm">

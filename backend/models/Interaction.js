@@ -42,6 +42,7 @@ class Interaction extends Model {
     static associate(models) {
         this.belongsTo(models.Technician);
         this.belongsTo(models.Order);
+        
         models.Order.hasMany(this, { as: 'interactions' });
     }
 

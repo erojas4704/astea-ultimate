@@ -71,9 +71,9 @@ class Api {
     /** Returns a cancelable promise to search for service orders.
      * @param {Object} query - Criteria to search for.
      */
-    static async search(query, cancelToken = null) {
+    static async search(query, useCached=false, cancelToken = null) {
         const resp = await axios.get('/ServiceOrder/search', {
-            params: { ...query },
+            params: { ...query, cache: useCached? "y" : null },
             cancelToken
         });
 

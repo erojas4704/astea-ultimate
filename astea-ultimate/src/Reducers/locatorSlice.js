@@ -10,15 +10,16 @@ const INITIAL_STATE = {
 }
 
 //TODO make a createAsyncThunk function that does both the cached and the non-cached versions to avoid duplication of code.
-export const locatorSearch = createAsyncThunk(
+export const search = createAsyncThunk(
     "locator/search",
     async (query, thunkAPI) => {
         Api.search(query, true)
             .then(results => {
                 thunkAPI.dispatch({ type: "locator/search/cached", payload: results });
             });
-
-        return await Api.search(query);
+        const resp = await Api.search(query);
+        if(resp.error) throw resp.error;
+        return resp;
     }
 )
 
@@ -28,30 +29,37 @@ export const locatorSlice = createSlice({
     reducers: {},
     extraReducers(builder) {
         builder
-            .addCase(locatorSearch.pending, (state, action) => {
+            .addCase(search.pending, (state, action) => {
                 console.log(action);
                 state.status = "pending";
-                results = [];
+                state.results = [];
             })
             .addCase('locator/search/cached', (state, action) => {
                 //If status is pending, we will set our results to our cached results.
                 //We will also overwrite any summaries that don't exist, but we won't overwrite any that do.
                 if (state.status === "pending") {
+                    if (!action.payload) action.payload = []; //TODO this is a hack. because error handling does not work for our cache
                     state.results = action.payload;
                     state.summaries = action.payload.reduce((acc, result) => {
                         acc[result.id] = result;
                         return acc;
                     }, state.summaries);
-                }  
+                }
             })
-            .addCase(locatorSearch.fulfilled, (state, action) => {
+            .addCase(search.fulfilled, (state, action) => {
                 state.status = "complete";
-                if(!action.payload) action.payload = []; //TODO this is a hack. because error handling does not work.
+                console.log(action.payload);
                 //Add the results to the summaries by ID
                 state.summaries = action.payload.reduce((acc, result) => {
                     acc[result.id] = result;
                     return acc;
                 }, state.summaries);
-            });
+            })
+            .addCase(search.rejected, (state, action) => {
+                state.status = "error";
+                state.error = action.payload;
+            })
     }
 });
+
+export default locatorSlice.reducer;

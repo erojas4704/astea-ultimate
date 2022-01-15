@@ -2,7 +2,9 @@ import "./SearchView.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { resetSearch, search } from "../actions/locator";
+// import { resetSearch, search } from "../actions/locator";
+import { search } from "../reducers/locatorSlice";
+
 import OrderListing from "../components/OrderListing";
 import HistoryInput from "../components/HistoryInput";
 
@@ -18,9 +20,9 @@ const SearchView = () => {
 
     //TODO maybe a search hook that simplifies all this crap
 
-    useEffect(() => {
-        dispatch(resetSearch());
-    }, [dispatch]);
+    //useEffect(() => {
+    //    dispatch(resetSearch());
+    //}, [dispatch]);
 
     const changeHandler = evt => {
         setSearchInput(evt.target.value);

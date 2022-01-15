@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import orderReducer from '../views/orderSlice';
 import auditReducer from './auditReducer';
 import authReducer from './authReducer';
-import locatorReducer from './locatorReducer';
+import locatorReducer from './locatorSlice';
 import navReducer from './navReducer';
 import materialReducer from './materialSlice';
 

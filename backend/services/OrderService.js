@@ -24,7 +24,6 @@ class OrderService {
     }
 
     static async search(criteria) {
-        //TODO dynamically grab all columns and search for them
         const query = {
             where: {
                 [Op.or]: []
@@ -42,37 +41,52 @@ class OrderService {
         const additionalKeys = [
             "customerName",
             "technicianName"
-        ]
+        ];
 
-        const foreignKeys = {
-            "customerName": {
-                model: Customer,
-                targetKey: "name"
-            },
-            "technicianName": {
-                model: Technician,
-                targetKey: "name"
+        const columnsToSearchFor = criteria.all ?
+            [...additionalKeys ,...Object.keys(Order.rawAttributes).filter(key => !ignoreKeys.includes(key))] :
+            criteria;
+
+        let ordersPrecache = [];
+
+        columnsToSearchFor.forEach(async key => {
+            //TODO this is a nasty hack until I learn more about our ORM.
+            if(key === "customerName") {
+                const customers = await Customer.findAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${criteria[key] || criteria.all}%`
+                        }
+                    },
+                    include: [
+                        { model: Order, as: 'orders' }
+                    ]
+                });
+
+                ordersPrecache = [...ordersPrecache, ...customers.map(customer => customer.orders)];
+            }else if(key === "technicianName") {
+                const technicians = await Technician.findAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${criteria[key] || criteria.all}%`
+                        }
+                    },
+                    include: [
+                        { model: Order, as: 'orders' }
+                    ]
+                });
+                ordersPrecache = [...ordersPrecache, ...technicians.map(technician => technician.orders)];
             }
-        }
 
-        if (criteria.all) {
-            for (let key in Order.rawAttributes) {
-                if (ignoreKeys.includes(key)) continue;
-
-                query.where[Op.or].push({ [key]: { [Op.iLike]: `%${criteria.all}%` } });
-            }
-            delete criteria.all
-        }
-
-        query.where = {
-            ...query.where,
-            [Op.and]: {
-                id: {
-                    [Op.iLike]: `%%`
+            query.where[Op.or].push({
+                [key]: {
+                    [Op.iLike]: `%${criteria[key] || criteria.all}%`
                 }
-            }
-        }
+            });
+        });
+        //TODO search needs deep optimization. We can't just do a search for every single column as our database grows in complexity.
 
+        /*
         query.include = [{
             model: Customer,
             where: {
@@ -82,14 +96,15 @@ class OrderService {
             },
             required: false
         }]
+        */
 
         //TODO left off here
-        console.log(query);
+        //console.log(query);
 
         const orders = await Order.findAll(query)
             .catch(err => console.log(`Error running search. ${err}`));
 
-        return orders;
+        return [...orders, ...ordersPrecache];
     }
 
     /**
@@ -123,26 +138,13 @@ class OrderService {
                 { model: Material },
             ]
         });
-        const interactions = await cachedOrder.getInteractions() || [];
 
-        function extract(key){
-            const pluralKey = `${key}s`;
-            console.log(cachedOrder.dataValues[key]);
-            if(!cachedOrder[pluralKey]) return [];
-            return cachedOrder[pluralKey].map(
-                item => {
-                    const obj = {...item.dataValues, ...item[`Order${key}`].dataValues}
-                    delete obj[`Order${key}`];
-                    return obj;
-                }
-            );
-        }
-        console.log("MATERIALS", cachedOrder.Materials);
+        const interactions = await cachedOrder.getInteractions() || [];
 
         return {
             interactions,
-            materials: extract("Material"),
-            expenses: extract("Expense")
+            materials: cachedOrder.Materials || [],
+            expenses: cachedOrder.Expenses || []
         }
     }
 }

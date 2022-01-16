@@ -25,7 +25,7 @@ class Interaction extends Model {
         interactions.sort((a, b) => a.date - b.date);
         interactions.forEach(async (data, i) => {
             const id = `${order.id}-${i}`;
-            const interaction = await Interaction.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
+            await Interaction.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
         });
     }
 
@@ -40,10 +40,10 @@ class Interaction extends Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.Technician);
-        this.belongsTo(models.Order);
+        this.belongsTo(models.Technician, { foreignKey: 'technicianId', as: 'technician' });
+        this.belongsTo(models.Order, { foreignKey: 'orderId', as: 'order' });
         
-        models.Order.hasMany(this, { as: 'interactions' });
+        models.Order.hasMany(this, { foreignKey: 'orderId', as: 'interactions' });
     }
 
 }

@@ -32,6 +32,8 @@ export default function ServiceOrderView() {
         dispatch(retrieveDetails({ id }));
     }, [id])
 
+    //console.table console.group
+    
     if (!order) {
         return (<Container fluid className="m-2">
             {status === "pending" ? <>

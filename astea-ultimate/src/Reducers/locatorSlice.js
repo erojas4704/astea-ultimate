@@ -15,6 +15,7 @@ export const search = createAsyncThunk(
     async ({ query, includeHistory }, thunkAPI) => {
         Api.search(query, true)
             .then(results => {
+                if(!results) return []; //Need proper error handling for our API.
                 thunkAPI.dispatch({ type: "locator/search/cached", payload: results });
             });
         const resp = await Api.search(query);

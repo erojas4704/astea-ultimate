@@ -13,26 +13,28 @@ import { setModule } from "../actions/nav";
 import { Col, Container } from "react-bootstrap";
 
 //TODO help
-const Navigator = () => {
+const Navigator = ({ onUpdateNavSettings }) => {
     const module = useSelector(state => state.nav.module);
     const [expanded, setExpanded] = useState(false);
     const dispatch = useDispatch();
+
 
     const handleNavClick = (newModule, autoExpand) => {
         if (module === newModule) {
             setExpanded(!expanded);
             //TODO maybe animate to shrink
-        }else{
+        } else {
             //Maybe add autoExpand attribute to navs at some point.
             //Also add an expandable boolean as well.
             setExpanded(true);
         }
+        onUpdateNavSettings({ isExpanded: !expanded });
         //TODO maybe handle navigation here with const navigate = useNavigate();
         dispatch(setModule(newModule));
     }
 
     return (
-        <div style={{display: 'flex', height: '100vh'}}>
+        <div style={{ display: 'flex', height: '100vh' }}>
             <nav className="nav">
                 <NavModule module="SearchView" onClick={handleNavClick} icon={faSearch}>Locator</NavModule>
                 <NavModule module="AgingView" onClick={handleNavClick} icon={faHourglassStart} enabled={false}>Aging</NavModule>
@@ -44,13 +46,13 @@ const Navigator = () => {
                 <Link className="module-link" to="/astea/ServiceOrder/new"><NavModule icon={faPlus} enabled={false}>New Service Order</NavModule></Link>
             </nav>
             {/*These are navigation modules to help search and narrow down information*/}
-                {expanded && <Col className="homeview">
-                    {module === "SearchView" && <SearchView />}
-                    {module === "AgingView" && <AgingView />}
-                    {module === "RequisitionView" && <RequisitionView />}
-                    {module === "OptionsView" && <OptionsView />}
-                    {module === "PartsView" && <PartsView />}
-                </Col>}
+            {expanded && <Col className="homeview">
+                {module === "SearchView" && <SearchView />}
+                {module === "AgingView" && <AgingView />}
+                {module === "RequisitionView" && <RequisitionView />}
+                {module === "OptionsView" && <OptionsView />}
+                {module === "PartsView" && <PartsView />}
+            </Col>}
         </div>
     );
 };

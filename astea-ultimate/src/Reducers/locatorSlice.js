@@ -24,6 +24,19 @@ export const search = createAsyncThunk(
     }
 )
 
+function mergeResults(arr1, arr2){
+    const reduceById = (acc, curr) => {
+        acc[curr.id] = curr;
+        return acc;
+    }
+    const map = {
+        ...arr1.reduce(reduceById, {}),
+        ...arr2.reduce(reduceById, {})
+    }
+
+    return Object.values(map);
+}
+
 export const locatorSlice = createSlice({
     name: 'locator',
     initialState: INITIAL_STATE,
@@ -38,18 +51,18 @@ export const locatorSlice = createSlice({
             .addCase('locator/search/cached', (state, action) => {
                 //If status is pending, we will set our results to our cached results.
                 //We will also overwrite any summaries that don't exist, but we won't overwrite any that do.
-                state.results = [...state.results, ...action.payload]; 
+                state.results = mergeResults(state.results, action.payload);
                 //TODO consider the implications of using locally stored data as well as Astea data.
                 if (state.status === "pending") {
                     state.summaries = action.payload.reduce((acc, result) => {
-                        acc[result.id] = result;
+                        acc[result.id] = result;    
                         return acc;
                     }, state.summaries);
                 }
             })
             .addCase(search.fulfilled, (state, action) => {
                 state.status = "complete";
-                state.results = [...state.results, ...action.payload];
+                state.results = mergeResults(state.results, action.payload);
                 //Add the results to the summaries by ID
                 state.summaries = action.payload.reduce((acc, result) => {
                     acc[result.id] = result;

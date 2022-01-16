@@ -23,6 +23,11 @@ class OrderService {
         return { serviceOrder }
     }
 
+    /**
+     * Looks up a service order in our local database. 
+     * @param {Object} criteria with several keys to look for.
+     * @returns 
+     */
     static async search(criteria) {
         const query = {
             where: {
@@ -68,9 +73,6 @@ class OrderService {
                     ]
                 });
 
-                console.log(customers);
-
-                console.log(customers.map(customer => customer.orders));
                 let customerOrders = [];
                 customers.forEach( c => {
                     customerOrders.push(...c.orders);

@@ -34,8 +34,18 @@ Object.values(models)
     .forEach(model => model.associate(models));
 
 (async () => {
-
-    //await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    // const allInteractions = await Interaction.findAll()
+    // .catch(err => console.log(err))
+    // console.log(allInteractions);
+    // allInteractions.forEach(interaction => {
+    //     const [orderId] = interaction.id.split('-');
+    //     interaction.orderId = orderId;
+    //     interaction.technicianId = ['erojas1', 'sinqshiqaq', 'tadams1', 'asantisteban', 'achiarelli', 'pflaherty', 'gmanolas'][Math.floor(Math.random() * 7)];
+    //     interaction.save().then(() => console.log(`Saved interaction ${interaction.id}`))
+    //     .catch(err => console.log(err))
+    // })
+    //
     //Order.sync({alter: true});
     // await sequelize.sync({ force: true })
     //     .then(() => console.log('Database synced'))

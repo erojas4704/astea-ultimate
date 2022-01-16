@@ -113,6 +113,9 @@ class OrderService {
             include: [
                 { model: Customer, as: 'customer' },
                 { model: Technician, as: 'technician' }
+            ],
+            order: [
+                ['id', 'DESC']
             ]
         }).catch(err => console.log(`Error running search. ${err}`));
         

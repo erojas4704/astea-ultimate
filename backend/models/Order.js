@@ -25,7 +25,7 @@ class Order extends Model {
                     const [cust] = customer?.id ? await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer }) : null;
                     o.setCustomer(cust);
                 }
-                if (technician && technician.id) {  
+                if (technician && technician.id) {
                     const [tech] = technician?.id ? await Technician.findOrCreate({ where: { id: technician.id }, defaults: technician }) : null;
                     o.setTechnician(tech);
                 }
@@ -63,10 +63,10 @@ class Order extends Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.Technician);
-        this.belongsTo(models.Customer);
-        models.Customer.hasMany(this, { as: 'orders' });
-        models.Technician.hasMany(this, { as: 'orders' });
+        this.belongsTo(models.Technician, { foreignKey: 'technicianId', as: 'technician' });
+        this.belongsTo(models.Customer, { foreignKey: 'customerId', as: 'customer' });
+        models.Customer.hasMany(this, { foreignKey: 'customerId', as: 'orders' });
+        models.Technician.hasMany(this, { foreignKey: 'technicianId', as: 'orders' });
     }
 }
 

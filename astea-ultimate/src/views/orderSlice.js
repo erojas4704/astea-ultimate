@@ -39,7 +39,9 @@ export const retrieveDetails = createAsyncThunk(
             .then(details => {
                 thunkAPI.dispatch({ id, type: 'orders/retrieveDetails/cached', payload: details });
             });
-        return await Api.getDetails(id);
+        const resp = await Api.getDetails(id);
+        if (resp.error) throw resp.error;
+        return resp;
     }
 );
 
@@ -129,10 +131,7 @@ export const orderSlice = createSlice({
             })
             .addCase(retrieveDetails.fulfilled, (state, action) => {
                 const id = action.meta.arg.id;
-                if(!action.payload){
-                    return
-                }
-                console.log("MEGA PAYLOAD", action.payload);
+                if (!action.payload) action.payload = { interactions: [], materials: [], expenses: [] }; //TODO blank payload until we have proper error handling
                 state[id] = {
                     ...state[id],
                     interactions: {
@@ -175,7 +174,7 @@ export const orderSlice = createSlice({
             })
             .addCase('orders/retrieveDetails/cached', (state, action) => {
                 const id = action.id; //TODO weird case
-                if(!action.payload) return; //TODO error handling
+                if (!action.payload) return; //TODO error handling
                 //TODO compare dates on information
 
                 state[id] = {

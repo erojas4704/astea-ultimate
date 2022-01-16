@@ -27,6 +27,8 @@ const useAsync = (callback) => {
             });
     }, [callback]);
 
+    console.log( loading, response);
+
     return { execute, response, error, loading };
 }
 

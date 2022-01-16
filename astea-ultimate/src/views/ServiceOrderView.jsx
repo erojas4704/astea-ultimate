@@ -1,4 +1,4 @@
-import { faBan, faCircleNotch, faDollarSign } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faCircleNotch, faDollarSign, faEdit, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, Col, Container, Dropdown, Row, Spinner, Alert, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,21 +11,23 @@ import "./OrderView.css";
 import { useEffect } from "react";
 import moment from "moment";
 import Interaction from "../components/Interaction";
+import { useContext } from "react";
+import { NavContext } from "../App";
+import useWindowDimensions from "../hooks/useWindowDimensions";
 
 export default function ServiceOrderView() {
     const dispatch = useDispatch();
     const params = useParams();
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
-    const { order: orderData, status, error, interactions: interactionData, materials, expenses } = useSelector((state) => getOrderById(state, id));
-    const {interactions, status: interactionStatus, error: interactionError} = interactionData;
+    const { order: orderData, status, error, interactions, materials, expenses } = useSelector((state) => getOrderById(state, id));
 
     const summary = useSelector(state => state.locator.summaries[id]);
 
-    //What if neither the order or the summary is loaded?
+    const { isExpanded : nav } = useContext(NavContext);
 
+    //What if neither the order or the summary is loaded?
     const order = orderData || summary;
-    console.log(interactions, interactionData);
 
     useEffect(() => {
         dispatch(loadOrder({ id, history: summary?.inHistory === "Y" }));
@@ -33,7 +35,7 @@ export default function ServiceOrderView() {
     }, [id])
 
     //console.table console.group
-    
+
     if (!order) {
         return (<Container fluid className="m-2">
             {status === "pending" ? <>
@@ -60,10 +62,10 @@ export default function ServiceOrderView() {
                 </Col>
             </Row>
             <Row>
-                <Col xs={12} md={6} lg={6} xl={6}>
+                <Col className="d-flex flex-column" xs={12} md={nav? 12 : 6} lg={nav? 12 : 6} xl={6}>
                     <Row>
-                        <Col xs={12} xl={6}>
-                            <Card className="mb-4" style={{ minHeight: "10rem", overflow: "visible" }}>
+                        <Col xs={12} xl={nav? 12 : 6} className="d-flex">
+                            <Card className="mb-4" style={{ flexGrow: 1 }}>
                                 <Card.Body>
                                     <Card.Title className="customer-name">
                                         <Row>
@@ -79,24 +81,29 @@ export default function ServiceOrderView() {
                                     </Card.Title>
                                     <Card.Text>
                                         <Row>
-                                            <Col sm={6} lg={3} className="label">Action Group</Col>
+                                            <Col className="label">Action Group</Col>
                                             <Col className="value">{order.actionGroup}</Col>
                                         </Row>
                                         <Row>
-                                            <Col sm={6} lg={3} className="label">Warehouse</Col>
+                                            <Col className="label">Warehouse</Col>
                                             <Col className="value">{order.warehouse}</Col>
                                         </Row>
                                         <Row>
                                             {order.tag && <>
-                                                <Col sm={6} lg={3} className="label">Tag</Col>
+                                                <Col className="label">Tag</Col>
                                                 <Col className="value">{order.tag}</Col>
                                             </>
                                             }
                                         </Row>
+                                        <Row>
+                                            <Col className="label">Request Type</Col>
+                                            <Col className="value">{order.type}</Col>
+                                        </Row>
                                         <Row className="mt-3 d-flex align-items-center">
-                                            <Col sm={6} lg={3} className="label">Technician</Col>
+                                            <Col className="label">Technician</Col>
                                             <Col>
-                                                {technicians ?
+                                                {isLoadingTechnicians && <Spinner animation="border" role="status" />}
+                                                {technicians &&
                                                     <Dropdown>
                                                         <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                                             {order.technician?.name || "Select Technician"}
@@ -106,8 +113,8 @@ export default function ServiceOrderView() {
                                                                 <Dropdown.Item key={technician.id} onClick={() => ""}>{technician.name}</Dropdown.Item>
                                                             ))}
                                                         </Dropdown.Menu>
-                                                    </Dropdown> :
-                                                    <Spinner animation="border" role="status" />}
+                                                    </Dropdown>}
+                                                {!technicians && !isLoadingTechnicians && <>Error getting data</>}
                                             </Col>
                                         </Row>
                                         <Row>
@@ -116,44 +123,45 @@ export default function ServiceOrderView() {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col xs={12} xl={6}>
-                            <Card className="mb-4" style={{ minHeight: "8rem" }}>
+                        <Col xs={12} xl={nav? 12 : 6} className="d-flex">
+                            <Card className="mb-4" style={{ flexGrow: 1}}>
                                 <Card.Body>
                                     <Row>
-                                        <Col sm={6} lg={3} className="label">Equipment</Col>
+                                        <Col className="label">Equipment</Col>
                                         <Col className="value">{order.product}</Col>
                                     </Row>
                                     <Row>
-                                        <Col xs={6} lg={3} className="label">Serial Number</Col>
+                                        <Col className="label">Serial Number</Col>
                                         <Col className="value">{order.serialNumber}</Col>
                                     </Row>
                                     <Row>
-                                        <Col sm={6} lg={3} className="label">Request Type</Col>
-                                        <Col className="value">{order.type}</Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={6} lg={3} className="label">Status</Col>
+                                        <Col className="label">Status</Col>
                                         <Col className="value">{order.status}</Col>
                                     </Row>
                                     <Row>
-                                        <Col sm={6} lg={3} className="label">Opened</Col>
+                                        <Col className="label">Opened</Col>
                                         <Col className="value">{moment(order.openDate).format('MM/DD/yyyy')}</Col>
                                     </Row>
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
-                    <Card className="mb-4" style={{ minHeight: "8rem" }}>
+                    <Card className="mb-4" style={{ minHeight: "8rem", flexGrow: 1}}>
                         <Card.Body>
                             <Card.Title>
                                 <Row>
-                                    <Col>Demands</Col>
-
-                                    {materials.status === "pending" &&
-                                        <Col className="d-flex flex-row-reverse mx-4"><Spinner animation="border" role="status" /></Col>
-                                    }
+                                    <Col>Materials</Col>
+                                    <Col className="d-flex flex-row-reverse mx-4">
+                                        {expenses.status === "pending" ?
+                                            <Spinner animation="border" role="status" /> :
+                                            <FontAwesomeIcon
+                                                icon={faPlus}
+                                                color="Gray"
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        }
+                                    </Col>
                                 </Row>
-
                             </Card.Title>
                             <Card.Text>
                                 {materials.materials &&
@@ -167,7 +175,7 @@ export default function ServiceOrderView() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {[...expenses.expenses, ...materials.materials].map(mat => (
+                                            {materials.materials.map(mat => (
                                                 <tr key={mat.id}>
                                                     <td>{mat.id}</td>
                                                     <td>{mat.description}</td>
@@ -188,8 +196,59 @@ export default function ServiceOrderView() {
                         </Card.Body>
                     </Card>
 
+                    <Card className="mb-4" style={{ minHeight: "8rem", flexGrow: 1 }}>
+                        <Card.Body>
+                            <Card.Title>
+                                <Row>
+                                    <Col>Expenses</Col>
+                                    <Col className="d-flex flex-row-reverse mx-4">
+                                        {expenses.status === "pending" ?
+                                            <Spinner animation="border" role="status" /> :
+                                            <FontAwesomeIcon
+                                                icon={faPlus}
+                                                color="Gray"
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        }
+                                    </Col>
+
+                                </Row>
+                            </Card.Title>
+                            <Card.Text>
+                                {expenses.expenses &&
+                                    <Table striped bordered hover size="sm">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Description</th>
+                                                <th>Price</th>
+                                                <th>Billable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {expenses.expenses.map(expense => (
+                                                <tr key={expense.id}>
+                                                    <td>{expense.id}</td>
+                                                    <td>{expense.description}</td>
+                                                    <td>{expense.price}</td>
+                                                    <td>{expense.isBillable ?
+                                                        <FontAwesomeIcon icon={faDollarSign} color="Green" /> :
+                                                        <span className="fa-layers fa-fw">
+                                                            <FontAwesomeIcon icon={faDollarSign} color="Tomato" />
+                                                            <FontAwesomeIcon icon={faBan} color="Tomato" />
+                                                        </span>
+                                                    }</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                }
+                            </Card.Text>
+                        </Card.Body>
+                    </Card>
+
                 </Col>
-                <Col xs={12} md={6} lg={6} xl={6}>
+                <Col xs={12} md={nav? 12 : 6} lg={nav? 12 : 6} xl={6}>
                     <Card className="mb-4" style={{ height: "40vh", overflowY: "auto" }}>
                         <Card.Body>
                             <Card.Title className="customer-name">
@@ -200,15 +259,29 @@ export default function ServiceOrderView() {
                             </Card.Text>
                         </Card.Body>
                     </Card>
-                    <Card className="mb-4" style={{ height: "45vh", overflowY: "auto" }}>
+                    <Card className="mb-4" style={{ height: "45vh" }}>
                         <Card.Body>
-                            <Card.Title className="customer-name">
-                                Interactions
+                            <Card.Title className="customer-name row  align-items-end">
+                                <Col>
+                                    Interactions
+                                </Col>
+                                <Col className="d-flex flex-row-reverse mx-4">
+                                    {interactions.status === "pending" ?
+                                        <Spinner animation="border" role="status" /> :
+                                        <FontAwesomeIcon
+                                            icon={faPlus}
+                                            color="Gray"
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                    }
+                                </Col>
                             </Card.Title>
                             <Card.Text className="value">
-                                {interactions && interactions.map(interaction => (
-                                    <Interaction key={interaction.id} interaction={interaction} />
-                                ))}
+                                <div fluid style={{ overflowY: "auto" }}>
+                                    {interactions.interactions && interactions.interactions.map(interaction => (
+                                        <Interaction key={interaction.id} interaction={interaction} />
+                                    ))}
+                                </div>
                             </Card.Text>
                         </Card.Body>
                     </Card>

@@ -215,8 +215,8 @@ CREATE TABLE public."Orders" (
     warehouse character varying(255),
     "actionGroup" character varying(255),
     tag character varying(255),
-    "TechnicianId" character varying(255),
-    "CustomerId" character varying(255),
+    "technicianId" character varying(255),
+    "customerId" character varying(255),
     "orderType" character varying(255),
     product character varying(255),
     type character varying(255)
@@ -1773,7 +1773,7 @@ COPY public."OrderMaterial" ("createdAt", "updatedAt", "MaterialId", "OrderId") 
 -- Data for Name: Orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Orders" (id, status, "createdAt", "updatedAt", "requestId", "openDate", "isInHistory", "serialNumber", "statusId", problem, warehouse, "actionGroup", tag, "TechnicianId", "CustomerId", "orderType", product, type) FROM stdin;
+COPY public."Orders" (id, status, "createdAt", "updatedAt", "requestId", "openDate", "isInHistory", "serialNumber", "statusId", problem, warehouse, "actionGroup", tag, "technicianId", "customerId", "orderType", product, type) FROM stdin;
 SV2109090598@@1	Resolved	2021-12-20 14:31:16.382-05	2021-12-20 14:31:16.382-05	SV2109090598	2021-09-08 20:00:00-04	f	FVFXVK3BJK77	500	Symptom: doesnt turn on\r\nPassword: girlygirl2424\r\nApproved Services (Price): $40 plus tax\r\nDate of Last Backup: none and declined\r\nCurrent Security: none and declined\r\nCondition: mild wear\r\nCell (Text OK?): 646-705-6280\r\nDate and Time of Contact: at least 72 business hours for diagnostic result\r\nKE: fpolorovira	665-SD	QNTech	\N	\N	\N	\N	\N	\N
 SV2108180172@@1	Resolved	2021-12-20 14:32:03.631-05	2021-12-20 14:32:03.631-05	SV2108180172	2021-08-17 20:00:00-04	f	sC02PR2GDFVH8	500	Symptom: No longer powers on / responsds to smc reset\r\nPassword:Sathyasai23*\r\nApproved Services (Price):40$ diag\r\nDate of Last Backup: Data not important*\r\nCurrent Security: No AV\r\nCondition: LCD gloss coming off\r\nDate and Time of Contact: at least 72 business hours for diagnostic result\r\nKE:dpalanza	665-SD	QNTech	\N	\N	\N	\N	\N	\N
 SV2112110770@@1	Stat 1 - Tech bench; diagnostics in progress	2021-12-20 16:29:04.3-05	2021-12-22 14:49:55.899-05	SV2112110770	2021-12-10 19:00:00-05	f	KQP567TC7T	201	APPLECARE COVERAGE $50\r\n7-14 DAYS SHIPOUT\r\nIPAD\r\n646-988-0027	665-SD	QNTech	\N	sinshiqaq	CUST2112112115	service_order	IPHONE/IPAD	\N

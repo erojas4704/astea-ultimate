@@ -44,14 +44,14 @@ class OrderService {
         ];
 
         const columnsToSearchFor = criteria.all ?
-            [...additionalKeys ,...Object.keys(Order.rawAttributes).filter(key => !ignoreKeys.includes(key))] :
+            [...additionalKeys, ...Object.keys(Order.rawAttributes).filter(key => !ignoreKeys.includes(key))] :
             criteria;
 
         let ordersPrecache = [];
 
         columnsToSearchFor.forEach(async key => {
             //TODO this is a nasty hack until I learn more about our ORM.
-            if(key === "customerName") {
+            if (key === "customerName") {
                 const customers = await Customer.findAll({
                     where: {
                         name: {
@@ -64,7 +64,7 @@ class OrderService {
                 });
 
                 ordersPrecache = [...ordersPrecache, ...customers.map(customer => customer.orders)];
-            }else if(key === "technicianName") {
+            } else if (key === "technicianName") {
                 const technicians = await Technician.findAll({
                     where: {
                         name: {
@@ -76,6 +76,7 @@ class OrderService {
                     ]
                 });
                 ordersPrecache = [...ordersPrecache, ...technicians.map(technician => technician.orders)];
+                //TODO these precached orders need 
             }
 
             query.where[Op.or].push({
@@ -101,9 +102,15 @@ class OrderService {
         //TODO left off here
         //console.log(query);
 
-        const orders = await Order.findAll(query)
-            .catch(err => console.log(`Error running search. ${err}`));
+        const orders = await Order.findAll({
+            ...query,
+            include: [
+                { model: Customer, as: 'customer' },
+                { model: Technician, as: 'technician' }
+            ]
+        }).catch(err => console.log(`Error running search. ${err}`));
 
+        console.log(orders, ordersPrecache)
         return [...orders, ...ordersPrecache];
     }
 

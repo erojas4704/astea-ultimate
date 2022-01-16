@@ -59,11 +59,24 @@ class OrderService {
                         }
                     },
                     include: [
-                        { model: Order, as: 'orders' }
+                        {
+                            model: Order, as: 'orders', include: [
+                                { model: Technician, as: 'technician' },
+                                { model: Customer, as: 'customer' },
+                            ]
+                        }
                     ]
                 });
 
-                ordersPrecache = [...ordersPrecache, ...customers.map(customer => customer.orders)];
+                console.log(customers);
+
+                console.log(customers.map(customer => customer.orders));
+                let customerOrders = [];
+                customers.forEach( c => {
+                    customerOrders.push(...c.orders);
+                });
+
+                ordersPrecache = [...ordersPrecache, ...customers.reduce((acc, customer) => [...acc, ...customer.orders], [])];
             } else if (key === "technicianName") {
                 const technicians = await Technician.findAll({
                     where: {
@@ -72,10 +85,16 @@ class OrderService {
                         }
                     },
                     include: [
-                        { model: Order, as: 'orders' }
+                        //God this is hideous
+                        {
+                            model: Order, as: 'orders', include: [
+                                { model: Technician, as: 'technician' },
+                                { model: Customer, as: 'customer' },
+                            ]
+                        }
                     ]
                 });
-                ordersPrecache = [...ordersPrecache, ...technicians.map(technician => technician.orders)];
+                ordersPrecache = [...ordersPrecache, ...technicians.reduce((acc, technician) => [...acc, ...technician.orders], [])];
                 //TODO these precached orders need 
             }
 
@@ -87,21 +106,6 @@ class OrderService {
         });
         //TODO search needs deep optimization. We can't just do a search for every single column as our database grows in complexity.
 
-        /*
-        query.include = [{
-            model: Customer,
-            where: {
-                name: {
-                    [Op.iLike]: `%${criteria.all}%`
-                }
-            },
-            required: false
-        }]
-        */
-
-        //TODO left off here
-        //console.log(query);
-
         const orders = await Order.findAll({
             ...query,
             include: [
@@ -109,8 +113,7 @@ class OrderService {
                 { model: Technician, as: 'technician' }
             ]
         }).catch(err => console.log(`Error running search. ${err}`));
-
-        console.log(orders, ordersPrecache)
+        
         return [...orders, ...ordersPrecache];
     }
 

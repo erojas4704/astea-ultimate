@@ -44,7 +44,7 @@ class Expense extends Model {
         expenses.forEach(async (data) => {
             const id = data.id;
             try {
-                const order = orderId ? await Order.findByPk(orderId, {include: Expense}) : null;
+                const order = orderId ? await Order.findByPk(orderId) : null;
                 const [expense] = await Expense.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
 
                 if (order) {

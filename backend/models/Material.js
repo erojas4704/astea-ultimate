@@ -49,7 +49,7 @@ class Material extends Model {
         materials.forEach(async (data) => {
             const id = data.id;
             try {
-                const order = orderId ? await Order.findByPk(orderId, {include: Material}) : null;
+                const order = orderId ? await Order.findByPk(orderId) : null;
                 const [material] = await Material.findOrCreate({ where: { id: id }, defaults: { id, ...data } });
 
                 if (order) {

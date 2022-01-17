@@ -138,6 +138,7 @@ class OrderService {
             },
             include: {
                 model: Technician,
+                as: "technician"
             },
             order: [['date', 'DESC']]
         })

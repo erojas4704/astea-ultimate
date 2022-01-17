@@ -87,8 +87,8 @@ class Expense extends Model {
             technicianId: { type: DataTypes.STRING, allowNull: false, defaultValue: "" },
             totalPrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
         });
-        models.Order.belongsToMany(models.Expense, { through: OrderExpense });
-        models.Expense.belongsToMany(models.Order, { through: OrderExpense });
+        models.Order.belongsToMany(models.Expense, { through: OrderExpense, as: 'expenses' });
+        models.Expense.belongsToMany(models.Order, { through: OrderExpense, as: 'orders' });
     }
 
 }

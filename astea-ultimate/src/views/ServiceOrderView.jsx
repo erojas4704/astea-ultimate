@@ -14,6 +14,7 @@ import Interaction from "../components/Interaction";
 import { useContext } from "react";
 import { NavContext } from "../App";
 import useWindowDimensions from "../hooks/useWindowDimensions";
+import { useRef } from "react";
 
 export default function ServiceOrderView() {
     const dispatch = useDispatch();
@@ -21,10 +22,11 @@ export default function ServiceOrderView() {
     const id = params.id;
     const { technicians, isLoadingTechnicians } = useTechnicians();
     const { order: orderData, status, error, interactions, materials, expenses } = useSelector((state) => getOrderById(state, id));
+    const interactionsElement = useRef();
 
     const summary = useSelector(state => state.locator.summaries[id]);
 
-    const { isExpanded : nav } = useContext(NavContext);
+    const { isExpanded: nav } = useContext(NavContext);
 
     //What if neither the order or the summary is loaded?
     const order = orderData || summary;
@@ -32,9 +34,22 @@ export default function ServiceOrderView() {
     useEffect(() => {
         dispatch(loadOrder({ id, history: summary?.inHistory === "Y" }));
         dispatch(retrieveDetails({ id }));
+        interactionsElement.current.scrollTop = interactionsElement.current.scrollHeight;
     }, [id])
 
     //console.table console.group
+    // return (
+    //     <div style={{ height: '45vh' }}>
+    //         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+    //             <div style={{ background: '#ffcc00', padding: '5rem', minHeight: '10rem' }}>
+    //                 Heading
+    //             </div>
+    //             <div style={{ flex: 1, overflow: 'auto' }}>
+    //                 {"here is my scrollable content".repeat(30000)}
+    //             </div>
+    //         </div>
+    //     </div >
+    // )
 
     if (!order) {
         return (<Container fluid className="m-2">
@@ -50,10 +65,8 @@ export default function ServiceOrderView() {
     }
 
     return (
-        <Container fluid className="pt-2 mx-2 sv-view">
-            <CutoffTester />
-
-            <Row style={{ textAlign: "left", marginBottom: "14px" }} className="divider">
+        <Container fluid className="pt-2 px-2 sv-view d-flex flex-column" style={{ overflowX: 'hidden', overflowY: "auto", height: '100vh' }}>
+            <Row style={{ textAlign: "left", backgroundColor: 'white' }} className="divider d-flex align-items-end">
                 <Col>
                     Order {id} {status === "pending" && <FontAwesomeIcon className="fa-spin sv-spinner" icon={faCircleNotch} style={{ position: "absolute" }} />}
                 </Col>
@@ -61,15 +74,15 @@ export default function ServiceOrderView() {
                     End
                 </Col>
             </Row>
-            <Row>
-                <Col className="d-flex flex-column" xs={12} md={nav? 12 : 6} lg={nav? 12 : 6} xl={6}>
+            <Row className='order-container d-flex flex-row flex-grow-1 pt-3'>
+                <Col className="d-flex flex-column" xs={12} md={nav ? 12 : 6} lg={nav ? 12 : 6} xl={6}>
                     <Row>
-                        <Col xs={12} xl={nav? 12 : 6} className="d-flex">
+                        <Col xs={12} xl={nav ? 12 : 6} className="d-flex">
                             <Card className="mb-4" style={{ flexGrow: 1 }}>
                                 <Card.Body>
                                     <Card.Title className="customer-name">
                                         <Row>
-                                            <Col>{capitalizeNames(order.caller?.name || order.customer?.name || "")}</Col>
+                                            <Col>{capitalizeNames(order.caller?.name || order.customer?.name || "Customer")}</Col>
                                             {status === "pending" &&
                                                 <Col className="d-flex flex-row-reverse mx-4">
                                                     <Spinner animation="border" role="status">
@@ -123,8 +136,8 @@ export default function ServiceOrderView() {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col xs={12} xl={nav? 12 : 6} className="d-flex">
-                            <Card className="mb-4" style={{ flexGrow: 1}}>
+                        <Col xs={12} xl={nav ? 12 : 6} className="d-flex">
+                            <Card className="mb-4" style={{ flexGrow: 1 }}>
                                 <Card.Body>
                                     <Row>
                                         <Col className="label">Equipment</Col>
@@ -146,7 +159,7 @@ export default function ServiceOrderView() {
                             </Card>
                         </Col>
                     </Row>
-                    <Card className="mb-4" style={{ minHeight: "8rem", flexGrow: 1}}>
+                    <Card className="mb-4" style={{ minHeight: "8rem", flexGrow: 1 }}>
                         <Card.Body>
                             <Card.Title>
                                 <Row>
@@ -248,19 +261,21 @@ export default function ServiceOrderView() {
                     </Card>
 
                 </Col>
-                <Col xs={12} md={nav? 12 : 6} lg={nav? 12 : 6} xl={6}>
-                    <Card className="mb-4" style={{ height: "40vh", overflowY: "auto" }}>
+                <Col className="d-flex flex-column" xs={12} md={nav ? 12 : 6} lg={nav ? 12 : 6} xl={6}>
+                    <Card className="mb-4" style={{ display: 'flex', flexGrow: 1, overflowY: "auto" }}>
                         <Card.Body>
-                            <Card.Title className="customer-name">
-                                Description
+                            <Card.Title className="customer-name row">
+                                    Description
+                                <div className="d-flex flex-row-reverse mx-4">
+                                </div>
                             </Card.Title>
                             <Card.Text className="value">
                                 {order.problem}
                             </Card.Text>
                         </Card.Body>
                     </Card>
-                    <Card className="mb-4" style={{ height: "45vh" }}>
-                        <Card.Body>
+                    <Card className="mb-4">
+                        <Card.Body style={{ display: 'flex', flexDirection: 'column', height: '45vh', overflow: 'hidden' }}>
                             <Card.Title className="customer-name row  align-items-end">
                                 <Col>
                                     Interactions
@@ -276,18 +291,16 @@ export default function ServiceOrderView() {
                                     }
                                 </Col>
                             </Card.Title>
-                            <Card.Text className="value">
-                                <div fluid style={{ overflowY: "auto" }}>
-                                    {interactions.interactions && interactions.interactions.map(interaction => (
-                                        <Interaction key={interaction.id} interaction={interaction} />
-                                    ))}
-                                </div>
+                            <Card.Text ref={interactionsElement} className="value" style={{ flex: 1, overflow: 'auto' }}>
+                                {interactions.interactions && interactions.interactions.map(interaction => (<>
+                                    <Interaction key={interaction.id} interaction={interaction} />
+                                </>
+                                ))}
                             </Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-
         </Container>
     )
 }

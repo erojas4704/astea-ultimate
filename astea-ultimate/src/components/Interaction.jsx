@@ -10,10 +10,14 @@ export default function Interaction({ interaction, onDelete, onEdit }) {
     const [interactionInput, setInteractionInput] = useState(interaction.message);
     const [deleteMode, setDeleteMode] = useState(false);
 
+    //TODO refactor. No longer use a hook for technicians. use our store.
     const technicians = useTechnicians();
-    const technician = technicians.technicians ?
-        technicians.technicians.find(t => t.id === interaction.technicianId) :
-        interaction.technicianId;
+    console.log(technicians);
+    console.log(interaction);
+    const technician = interaction.author 
+    //|| (!technicians.isLoadingTechnicians && technicians.technicians)?
+    //     technicians.technicians.find(t => t.id === interaction.technicianId) :
+    //     interaction.technicianId;
 
     const ageInDays = moment().diff(moment(interaction.date), "days");
     const strAge =

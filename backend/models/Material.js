@@ -101,8 +101,9 @@ class Material extends Model {
             price: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
             origin: { type: DataTypes.STRING, allowNull: false, defaultValue: 0 }
         });
-        models.Order.belongsToMany(models.Material, { through: OrderMaterial });
-        models.Material.belongsToMany(models.Order, { through: OrderMaterial });
+
+        models.Order.belongsToMany(models.Material, { through: OrderMaterial, as: 'materials' });
+        models.Material.belongsToMany(models.Order, { through: OrderMaterial, as: 'orders' });
         this.belongsToMany(models.PurchaseRequisition, { through: 'PurchaseRequisitionMaterial' });
     }
 

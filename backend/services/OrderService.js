@@ -11,16 +11,20 @@ class OrderService {
      * @param {Object} session Session object with user info and sessionId
      */
     static async retrieve(id) {
-        const cachedOrder = await Order.findOne({ where: { id: id } });
-        if (!cachedOrder) throw new AsteaError("Astea Error", 404, "Order not found");
-        const serviceOrder = { ...cachedOrder.dataValues }
-        serviceOrder.customer = await cachedOrder.getCustomer();
-        serviceOrder.technician = await cachedOrder.getTechnician();
-        serviceOrder.materials = await cachedOrder.getMaterials() || [];
-        serviceOrder.expenses = await cachedOrder.getExpenses() || [];
-        serviceOrder.interactions = await cachedOrder.getInteractions() || [];
+        const cachedOrder = await Order.findOne({
+            where: { id: id },
+            include: [
+                { model: Expense, as: "expenses" },
+                { model: Material, as: "materials" },
+                { model: Interaction, as: "interactions"}
+            ],
+            order: [
+                [{model: Interaction, as: 'interactions'}, 'date', 'DESC']
+            ]
+        });
 
-        return { serviceOrder }
+        if (!cachedOrder) throw new AsteaError("Astea Error", 404, "Order not found");
+        return { serviceOrder: cachedOrder.dataValues }
     }
 
     /**
@@ -74,7 +78,7 @@ class OrderService {
                 });
 
                 let customerOrders = [];
-                customers.forEach( c => {
+                customers.forEach(c => {
                     customerOrders.push(...c.orders);
                 });
 
@@ -118,7 +122,7 @@ class OrderService {
                 ['id', 'DESC']
             ]
         }).catch(err => console.log(`Error running search. ${err}`));
-        
+
         return [...orders, ...ordersPrecache];
     }
 
@@ -133,8 +137,9 @@ class OrderService {
                 OrderId: id
             },
             include: {
-                model: Technician
-            }
+                model: Technician,
+            },
+            order: [['date', 'DESC']]
         })
 
         return interactions;
@@ -149,17 +154,21 @@ class OrderService {
         const cachedOrder = await Order.findOne({
             where: { id: id },
             include: [
-                { model: Expense },
-                { model: Material },
+                { model: Expense, as: "expenses" },
+                { model: Material, as: "materials" },
+                { model: Interaction, as: "interactions"}
+            ],
+            order: [
+                [{model: Interaction, as: 'interactions'}, 'date', 'DESC']
             ]
         });
 
-        const interactions = await cachedOrder.getInteractions() || [];
+        //const interactions = await cachedOrder.getInteractions() || [];
 
         return {
-            interactions,
-            materials: cachedOrder.Materials || [],
-            expenses: cachedOrder.Expenses || []
+            interactions: cachedOrder.interactions,
+            materials: cachedOrder.Materials,
+            expenses: cachedOrder.Expenses
         }
     }
 }

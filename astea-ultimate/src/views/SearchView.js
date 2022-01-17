@@ -9,11 +9,11 @@ import OrderListing from "../components/OrderListing";
 import HistoryInput from "../components/HistoryInput";
 
 const SearchView = () => {
-    const {results, status} = useSelector(state => state.locator);
+    const { results, status } = useSelector(state => state.locator);
 
     const dispatch = useDispatch();
     const [searchInput, setSearchInput] = useState("");
-    const [includeHistory, setIncludeHistory] = useState(false);
+    const [includeHistory, setIncludeHistory] = useState("");
     const [selected, setSelected] = useState(useParams().id || '');
 
     //TODO maybe a search hook that simplifies all this crap
@@ -34,10 +34,13 @@ const SearchView = () => {
     const handleSubmit = e => {
         e.preventDefault();
         //TODO dynamically build up the search based on input
+        //TODO get action group from auth
         dispatch(search({
-            query: { all: searchInput },
-            includeHistory
+            all: searchInput,
+            actionGroup: "QNTech",
+            inHistory: includeHistory  || null,
         }));
+        //TODO need error handling otherwise the field will freeze forever.
         //TODO call a method to get a cached search result if the search is redudant while we wait for the newer results.
     }
 

@@ -49,7 +49,7 @@ class Order extends Model {
             isInHistory: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
             serialNumber: { type: DataTypes.STRING, allowNull: true },
             statusId: { type: DataTypes.INTEGER, allowNull: false },
-            status: { type: DataTypes.STRING, allowNull: false },
+            status: { type: DataTypes.STRING, allowNull: false, defaultValue: '' },
             problem: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' },
             warehouse: { type: DataTypes.STRING, allowNull: true },
             orderType: { type: DataTypes.STRING, allowNull: true },

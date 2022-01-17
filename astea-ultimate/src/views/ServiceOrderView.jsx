@@ -85,7 +85,7 @@ export default function ServiceOrderView() {
                 <Col className="d-flex flex-column" xs={12} md={nav ? 12 : 6} lg={nav ? 12 : 6} xl={6}>
                     <Row>
                         <Col xs={12} xl={nav ? 12 : 6} className="d-flex">
-                            <Card className="mb-4" style={{ flexGrow: 1 }}>
+                            <Card className="sv-card mb-4" style={{ flexGrow: 1 }}>
                                 <Card.Body>
                                     <Card.Title className="customer-name">
                                         <Row>
@@ -144,7 +144,7 @@ export default function ServiceOrderView() {
                             </Card>
                         </Col>
                         <Col xs={12} xl={nav ? 12 : 6} className="d-flex">
-                            <Card className="mb-4" style={{ flexGrow: 1 }}>
+                            <Card className="mb-4 sv-card " style={{ flexGrow: 1 }}>
                                 <Card.Body>
                                     <Row>
                                         <Col className="label">Equipment</Col>
@@ -166,13 +166,13 @@ export default function ServiceOrderView() {
                             </Card>
                         </Col>
                     </Row>
-                    <Card className="mb-4" style={{ minHeight: "8rem", flexGrow: 1 }}>
+                    <Card className="sv-card mb-4" style={{ minHeight: "8rem", flexGrow: 1 }}>
                         <Card.Body>
                             <Card.Title>
                                 <Row>
                                     <Col>Materials</Col>
                                     <Col className="d-flex flex-row-reverse mx-4">
-                                        {expenses.status === "pending" ?
+                                        {expenses && expenses.status === "pending" ?
                                             <Spinner animation="border" role="status" /> :
                                             <FontAwesomeIcon
                                                 icon={faPlus}
@@ -184,7 +184,7 @@ export default function ServiceOrderView() {
                                 </Row>
                             </Card.Title>
                             <Card.Text>
-                                {materials.materials &&
+                                {materials && materials.materials &&
                                     <Table striped bordered hover size="sm">
                                         <thead>
                                             <tr>
@@ -216,13 +216,13 @@ export default function ServiceOrderView() {
                         </Card.Body>
                     </Card>
 
-                    <Card className="mb-4" style={{ minHeight: "8rem", flexGrow: 1 }}>
+                    <Card className="sv-card mb-4" style={{ minHeight: "8rem", flexGrow: 1 }}>
                         <Card.Body>
                             <Card.Title>
                                 <Row>
                                     <Col>Expenses</Col>
                                     <Col className="d-flex flex-row-reverse mx-4">
-                                        {expenses.status === "pending" ?
+                                        {expenses && expenses.status === "pending" ?
                                             <Spinner animation="border" role="status" /> :
                                             <FontAwesomeIcon
                                                 icon={faPlus}
@@ -235,7 +235,7 @@ export default function ServiceOrderView() {
                                 </Row>
                             </Card.Title>
                             <Card.Text>
-                                {expenses.expenses &&
+                                {expenses && expenses.expenses &&
                                     <Table striped bordered hover size="sm">
                                         <thead>
                                             <tr>
@@ -269,26 +269,26 @@ export default function ServiceOrderView() {
 
                 </Col>
                 <Col className="d-flex flex-column" xs={12} md={nav ? 12 : 6} lg={nav ? 12 : 6} xl={6}>
-                    <Card className="mb-4" style={{ display: 'flex', flexGrow: 1, overflowY: "auto" }}>
+                    <Card className="sv-card mb-4" style={{ display: 'flex', flexGrow: 1, overflowY: "auto" }}>
                         <Card.Body>
                             <Card.Title className="customer-name row">
-                                Description
-                                <div className="d-flex flex-row-reverse mx-4">
-                                </div>
+                                <Col>Description</Col>
+                                <Col className="d-flex flex-row-reverse mx-4">
+                                </Col>
                             </Card.Title>
                             <Card.Text className="value">
                                 {order.problem}
                             </Card.Text>
                         </Card.Body>
                     </Card>
-                    <Card className="mb-4">
+                    <Card className="sv-card mb-4">
                         <Card.Body style={{ display: 'flex', flexDirection: 'column', height: '45vh', overflow: 'hidden' }}>
                             <Card.Title className="customer-name row  align-items-end">
                                 <Col>
                                     Interactions
                                 </Col>
                                 <Col className="d-flex flex-row-reverse mx-4">
-                                    {interactions.status === "pending" ?
+                                    {interactions && interactions.status === "pending" ?
                                         <Spinner animation="border" role="status" /> :
                                         <FontAwesomeIcon
                                             className="sv-nav"
@@ -302,7 +302,7 @@ export default function ServiceOrderView() {
                                 </Col>
                             </Card.Title>
                             <Card.Text ref={interactionsElement} className="value" style={{ flex: 1, overflow: 'auto' }}>
-                                {interactions.interactions && interactions.interactions.map(interaction => (<>
+                                {interactions && interactions.interactions && interactions.interactions.map(interaction => (<>
                                     <Interaction key={interaction.id} interaction={interaction} onDelete={deleteInteraction} onEdit={editInteraction} />
                                 </>
                                 ))}

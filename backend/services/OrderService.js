@@ -54,7 +54,7 @@ class OrderService {
 
         const columnsToSearchFor = criteria.all ?
             [...additionalKeys, ...Object.keys(Order.rawAttributes).filter(key => !ignoreKeys.includes(key))] :
-            criteria;
+            Object.keys(criteria);
 
         let ordersPrecache = [];
 

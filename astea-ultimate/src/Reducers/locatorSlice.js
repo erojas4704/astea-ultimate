@@ -15,7 +15,7 @@ export const search = createAsyncThunk(
     async (query, thunkAPI) => {
         Api.search(query, true)
             .then(results => {
-                if(!results) return []; //Need proper error handling for our API.
+                if (!results) return []; //Need proper error handling for our API.
                 thunkAPI.dispatch({ type: "locator/search/cached", payload: results });
             });
         const resp = await Api.search(query);
@@ -24,7 +24,7 @@ export const search = createAsyncThunk(
     }
 )
 
-function mergeResults(arr1, arr2){
+function mergeResults(arr1, arr2) {
     const reduceById = (acc, curr) => {
         acc[curr.id] = curr;
         return acc;
@@ -56,7 +56,7 @@ export const locatorSlice = createSlice({
                 //TODO consider the implications of using locally stored data as well as Astea data.
                 if (state.status === "pending") {
                     state.summaries = action.payload.reduce((acc, result) => {
-                        acc[result.id] = result;    
+                        acc[result.id] = result;
                         return acc;
                     }, state.summaries);
                 }

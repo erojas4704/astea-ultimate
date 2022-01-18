@@ -22,7 +22,7 @@ const expenseKeys = {
 
 class Expense extends Model {
     static extractFromJSON(data) {//TODO make a generic method for parsing anything out of JSON.
-        const rawExpenseArray = data.root?.demand_expense ?
+        const rawExpenseArray = data?.root?.demand_expense ?
             data.root.demand_expense[0].row :
             data.root.row;
 

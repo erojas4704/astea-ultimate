@@ -30,7 +30,7 @@ const materialKeys = {
 
 class Material extends Model {
     static extractFromJSON(data) {
-        const rawMaterialArray = data.root?.demand_material ?
+        const rawMaterialArray = data?.root?.demand_material ?
             data.root.demand_material[0].row :
             data.root.row;
         if (!rawMaterialArray) return [];

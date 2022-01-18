@@ -8,6 +8,37 @@ import { search } from "../reducers/locatorSlice";
 import OrderListing from "../components/OrderListing";
 import HistoryInput from "../components/HistoryInput";
 
+const filterByAny = (results, criteria) => {
+    //TODO this is a potentially extremely expensive and needlessly greedy operation.
+    //Check to see if any of the fields in every result match the criteria.
+    criteria = criteria.toLowerCase().trim().replace(/\s+/g, "");
+    const filteredResults = [];
+
+
+
+    function matchesCriteria(val) {
+        if (typeof val === "string" && val.toLowerCase().trim().includes(criteria))
+            return true;
+        if (typeof val === "object") {
+            for (const key in val) {
+                 if(matchesCriteria(val[key])) return true;
+            }
+        }
+    }
+
+    //O(n)^2 for now. TODO
+    Object.values(results).forEach(result => {
+        Object.values(result).some(val => {
+            if (matchesCriteria(val)) {
+                filteredResults.push(result);
+                return true;
+            }
+        });
+    });
+    return filteredResults;
+}
+
+
 const SearchView = () => {
     const { results, status } = useSelector(state => state.locator);
 
@@ -15,16 +46,19 @@ const SearchView = () => {
     const [searchInput, setSearchInput] = useState("");
     const [includeHistory, setIncludeHistory] = useState("");
     const [selected, setSelected] = useState(useParams().id || '');
+    const [filtered, setFiltered] = useState([]);
+    const orderSummaries = useSelector(state => state.locator.summaries);
+
 
     //TODO maybe a search hook that simplifies all this crap
 
-    //useEffect(() => {
-    //    dispatch(resetSearch());
-    //}, [dispatch]);
-
     const changeHandler = evt => {
         setSearchInput(evt.target.value);
-        //TODO maybe filter the current results based on what's here?
+        if (evt.target.value.length > 1) { //TODO remove magic number
+            setFiltered(filterByAny(orderSummaries, evt.target.value));
+        } else {
+            setFiltered([]);
+        }
     };
 
     const historyChangeHandler = value => {
@@ -33,23 +67,26 @@ const SearchView = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
+        setFiltered([]);
         //TODO dynamically build up the search based on input
         //TODO get action group from auth
         dispatch(search({
             all: searchInput,
             actionGroup: "QNTech",
-            inHistory: includeHistory  || null,
+            inHistory: includeHistory || null,
         }));
         //TODO need error handling otherwise the field will freeze forever.
         //TODO call a method to get a cached search result if the search is redudant while we wait for the newer results.
     }
 
+    const finalResults = filtered.length > 0 ? filtered : results;
 
     return (
         <div className="search-view" style={{ height: '100%' }}>
             <form onSubmit={handleSubmit} className="form-inline">
                 <div className="input-group ">
                     <input type="text"
+                        autocomplete="off"
                         className="form-control rounded-pill m-1"
                         name="search"
                         id="search"
@@ -78,7 +115,7 @@ const SearchView = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {results.map(result =>
+                        {finalResults.map(result =>
                             <OrderListing
                                 selected={selected === result.id}
                                 onSelect={() => { setSelected(result.id) }}

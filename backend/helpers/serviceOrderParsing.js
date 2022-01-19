@@ -14,6 +14,8 @@ const fields = {
     "cc_actgr_descr": "actionGroup",
     "is_in_history": "isInHistory",
     "cc_callt_descr": "type",
+    "cust_company_descr" : "customer.name",
+    "cust_company_id" : "customer.id",
     "cc_cust_company_descr": "customer.name",
     "cc_cust_company_id": "customer.id",
     "cc_site_company_descr": "customer.name",
@@ -31,7 +33,8 @@ const fields = {
 function parseServiceOrderData(data) {
     //Loop through all the fields in data, see if we have a translation for them.
     let result = {};
-    if (data?.root?.main) {
+    if(!data) return;
+    if (data.root?.main) {
         result.metadata = {
             StateID: data.root.$["StateID"],
             HostName: data.root.$["HostName"]

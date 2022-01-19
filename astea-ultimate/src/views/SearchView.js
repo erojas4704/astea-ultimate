@@ -54,11 +54,11 @@ const SearchView = () => {
 
     const changeHandler = evt => {
         setSearchInput(evt.target.value);
-        if (evt.target.value.length > 1) { //TODO remove magic number
-            setFiltered(filterByAny(orderSummaries, evt.target.value));
-        } else {
-            setFiltered([]);
-        }
+        // if (evt.target.value.length > 1) { //TODO remove magic number
+        //     setFiltered(filterByAny(orderSummaries, evt.target.value));
+        // } else {
+        //     setFiltered([]);
+        // }
     };
 
     const historyChangeHandler = value => {

@@ -159,7 +159,6 @@ async function orderLocatorSearch(session, criteria) {
         const resultsJSON = await parseXMLToJSON(resultsXML);
         const serviceOrders = await extractFromResults(resultsJSON);
         Search.create(criteria, serviceOrders); //Search caching
-
         return serviceOrders;
     } catch (err) {
         console.log(`Error in parsing order locator search results: ${err}`);

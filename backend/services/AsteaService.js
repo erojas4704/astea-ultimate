@@ -58,6 +58,7 @@ class Astea {
         }
 
         const executeMacro = await pull(history);
+        debugger;
 
         if (executeMacro.error) throw executeMacro.error; //TODO get error code from type.
         const orderData = await Order.parse(executeMacro.data);

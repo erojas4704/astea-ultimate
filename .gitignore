@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-.cache
 node_modules
 
 # testing
@@ -20,6 +19,7 @@ node_modules
 .env.test.local
 .env.production.local
 .env
+/.cache
 */.cache
 */.env
 

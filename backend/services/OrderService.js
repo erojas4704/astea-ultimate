@@ -16,11 +16,11 @@ class OrderService {
             include: [
                 { model: Expense, as: "expenses" },
                 { model: Material, as: "materials" },
-                { model: Interaction, as: "interactions"},
+                { model: Interaction, as: "interactions" },
                 { model: Customer, as: "customer" },
             ],
             order: [
-                [{model: Interaction, as: 'interactions'}, 'date', 'DESC']
+                [{ model: Interaction, as: 'interactions' }, 'date', 'DESC']
             ]
         });
 
@@ -36,7 +36,8 @@ class OrderService {
     static async search(criteria) {
         const query = {
             where: {
-                [Op.or]: []
+                [Op.or]: [],
+                [Op.and]: []
             }
         }
 
@@ -107,11 +108,19 @@ class OrderService {
 
             console.log(key, criteria[key], criteria.all);
 
-            query.where[Op.or].push({
-                [key]: {
-                    [Op.iLike]: `%${criteria[key] || criteria.all}%`
-                }
-            });
+            if (criteria[key]) {
+                query.where[Op.and].push({
+                    [key]: {
+                        [Op.iLike]: `%${criteria[key]}%`
+                    }
+                });
+            }else if (criteria.all) {
+                query.where[Op.or].push({
+                    [key]: {
+                        [Op.iLike]: `%${criteria.all}%`
+                    }
+                });
+            } 
         });
 
         // console.log(JSON.stringify(query.where), criteria);
@@ -164,12 +173,14 @@ class OrderService {
             include: [
                 { model: Expense, as: "expenses" },
                 { model: Material, as: "materials" },
-                { model: Interaction, as: "interactions"}
+                { model: Interaction, as: "interactions" }
             ],
             order: [
-                [{model: Interaction, as: 'interactions'}, 'date', 'DESC']
+                [{ model: Interaction, as: 'interactions' }, 'date', 'DESC']
             ]
         });
+
+        if(!cachedOrder) throw new AsteaError("Astea Error", 404, "Order not found");
 
         //const interactions = await cachedOrder.getInteractions() || [];
 

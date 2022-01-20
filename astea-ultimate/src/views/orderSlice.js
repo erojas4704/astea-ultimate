@@ -255,7 +255,7 @@ export const orderSlice = createSlice({
                 state[action.payload.id].error = action.payload.error;
             })
             .addCase('orders/loadOrder/cached', (state, action) => {
-                if (state[action.payload.id === "pending"]) //Overwrite the pending status with the cached order
+                if (state[action.payload.id].status === "pending") //Overwrite the pending status with the cached order
                     state[action.payload.id].order = action.payload;
                 //Status does not change if it's been fully loaded
             })

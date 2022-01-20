@@ -33,7 +33,7 @@ const delay = async (seconds = 1) => {
 (async () => {
     const { username, password } = await prompt.get([
         { name: 'username', default: process.env.DEFAULT_USER },
-        { name: 'password', default: "Erin9714!", hidden: true }
+        { name: 'password', default: process.env.DEFAULT_PASS, hidden: true }
     ]);
 
     console.info("Logging in as %s...", username);

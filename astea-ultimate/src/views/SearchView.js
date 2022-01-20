@@ -21,7 +21,7 @@ const filterByAny = (results, criteria) => {
             return true;
         if (typeof val === "object") {
             for (const key in val) {
-                 if(matchesCriteria(val[key])) return true;
+                if (matchesCriteria(val[key])) return true;
             }
         }
     }

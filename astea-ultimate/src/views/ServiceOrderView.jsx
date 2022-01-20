@@ -16,6 +16,7 @@ import { NavContext } from "../App";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import { useRef } from "react";
 
+//TODO refactor this component. it's a huge mess
 export default function ServiceOrderView() {
     const dispatch = useDispatch();
     const params = useParams();
@@ -28,13 +29,14 @@ export default function ServiceOrderView() {
     const [addInteractionMode, setAddInteractionMode] = useState(false);
     const [newInteractionInput, setNewInteractionInput] = useState("");
 
+    console.log(orderData);
     //What if neither the order or the summary is loaded?
     const order = orderData || summary;
 
     useEffect(() => {
         dispatch(loadOrder({ id, history: summary?.inHistory === "Y" }));
         dispatch(retrieveDetails({ id }));
-        interactionsElement.current.scrollTop = interactionsElement.current.scrollHeight;
+        if (interactionsElement.current) interactionsElement.current.scrollTop = interactionsElement.current.scrollHeight;
     }, [id]);
 
     const deleteInteraction = (interaction) => {
@@ -58,17 +60,15 @@ export default function ServiceOrderView() {
         interactionsElement.current.scrollTop = interactionsElement.current.scrollHeight;
     }
 
-    if (!order) {
-        return (<Container fluid className="m-2">
-            {status === "pending" ? <>
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </> : (<>
+    if (error && !order) {
+        return (
+            <Container fluid className="m-2">
                 <h3>404 - Order not found</h3>
                 <Alert variant="danger">{error}</Alert>
-            </>)}
-        </Container>)
+            </Container>)
+    } 
+    if (!order) {
+        return <Spinner animation="border" variant="primary" />;
     }
 
     return (
@@ -311,8 +311,8 @@ export default function ServiceOrderView() {
                                         <Form.Control onChange={e => setNewInteractionInput(e.target.value)} value={newInteractionInput} as="textarea">
                                         </Form.Control>
                                         <div className="d-flex flex-row justify-content-end m-1 mt-2">
-                                            <Button className="mx-2" variant="info" style={{ color: 'white'}}onClick={() => addInteraction(newInteractionInput)}>Save</Button>
-                                            <Button variant="warning" style={{ color: 'white'}} onClick={() => setAddInteractionMode(false)}>Cancel</Button>
+                                            <Button className="mx-2" variant="info" style={{ color: 'white' }} onClick={() => addInteraction(newInteractionInput)}>Save</Button>
+                                            <Button variant="warning" style={{ color: 'white' }} onClick={() => setAddInteractionMode(false)}>Cancel</Button>
                                         </div>
                                     </div>
                                 }

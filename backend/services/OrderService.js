@@ -16,7 +16,8 @@ class OrderService {
             include: [
                 { model: Expense, as: "expenses" },
                 { model: Material, as: "materials" },
-                { model: Interaction, as: "interactions"}
+                { model: Interaction, as: "interactions"},
+                { model: Customer, as: "customer" },
             ],
             order: [
                 [{model: Interaction, as: 'interactions'}, 'date', 'DESC']
@@ -104,12 +105,18 @@ class OrderService {
                 //TODO these precached orders need 
             }
 
+            console.log(key, criteria[key], criteria.all);
+
             query.where[Op.or].push({
                 [key]: {
                     [Op.iLike]: `%${criteria[key] || criteria.all}%`
                 }
             });
         });
+
+        // console.log(JSON.stringify(query.where), criteria);
+        // console.log(JSON.stringify(query), criteria);
+        // console.log(JSON.stringify(query), criteria);
         //TODO search needs deep optimization. We can't just do a search for every single column as our database grows in complexity.
 
         const orders = await Order.findAll({

@@ -37,6 +37,6 @@ These are some of the technologies used:
 
 ## Schema
 
-The database is a Postgres database which is accessed using the Sequelize ORM. [Here](https://imgur.com/mTLC0YO) is a diagram of my current schema.
+The database is a Postgres database which is accessed using the Sequelize ORM. [Here](https://i.imgur.com/mTLC0YO.png) is a diagram of my current schema.
 Every service object is also stored locally in the browser in our Redux store.
 

@@ -1,0 +1,48 @@
+{
+  "caller": {
+    "name": "Rebecca Pinard",
+    "id": "CUST2108181839"
+  },
+  "customer": {
+    "name": "Rebecca Pinard"
+  },
+  "technician": {
+    "name": "Sandor Inshiqaq",
+    "id": "sinshiqaq"
+  },
+  "openDate": "2021-08-18",
+  "id": "SV2108180129@@1",
+  "status": "SA on Site",
+  "statusID": "400",
+  "orderType": "service_order",
+  "problem": "Issue: Not turning on\r\nData Backup Option: Backup declined\r\nProblem Description: When I turn on my computer, the Apple logo with a progress bar is displayed but it automatically turns off when the progress bar is halfway filled.",
+  "product": "Apple Desktop",
+  "requestID": "SV2108180129",
+  "serialNumber": "QP0330BPDNN",
+  "warehouse": "665-SD",
+  "createdAt": "2021-08-18T22:40:21.192Z",
+  "interactions": [
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T20:52:05.000Z",
+      "message": "customer has checked in a imac for diagnostics. unit no longer boots into macOS."
+    },
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T20:52:24.000Z",
+      "message": "diagnostics complete. the hard drive has failed."
+    },
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T20:52:38.000Z",
+      "message": "unit boots into known good macOS. the estimated cost of repair is 225.00 plus tax without data backup"
+    }
+  ],
+  "materials": [
+    {
+      "id": "624754",
+      "name": "1TB_870_QVO_2.5SATA3SSD",
+      "warehouse": "665-SD"
+    }
+  ]
+}

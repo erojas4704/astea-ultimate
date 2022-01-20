@@ -1,0 +1,23 @@
+{
+  "caller": {
+    "name": "NEERAJ KAKRIA",
+    "id": "CUST21022610331"
+  },
+  "customer": {
+    "name": "NEERAJ KAKRIA"
+  },
+  "technician": {},
+  "openDate": "2021-08-18",
+  "id": "SV2108180343@@1",
+  "status": "Waiting for product",
+  "statusID": "100",
+  "orderType": "service_order",
+  "problem": "Customer states Cha_Fan2 doesn't work and top fan on front of case has issues\r\nData not backed up\r\nNorton AV\r\n516-288-8739\r\nPin - 8385",
+  "product": "G900_5900X/32/2/3070/P/G",
+  "requestID": "SV2108180343",
+  "serialNumber": "G9000221430572",
+  "warehouse": "665-SD",
+  "createdAt": "2021-08-18T22:42:47.712Z",
+  "interactions": [],
+  "materials": []
+}

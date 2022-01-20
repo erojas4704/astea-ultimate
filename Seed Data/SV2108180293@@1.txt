@@ -1,0 +1,52 @@
+{
+  "caller": {},
+  "customer": {
+    "name": "lucas arzan"
+  },
+  "technician": {
+    "name": "Sandor Inshiqaq",
+    "id": "sinshiqaq"
+  },
+  "openDate": "2021-08-18",
+  "id": "SV2108180293@@1",
+  "status": "Stat 4 - Waiting on customer approval/response",
+  "statusID": "208",
+  "orderType": "service_order",
+  "problem": "SP-661-02361B\r\nSymptom:only works when plugged in / turns off after 10 mins otherwise\r\nPassword:\r\nApproved Services (Price):40$ diag\r\nDate of Last Backup: backed up to cloud\r\nCondition:track pad no longer clicks / battery swelling\r\nDate and Time of Contact: at least 72 business hours for diagnostic result\r\nKE:dpalanza",
+  "product": "Generic Apple Laptop",
+  "requestID": "SV2108180293",
+  "serialNumber": "C17QL1RVFVH3",
+  "warehouse": "665-SD",
+  "createdAt": "2021-08-18T22:43:45.590Z",
+  "interactions": [
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T21:03:41.000Z",
+      "message": "customer has checked in a macbook pro for diagnostics. customer states that the unit only works on charger power . issues with trackpad as well."
+    },
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T21:04:16.000Z",
+      "message": "diagnostics complete. the battery has failed testing. the entire topcase will need to be replaced for repair. contacting customer for an update"
+    },
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T21:08:39.000Z",
+      "message": "estimated cost of repair is 364.98 , sending customer an update."
+    },
+    {
+      "author": "Sandor Inshiqaq",
+      "date": "2021-08-18T21:28:20.000Z",
+      "message": "customer has approved repair. part is on order"
+    }
+  ],
+  "materials": [
+    {
+      "id": "SP-661-02361B",
+      "name": "BATTERY Failure TOPCASE REPLACEMENT",
+      "warehouse": "665-SD",
+      "vendor": "Apple",
+      "sourceDocument": "S3917688"
+    }
+  ]
+}

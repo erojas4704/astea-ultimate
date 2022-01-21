@@ -144,6 +144,16 @@ class Astea {
         Material.parse(materials);
         return materials;
     }
+
+    /**
+     * Executes a search on Astea, using the given criteria.
+     * @param {Object} criteria Search criteria
+     * @param {Object} session Astea session object. This token allows us to actually communicate with Astea.
+     * @returns {Promise<Object>} A promise that resolves to the search results.
+     */
+    static async locatorSearch(criteria, session) {
+
+    }
 }
 
 

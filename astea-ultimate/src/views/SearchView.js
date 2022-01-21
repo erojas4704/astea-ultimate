@@ -1,5 +1,5 @@
 import "./SearchView.css";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { resetSearch, search } from "../actions/locator";

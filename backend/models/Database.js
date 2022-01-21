@@ -34,7 +34,7 @@ Object.values(models)
     .forEach(model => model.associate(models));
 
 (async () => {
-    //await sequelize.sync({ alter: true }).catch(err => console.log(err));
+    await sequelize.sync({ alter: true }).catch(err => console.log(err));
     // const allInteractions = await Interaction.findAll()
     // .catch(err => console.log(err))
     // console.log(allInteractions);

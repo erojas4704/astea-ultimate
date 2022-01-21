@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import { capitalizeNames } from "../helpers/StringUtils";
 import useTechnicians from "../hooks/useTechnicians";
 import { getOrderById, loadOrder, retrieveDetails } from "./orderSlice";
-import CutoffTester from "../helpers/CutoffTester";
 import "./OrderView.css";
 import { useEffect, useState } from "react";
 import moment from "moment";

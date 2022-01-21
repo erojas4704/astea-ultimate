@@ -23,6 +23,7 @@ const queryPairs = {
     [entities.TAG]: {
         queryName: "service_item_lup"
     },
+
     [entities.ORDER]: {
         queryName: "order_locator_scrl",
         extraParams: {
@@ -31,7 +32,7 @@ const queryPairs = {
             "a_order_type": "1=1",
             "a_c_order_type": "1=1"
         }
-    }
+    },
 }
 
 const params = {
@@ -44,7 +45,7 @@ const params = {
 
     tag: "tagno",
     //Special case, order conditions will be parsed differently
-    criteria: "where_cond1"
+    criteria: extractAsteaQuery
 }
 
 const paramHandling = {
@@ -76,6 +77,12 @@ const paramHandling = {
     [params.tag]: {
         comparison: "like",
         type: "string"
+    },
+
+    //Special case, criteria
+    [params.criteria]: {
+        comparison: "=",
+        type: "argument"
     }
 }
 
@@ -94,6 +101,26 @@ const states = {
 }
 
 /**
+ * 
+ * @param {function|string} entity 
+ * @param {*} params 
+ * @param {*} keys 
+ * @returns 
+ */
+function processParam(param, key) {
+    
+    switch (typeof param) {
+        case "string":
+            return `${key}="${param}"`
+        case "function":
+            return params[searchParams](params);
+    }
+    throw new Error("Invalid entity type");
+}
+
+//TODO unit test this function
+
+/**
  * Forms an XML body for an Astea query to retrieve information.
  * @param {Object} session - Astea session object.
  * @param {string} entity - Check under entities. Either "customer", "product", etc.
@@ -107,10 +134,13 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
     }
     const keys = Object.keys(searchParams);
     const sortBy = keys[0];
-    const paramsQuery = keys.map(key => `${key}="${searchParams[key]}"`).join(" ");
-    const operators = keys.map(key => paramHandling[key].comparison).join(";");
-    const types = keys.map(key => paramHandling[key].type).join(";");
-    const isReplaceAlias = keys.map(key => "Y").join(";"); //I don't know what this isReplaceAlias tag does at all.
+    //TOOD extract method
+    //If the entity is a string, we'll 
+    const paramsQuery = keys.map(key => processParam(searchParams[key], key)).join(" ");
+
+    const operators = keys.map(key => `${paramHandling[key].comparison};`).join("");
+    const types = keys.map(key => `${paramHandling[key].type};`).join("");
+    const isReplaceAlias = keys.map(key => "Y;").join(""); //I don't know what this isReplaceAlias tag does at all.
 
     //TODO getLookupRecordCount what is it for?
     const xml =
@@ -140,7 +170,7 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
  * @param {Array} dataToRequest - The data we're requesting. Look at the States enum for potential data to request. [states.interactions, states.materials, etc].
  */
 function getOrderStateBody(stateId, sessionId, serviceModule, dataToRequest) {
-    if(typeof dataToRequest === "string") dataToRequest = [dataToRequest];
+    if (typeof dataToRequest === "string") dataToRequest = [dataToRequest];
 
     const strData = dataToRequest.map(data => `<BO alias='${data}'></BO>`).join("");
     const xmlRequest = `
@@ -189,6 +219,12 @@ function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending =
         sessionID: session.sessionID,
         XMLCriteria: xmlFindQuery,
 
+    }
+}
+
+function extractAsteaQuery(criteria) {
+    return {
+        entityName: entities.ORDER
     }
 }
 

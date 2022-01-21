@@ -152,7 +152,7 @@ class Astea {
      * @returns {Promise<Object>} A promise that resolves to the search results.
      */
     static async locatorSearch(criteria, session) {
-
+        const body = jsonAsteaQuery(session, entities.LOCATOR, criteria, 1, false);
     }
 }
 

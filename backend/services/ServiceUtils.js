@@ -107,13 +107,16 @@ const states = {
  * @param {*} keys 
  * @returns 
  */
-function processParam(param, key) {
-    
+function processParam(searchParams, key) {
+    const param = searchParams[key];
+
     switch (typeof param) {
         case "string":
             return `${key}="${param}"`
         case "function":
-            return params[searchParams](params);
+            //Delete these special cases
+            delete searchParams[key];
+            return searchParams[key](param);
     }
     throw new Error("Invalid entity type");
 }
@@ -136,10 +139,10 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) 
     const sortBy = keys[0];
     //TOOD extract method
     //If the entity is a string, we'll 
-    const paramsQuery = keys.map(key => processParam(searchParams[key], key)).join(" ");
+    const paramsQuery = keys.map(key => processParam(searchParams, key)).join(" ");
 
-    const operators = keys.map(key => `${paramHandling[key].comparison};`).join("");
-    const types = keys.map(key => `${paramHandling[key].type};`).join("");
+    const operators = keys.map(key => `${paramHandling[key]?.comparison};`).join("");
+    const types = keys.map(key => `${paramHandling[key]?.type};`).join("");
     const isReplaceAlias = keys.map(key => "Y;").join(""); //I don't know what this isReplaceAlias tag does at all.
 
     //TODO getLookupRecordCount what is it for?
@@ -198,8 +201,8 @@ function getOrderStateBody(stateId, sessionId, serviceModule, dataToRequest) {
 function convertToAsteaParams(searchParams) {
     const convertedParams = {};
     for (const key in searchParams) {
+        const value = searchParams[key];
         if (params.hasOwnProperty(key)) {
-            const value = searchParams[key];
             convertedParams[params[key]] = value;
         } else {
             convertedParams[key] = value;

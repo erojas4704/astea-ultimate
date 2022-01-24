@@ -1,5 +1,5 @@
 const e = require('express');
-const { jsonAsteaQuery, entities, params } = require('./ServiceUtils');
+const { jsonAsteaQuery, entities, params, xmlAsteaQuery } = require('./ServiceUtils');
 const session = {
     sessionID: '123456789'
 }
@@ -71,4 +71,19 @@ describe("Forming Astea queries", () => {
         body.XMLCriteria = formatXML(body.XMLCriteria);
         expect(body).toEqual(materialSearch_1);
     });
+
+    test("Run a search for an order:", () => {
+        const body = formatXML(
+            xmlAsteaQuery(
+                session,
+                entities.ORDER,
+                {
+                    id: "SV210",
+                    actionGroup: "QNTech"
+                }
+            )
+        );
+
+        expect(body).toEqual(locatorSearchXML_1);
+    })
 })

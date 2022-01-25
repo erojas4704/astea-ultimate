@@ -28,13 +28,14 @@ const locatorSearchXML_1 = formatXML(`
     </s:Header>
     <s:Body>
         <RetrieveXMLExt xmlns="http://astea.services.wcf/">
-            <sessionID>4b02d7c2-fb8b-49bf-8e36-1fd1c9cc240cProd</sessionID>
+            <sessionID>${session.sessionID}</sessionID>
             <XMLCriteria>
                 &lt;Find sort_column_alias="open_date"
                 sort_direction="+"
                 force_sort="true"
                 entity_name="order_locator"
                 query_name="order_locator_scrl"
+                pageNumber="1"
                 getRecordCount="true"
                 a_fco_serv_bull_arg1="1=1"
                 a_fco_serv_bull_arg2="1=1"
@@ -45,7 +46,6 @@ const locatorSearchXML_1 = formatXML(`
                 &lt;operators values="=;=;=;=;=;=;" /&gt;
                 &lt;types values="argument;argument;argument;argument;argument;argument;" /&gt;
                 &lt;is_replace_alias values="Y;Y;Y;Y;N;N;" /&gt;
-                &lt;is_translatable_alias values="N;N;N;N;N;N;" /&gt;
                 &lt;/Find&gt;
                 </XMLCriteria>
         </RetrieveXMLExt>
@@ -66,7 +66,10 @@ describe("Forming Astea queries", () => {
             entities.MATERIAL,
             {
                 id: "SP-0",
-            }
+            },
+            1,
+            true,
+
         );
         body.XMLCriteria = formatXML(body.XMLCriteria);
         expect(body).toEqual(materialSearch_1);
@@ -78,9 +81,15 @@ describe("Forming Astea queries", () => {
                 session,
                 entities.ORDER,
                 {
-                    id: "SV210",
-                    actionGroup: "QNTech"
-                }
+                    criteria: {
+                        id: "SV210",
+                        actionGroup: "QNTech"
+                    }
+                },
+                1,
+                true,
+                true,
+                "open_date"
             )
         );
 

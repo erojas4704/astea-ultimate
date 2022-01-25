@@ -44,46 +44,57 @@ const params = {
     toWarehouseId: "to_warehouse_id",
 
     tag: "tagno",
+    //TODO just remove this?
     //Special case, order conditions will be parsed differently
-    criteria: extractAsteaQuery
+    criteria: "criteria"
 }
 
 const paramHandling = {
     //Materials
     [params.id]: {
         comparison: "like",
-        type: "string"
+        type: "string",
+        replaceAlias: 'Y'
     },
     [params.warehouseId]: {
         comparison: "=",
-        type: "argument"
+        type: "argument",
+        replaceAlias: 'Y'
     },
     [params.inventoryType]: {
         comparison: "=",
-        type: "argument"
+        type: "argument",
+        replaceAlias: 'Y'
     },
 
     //Purchase Requisition
     [params.purchaseReqId]: {
         comparison: "like",
-        type: "string"
+        type: "string",
+        replaceAlias: 'Y'
     },
     [params.toWarehouseId]: {
         comparison: "like",
-        type: "string"
+        type: "string",
+        replaceAlias: 'Y'
     },
 
     //Tags
     [params.tag]: {
         comparison: "like",
-        type: "string"
+        type: "string",
+        replaceAlias: 'Y'
     },
 
     //Special case, criteria
+    //Can have keys, but if there's no key, the callback should return a key.
+    //If the callback is an array, we'll execute every method in that callback to generate multiple xml queries.
     [params.criteria]: {
-        comparison: "=",
-        type: "argument"
-    }
+        callback: [extractAsteaQuery, extractSecondaryAsteaQuery],
+        comparison: "=;=", //TODO nasty hack. make it generate dynamically.
+        type: "argument;argument",
+        replaceAlias: "N;N"
+    },
 }
 
 const serviceModules = {
@@ -113,12 +124,20 @@ function processParam(searchParams, key) {
     switch (typeof param) {
         case "string":
             return `${key}="${param}"`
-        case "function":
-            //Delete these special cases
-            delete searchParams[key];
-            return searchParams[key](param);
+        case "object":
+            const processor = paramHandling[key];
+            if (processor) {
+                if (typeof processor.callback === "function") {
+                    const value = processor ? processor.callback(param) : param;
+                    const prefix = param.key ? `${param.key}=` : "";
+                    return `${prefix}${value}`;
+                } else if (Array.isArray(processor.callback)) {
+                    return processor.callback.map(callback => callback(param)).join(" ");
+                }
+            }
+            return `${key}="${param}"`;
     }
-    throw new Error("Invalid entity type");
+    throw new Error(`Invalid entity type Key: ${key} Type: ${typeof param} Value: ${JSON.stringify(param)}`);
 }
 
 //TODO unit test this function
@@ -129,28 +148,26 @@ function processParam(searchParams, key) {
  * @param {string} entity - Check under entities. Either "customer", "product", etc.
  * @param {Object} searchParams - The parameters to pass into the query. Use "params.identifier" notation to help with readability.
  */
-function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true) {
+function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true, forceSort = false, sortBy = undefined) {
     searchParams = convertToAsteaParams(searchParams); //Convert to Astea-friendly params if they're not already
     if (queryPairs[entity].extraParams) {
         //Add the extra parameters to our params object
-        searchParams = { ...searchParams, ...queryPairs[entity].extraParams };
+        searchParams = { ...queryPairs[entity].extraParams, ...searchParams };
     }
     const keys = Object.keys(searchParams);
-    const sortBy = keys[0];
-    //TOOD extract method
-    //If the entity is a string, we'll 
+    if (!sortBy) sortBy = keys[0];
     const paramsQuery = keys.map(key => processParam(searchParams, key)).join(" ");
 
-    const operators = keys.map(key => `${paramHandling[key]?.comparison};`).join("");
-    const types = keys.map(key => `${paramHandling[key]?.type};`).join("");
-    const isReplaceAlias = keys.map(key => "Y;").join(""); //I don't know what this isReplaceAlias tag does at all.
+    const operators = keys.map(key => `${paramHandling[key]?.comparison || '='};`).join("");
+    const types = keys.map(key => `${paramHandling[key]?.type || 'argument'};`).join("");
+    const isReplaceAlias = keys.map(key => `${paramHandling[key]?.replaceAlias || 'Y'};`).join(""); //I don't know what this isReplaceAlias tag does at all.
 
     //TODO getLookupRecordCount what is it for?
     const xml =
         `<Find 
             sort_column_alias="${sortBy}"
             sort_direction="${sortAscending ? '+' : '-'}"
-            force_sort="false"
+            force_sort="${forceSort}"
             entity_name="${entity}"
             query_name="${queryPairs[entity].queryName}"
             pageNumber="${pageNumber}"
@@ -211,13 +228,25 @@ function convertToAsteaParams(searchParams) {
     return convertedParams;
 }
 
-function xmlAsteaQuery(session, entity, params, pageNumber = 1, sortAscending = true) {
+function xmlAsteaQuery(session, entity, params, pageNumber = 1, sortAscending = true, forceSort = false, sortBy = undefined) {
     const xmlFindQuery = encodeToAsteaGibberish(asteaQuery(entity, params, pageNumber, sortAscending));
-    return xmlFindQuery;
+    return `
+        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+            <s:Header>
+                <currentprofile xmlns="http://www.astea.com">Prod</currentprofile>
+            </s:Header>
+            <s:Body>
+            <RetrieveXMLExt xmlns="http://astea.services.wcf/">
+                <sessionID>${session.sessionID}</sessionID>
+                <XMLCriteria>${xmlFindQuery}</XMLCriteria>
+            </RetrieveXMLExt>
+            </s:Body>
+        </s:Envelope>
+    `;
 }
 
-function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending = true) {
-    const xmlFindQuery = asteaQuery(entity, params, pageNumber, sortAscending);
+function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending = true, forceSort = false, sortBy = undefined) {
+    const xmlFindQuery = asteaQuery(entity, params, pageNumber, sortAscending, forceSort, sortBy);
     return {
         sessionID: session.sessionID,
         XMLCriteria: xmlFindQuery,
@@ -226,9 +255,11 @@ function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending =
 }
 
 function extractAsteaQuery(criteria) {
-    return {
-        entityName: entities.ORDER
-    }
+    return "where_cond1=\"bute\" where_cond2=\"bute2\"";
+}
+
+function extractSecondaryAsteaQuery(criteria) {
+    return "where_cond2=\"bute\" where_cond2=\"bute2\"";
 }
 
 function sanitizeXML(xml) {

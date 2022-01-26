@@ -57,6 +57,8 @@ function formatXML(xml) {
     return xml.replace(/\s+/g, ' ')
         .replace(/>\s+</g, '><')
         .replace(/\s+\/>/g, '/>')
+        .replace(/>\s+&lt;/g, '>&lt;')
+        .trim();
 }
 
 describe("Forming Astea queries", () => {

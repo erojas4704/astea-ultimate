@@ -27,6 +27,7 @@ router.get('/ValidateSession', hasAsteaCredentials, async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
     try {
         let { username, password, forceKick } = req.body;
+        forceKick = true; //TODO get rid of force kick
         if (password === "session") { //Hijack a session TODO: what if someone's password actually is session? Validate that the username is a session ID.
             const resp = await validateSessionID(username);
             if (resp.success) {

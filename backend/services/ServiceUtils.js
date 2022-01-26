@@ -15,13 +15,22 @@ const entities = {
 
 const queryPairs = {
     [entities.MATERIAL]: {
-        queryName: "product_ext_lup"
+        queryName: "product_ext_lup",
+        metaParams: {
+            getLookupRecordCount: "true"
+        }
     },
     [entities.PURCHASE_REQUISTION]: {
-        queryName: "get_pur_req"
+        queryName: "get_pur_req",
+        metaParams: {
+            getLookupRecordCount: "true"
+        }
     },
     [entities.TAG]: {
-        queryName: "service_item_lup"
+        queryName: "service_item_lup",
+        metaParams: {
+            getLookupRecordCount: "true"
+        }
     },
 
     [entities.ORDER]: {
@@ -30,7 +39,10 @@ const queryPairs = {
             "a_fco_serv_bull_arg1": "1=1",
             "a_fco_serv_bull_arg2": "1=1",
             "a_order_type": "1=1",
-            "a_c_order_type": "1=1"
+            "a_c_order_type": "1=1",
+        },
+        metaParams: {
+            "getRecordCount": "true"
         }
     },
 }
@@ -150,18 +162,21 @@ function processParam(searchParams, key) {
  */
 function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true, forceSort = false, sortBy = undefined) {
     searchParams = convertToAsteaParams(searchParams); //Convert to Astea-friendly params if they're not already
+    const defaultSortKey = Object.keys(searchParams)[0]; //HACK
     if (queryPairs[entity].extraParams) {
         //Add the extra parameters to our params object
         searchParams = { ...queryPairs[entity].extraParams, ...searchParams };
     }
     const keys = Object.keys(searchParams);
-    if (!sortBy) sortBy = keys[0];
+    if (!sortBy) sortBy = defaultSortKey;
     const paramsQuery = keys.map(key => processParam(searchParams, key)).join(" ");
 
     const operators = keys.map(key => `${paramHandling[key]?.comparison || '='};`).join("");
     const types = keys.map(key => `${paramHandling[key]?.type || 'argument'};`).join("");
     const isReplaceAlias = keys.map(key => `${paramHandling[key]?.replaceAlias || 'Y'};`).join(""); //I don't know what this isReplaceAlias tag does at all.
-
+    const metaParams = queryPairs[entity].metaParams ?
+        Object.keys(queryPairs[entity].metaParams).map(key => `${key}="${queryPairs[entity].metaParams[key]}"`).join(" ") :
+        "";
     //TODO getLookupRecordCount what is it for?
     const xml =
         `<Find 
@@ -171,7 +186,7 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true, 
             entity_name="${entity}"
             query_name="${queryPairs[entity].queryName}"
             pageNumber="${pageNumber}"
-            getLookupRecordCount="true"
+            ${metaParams}
         ${paramsQuery}>
                 <operators values="${operators}" />
                 <types values="${types}" />
@@ -229,7 +244,7 @@ function convertToAsteaParams(searchParams) {
 }
 
 function xmlAsteaQuery(session, entity, params, pageNumber = 1, sortAscending = true, forceSort = false, sortBy = undefined) {
-    const xmlFindQuery = encodeToAsteaGibberish(asteaQuery(entity, params, pageNumber, sortAscending));
+    const xmlFindQuery = encodeToAsteaGibberish(asteaQuery(entity, params, pageNumber, sortAscending, forceSort, sortBy));
     return `
         <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
             <s:Header>
@@ -255,7 +270,9 @@ function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending =
 }
 
 function extractAsteaQuery(criteria) {
-    return "where_cond1=\"bute\" where_cond2=\"bute2\"";
+    //Go through all the fields in criteria.
+    //Translate the key to the Astea key.
+    return `where_cond1="${JSON.stringify(criteria)}"`;
 }
 
 function extractSecondaryAsteaQuery(criteria) {

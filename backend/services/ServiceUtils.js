@@ -1,3 +1,4 @@
+const Definitions = require("../astea/Definitions");
 /**
  * This file should help produce Astea JSON queries, which seem to be treated differently than XML queries.
  * These are used in Astea dialog boxes. Hopefully this will help us work faster.
@@ -269,14 +270,28 @@ function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending =
     }
 }
 
-function extractAsteaQuery(criteria) {
+function extractAsteaQuery(criteria, useSecondary=false, conditionLabel="where_cond1") {
     //Go through all the fields in criteria.
     //Translate the key to the Astea key.
-    return `where_cond1="${JSON.stringify(criteria)}"`;
+    //Join them by AND conditions and surround them in % symbols. Match them by LIKE.
+    const keys = Object.keys(criteria);
+    const queryArr = keys.map(key => {
+        const value = criteria[key];
+        if (key === "all") return processAllKey(value);
+        const asteaKey = Definitions.translateToAsteaKey(key, useSecondary);
+        return `( ${asteaKey} LIKE '%${value}%' )`;
+    });
+
+    return `${conditionLabel}=" ${queryArr.join(" AND ")} "`;
 }
 
 function extractSecondaryAsteaQuery(criteria) {
-    return "where_cond2=\"bute\" where_cond2=\"bute2\"";
+    return extractAsteaQuery(criteria, true, "where_cond2");
+}
+
+
+function processAllKey(value) {
+    return ` ( ALL KEY ) `;
 }
 
 function sanitizeXML(xml) {

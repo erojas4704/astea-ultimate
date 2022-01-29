@@ -18,7 +18,7 @@ const {
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
 const { Customer, Interaction, Material, Expense } = require("../models/Database");
-const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states } = require("./ServiceUtils");
+const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states, xmlAsteaQuery } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -152,7 +152,9 @@ class Astea {
      * @returns {Promise<Object>} A promise that resolves to the search results.
      */
     static async locatorSearch(criteria, session) {
-        const body = jsonAsteaQuery(session, entities.LOCATOR, criteria, 1, false);
+        const body = xmlAsteaQuery(session, entities.LOCATOR, criteria, 1, false, true, "order_id");
+        const { error, data } = await asteaRequest(URLSearchXML, body);
+        //TBI
     }
 }
 

@@ -186,7 +186,7 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true, 
             force_sort="${forceSort}"
             entity_name="${entity}"
             query_name="${queryPairs[entity].queryName}"
-            pageNumber="${pageNumber}"
+            ${pageNumber > 1 ? pageNumber="${pageNumber}" : ""}
             ${metaParams}
         ${paramsQuery}>
                 <operators values="${operators}" />
@@ -270,14 +270,17 @@ function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending =
     }
 }
 
-function extractAsteaQuery(criteria, useSecondary=false, conditionLabel="where_cond1") {
+function extractAsteaQuery(criteria, useSecondary = false, conditionLabel = "where_cond1") {
     //Go through all the fields in criteria.
     //Translate the key to the Astea key.
     //Join them by AND conditions and surround them in % symbols. Match them by LIKE.
+    if (criteria["all"]) criteria = { ...processAllKey(criteria["all"]), ...criteria };
+    //TODO extractAsteaQuery(all, joinWith="OR");
+    delete criteria["all"];
+
     const keys = Object.keys(criteria);
     const queryArr = keys.map(key => {
         const value = criteria[key];
-        if (key === "all") return processAllKey(value);
         const asteaKey = Definitions.translateToAsteaKey(key, useSecondary);
         return `( ${asteaKey} LIKE '%${value}%' )`;
     });
@@ -291,7 +294,16 @@ function extractSecondaryAsteaQuery(criteria) {
 
 
 function processAllKey(value) {
-    return ` ( ALL KEY ) `;
+    const rxpOrderId = /(((?:SV|RP)\d{1,10})(?:@@\d)?)/i.exec(value);
+    const rxpTagNo = /\d{1,3}-\d{7}(?:-\d{1,2}-\d{1,2})?/.exec(value);
+    if (rxpOrderId) {
+        console.log(rxpOrderId, rxpOrderId[2]);
+        return { id: rxpOrderId[2] };
+    } else if (rxpTagNo) {
+        return { tag: rxpTagNo[0] };
+    }
+
+    return {};
 }
 
 function sanitizeXML(xml) {

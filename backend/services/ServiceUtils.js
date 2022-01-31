@@ -4,7 +4,9 @@ const Definitions = require("../astea/Definitions");
  * These are used in Astea dialog boxes. Hopefully this will help us work faster.
  */
 
-const { encodeToAsteaGibberish } = require("../helpers/querying");
+const { encodeToAsteaGibberish, decodeFromAsteaGibberish } = require("../helpers/querying");
+const { parseXMLToJSON } = require("../helpers/xml");
+const { Order } = require("../models/Database");
 
 const entities = {
     MATERIAL: "product",
@@ -186,7 +188,7 @@ function asteaQuery(entity, searchParams, pageNumber = 1, sortAscending = true, 
             force_sort="${forceSort}"
             entity_name="${entity}"
             query_name="${queryPairs[entity].queryName}"
-            ${pageNumber > 1 ? pageNumber="${pageNumber}" : ""}
+            ${pageNumber > 1 ? pageNumber = "${pageNumber}" : ""}
             ${metaParams}
         ${paramsQuery}>
                 <operators values="${operators}" />
@@ -310,5 +312,26 @@ function sanitizeXML(xml) {
     return xml.replace(/\n/g, "");
 }
 
+class ServiceUtils {
+    static async parseSearchResults(data) {
+        const resultsEncodedXML = data["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0];
+        //TODO Make these nasties a little cleaner.
+        const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
+        const xmlResults = await parseXMLToJSON(resultsXML);
 
-module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states, serviceModules };
+        if (!xmlResults.root.row) return [];
+
+        const resultsPromises = xmlResults.root.row.map(async svRawData => await Order.parse(svRawData, false));
+        return {
+            meta: {
+                totalCount: xmlResults.root.$.totalRecordCount,
+                currentPage: xmlResults.root.$.currentPage,
+                pageCount: xmlResults.root.$.pagesCount
+            },
+            results: await Promise.all(resultsPromises)
+        } 
+    }
+}
+
+
+module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states, serviceModules, ServiceUtils };

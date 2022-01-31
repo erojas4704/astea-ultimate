@@ -11,7 +11,7 @@ class Order extends Model {
      * @param {Object} data
      * @returns {Object} A read-only service order object
      */
-    static async parse(data) {
+    static async parse(data, overwrite = true) {
         const orderData = parseServiceOrderData(data);
         const { customer, technician } = orderData;
         orderData.isInHistory = orderData.statusId == 900; //TODO hack because only Astea searches pull up status history.
@@ -20,7 +20,7 @@ class Order extends Model {
             (async () => {
                 const [o] = await Order.findOrCreate({ where: { id: orderData.id }, defaults: orderData })
 
-                o.set(orderData);
+                if(overwrite) o.set(orderData);
                 if (customer && customer.id) {
                     const [cust] = customer?.id ? await Customer.findOrCreate({ where: { id: customer.id }, defaults: customer }) : null;
                     o.setCustomer(cust);

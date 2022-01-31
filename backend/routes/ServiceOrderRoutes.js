@@ -33,7 +33,7 @@ router.get("/search", async (req, res, next) => {
         return res.send(
             cache ?
                 await OrderService.search(criteria) :
-                await orderLocatorSearch(req.session, criteria)
+                await Astea.locatorSearch(req.session, criteria)
         );
     } catch (e) {
         return next(e);

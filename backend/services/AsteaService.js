@@ -18,7 +18,7 @@ const {
 const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
 const { Customer, Interaction, Material, Expense } = require("../models/Database");
-const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states, xmlAsteaQuery } = require("./ServiceUtils");
+const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states, xmlAsteaQuery, ServiceUtils } = require("./ServiceUtils");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -37,8 +37,15 @@ const asteaRequest = async (url, body, options = {}) => {
     const resp = await axios.post(url, body, { headers: reqHeaders });
     if (resp.data.ExceptionDetail)
         return { error: new AsteaError(resp.data) };
+    if (!resp.data)
+        return { error: new AsteaError("No data returned from Astea") };
 
-    const json = await parseXMLToJSON(resp.data['d']);
+    //TODO find the request being made from the body, then extract it from the response dynamically.
+    //TODO make smartParse() function that handles all odd cases with data
+    const json = resp.data['d'] ?
+        await parseXMLToJSON(resp.data['d']) :
+        await parseXMLToJSON(resp.data);
+
     return { raw: resp.data['d'], data: json };
 }
 
@@ -151,9 +158,22 @@ class Astea {
      * @param {Object} session Astea session object. This token allows us to actually communicate with Astea.
      * @returns {Promise<Object>} A promise that resolves to the search results.
      */
-    static async locatorSearch(criteria, session) {
-        const body = xmlAsteaQuery(session, entities.LOCATOR, criteria, 1, false, true, "order_id");
-        const { error, data } = await asteaRequest(URLSearchXML, body);
+    static async locatorSearch(session, criteria) {
+        const body = xmlAsteaQuery(session, entities.ORDER, { criteria }, 1, false, true, "order_id");
+
+        const { error, data } = await asteaRequest(
+            URLSearch,
+            body,
+            {
+                headers: {
+                    SOAPAction: "http://astea.services.wcf/IDataViewMgrContract/RetrieveXMLExt",
+                    "Content-Type": "text/xml; charset=utf-8"
+                }
+            }
+        );
+
+        const results = await ServiceUtils.parseSearchResults(data);
+        return results;
         //TBI
     }
 }

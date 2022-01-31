@@ -27,13 +27,16 @@ router.get("/raw", async (req, res, next) => {
 router.get("/search", async (req, res, next) => {
     const criteria = req.query;
     const cache = criteria.cache === "y";
+    const page = criteria.page || 1;
+
+    delete criteria.page;
     delete criteria.cache;
 
     try {
         return res.send(
             cache ?
                 await OrderService.search(criteria) :
-                await Astea.locatorSearch(req.session, criteria)
+                await Astea.locatorSearch(req.session, criteria, page)
         );
     } catch (e) {
         return next(e);

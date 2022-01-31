@@ -1,6 +1,8 @@
 class Definitions {
     static searchKeys = {
         "openDate": "order_line.open_date",
+        "openDateFrom": "order_line.open_date",
+        "openDateTo": "order_line.open_date",
         "actionGroup": "actgr.descr",
         "id": "order_line.request_id",
         "name": "order_line.cust_company_descr",
@@ -15,6 +17,8 @@ class Definitions {
     static secondarySearchKeys = {
         "id": "c_order_line.request_id",
         "openDate": "c_order_line.open_date",
+        "openDateFrom": "c_order_line.open_date",
+        "openDateTo": "c_order_line.open_date",
         "name": "c_order_line.cust_company_descr",
         "technicianID": "c_service_call.sa_person_id",
         "inHistory": "c_order_line.is_in_history",

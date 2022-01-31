@@ -19,6 +19,7 @@ const { AsteaError } = require("../js/AsteaError");
 const Order = require("../models/Order");
 const { Customer, Interaction, Material, Expense } = require("../models/Database");
 const { jsonAsteaQuery, entities, getOrderStateBody, serviceModules, states, xmlAsteaQuery, ServiceUtils } = require("./ServiceUtils");
+const { decodeFromAsteaGibberish } = require("../helpers/querying");
 //WARNING: requiring Interaction breaks GetOrder.
 
 const parseXMLToJSON = promisify(xml2js.parseString);
@@ -158,8 +159,12 @@ class Astea {
      * @param {Object} session Astea session object. This token allows us to actually communicate with Astea.
      * @returns {Promise<Object>} A promise that resolves to the search results.
      */
-    static async locatorSearch(session, criteria) {
-        const body = xmlAsteaQuery(session, entities.ORDER, { criteria }, 1, false, true, "order_id");
+    static async locatorSearch(session, criteria, page = 1) {
+        if(criteria.inHistory !== "N" && !criteria.openDateFrom){
+            //If we do not specify history, we'll narrow down our search to only orders from the last 120 days.
+            criteria.openDateFrom = moment().subtract(120, "days").format("YYYY-MM-DD");
+        }
+        const body = xmlAsteaQuery(session, entities.ORDER, { criteria }, page, false, true, "open_date");
 
         const { error, data } = await asteaRequest(
             URLSearch,
@@ -172,12 +177,31 @@ class Astea {
             }
         );
 
-        const results = await ServiceUtils.parseSearchResults(data);
+        const results = await parseSearchResults(data);
         return results;
         //TBI
     }
 }
 
+//TODO put this function somewhere it makes sense
+async function parseSearchResults(data) {
+    const resultsEncodedXML = data["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0];
+    //TODO Make these nasties a little cleaner.
+    const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
+    const xmlResults = await parseXMLToJSON(resultsXML);
+
+    if (!xmlResults.root.row) return [];
+
+    const resultsPromises = xmlResults.root.row.map(async svRawData => await Order.parse(svRawData, false));
+    return {
+        meta: {
+            totalCount: xmlResults.root.$.totalRecordCount,
+            currentPage: xmlResults.root.$.currentPage,
+            pageCount: xmlResults.root.$.pagesCount
+        },
+        results: await Promise.all(resultsPromises)
+    }
+}
 
 
 

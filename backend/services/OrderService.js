@@ -156,7 +156,7 @@ class OrderService {
                 model: Technician,
                 as: "technician"
             },
-            order: [['date', 'DESC']]
+            order: [['id', 'DESC']]
         })
 
         return interactions;

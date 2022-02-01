@@ -165,7 +165,7 @@ class Astea {
             //If we do not specify history, we'll narrow down our search to only orders from the last 120 days.
             criteria.openDateFrom = moment().subtract(120, "days").format("YYYY-MM-DD");
         }
-        const body = xmlAsteaQuery(session, entities.ORDER, { criteria }, page, false, true, "open_date");
+        const body = xmlAsteaQuery(session, entities.ORDER, { criteria }, page, false, true, "request_id");
 
         const { error, data } = await asteaRequest(
             URLSearch,

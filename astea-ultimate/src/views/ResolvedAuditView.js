@@ -11,6 +11,7 @@ import { FOUND } from "../actions/auditTypes";
 import { sameDay } from "../helpers/DateUtils";
 
 //TODO needs to be simplified
+//TODO broke after API update. Needs tests.
 export default function ResolvedAuditView() {
     const dispatch = useDispatch();
     const [form, setForm] = useState({ id: "", location: "" });
@@ -30,13 +31,13 @@ export default function ResolvedAuditView() {
     const { data: resolvedOrders, execute: getResolvedOrders } = useSearch({
         status: 500,
         actionGroup: "QNTech",
-        includeHistory: false
+        inHistory: "N"
     }, false);
 
     useEffect(() => {
         if (!sameDay(audit.date, new Date())) {
             console.log("Audit date is not today. Discarding old audit."); //TODO this makes the audit reset at midnight, which is not ideal.
-            if (resolvedOrders.length === 0)
+            if (resolvedOrders && resolvedOrders.length === 0)
                 getResolvedOrders();
             else
                 dispatch(createNewAudit(resolvedOrders, `Audit_${moment().format("MM/DD/YY")}`));

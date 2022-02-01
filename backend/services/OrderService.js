@@ -41,6 +41,7 @@ class OrderService {
             }
         }
 
+
         const ignoreKeys = [
             "createdAt",
             "updatedAt",
@@ -48,7 +49,14 @@ class OrderService {
             "statusId",
             "isInHistory"
         ];
-
+        console.log(criteria);
+        if(criteria.includeHistory){
+            criteria.isInHistory = criteria.includeHistory === "true";
+            delete criteria.includeHistory;
+        }else{
+            ignoreKeys.push("isInHistory");
+        }
+        
         const additionalKeys = [
             "customerName",
             "technicianName"

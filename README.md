@@ -1,6 +1,6 @@
 # astea-ultimate
 
-This is an application intended to serve as a middleman between a repair business and a remote legacy SOAP-based service
+This is an application intended to serve as a middleman between a repair business and a remote legacy SOAP-based service.
 The legacy application is known to be extremely slow, suffering from dated design and a strictly synchronous user flow, as well as various bugs 
 and security concerns. 
 The lack of asynchronous design is the number 1 productivity killer in any company that uses it, and I seek to remedy that with this tool.

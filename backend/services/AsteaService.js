@@ -3,7 +3,8 @@ const axios = require("axios");
 const xml2js = require("xml2js");
 const { promisify } = require("util");
 const ASTEA_BASE_URL = process.env.ASTEA_BASE_URL;
-const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt`
+const URLInteractWithServer = `${ASTEA_BASE_URL}/Web_Framework/BCBase.svc/InteractWithServerExt`;
+const moment = require("moment");
 const {
     headers,
     URLExecuteMacro,

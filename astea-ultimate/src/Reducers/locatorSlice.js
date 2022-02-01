@@ -20,7 +20,7 @@ export const search = createAsyncThunk(
         //     });
         const resp = await Api.search(query);
         if (resp.error) throw resp.error;
-        return resp;
+        return resp.results;
     }
 )
 
@@ -40,7 +40,11 @@ function mergeResults(arr1, arr2) {
 export const locatorSlice = createSlice({
     name: 'locator',
     initialState: INITIAL_STATE,
-    reducers: {},
+    reducers: {
+        resetSearch: (state) => {
+            state.status = "idle";
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(search.pending, (state, action) => {
@@ -82,4 +86,5 @@ export const locatorSlice = createSlice({
     }
 });
 
+export const { resetSearch } = locatorSlice.actions;
 export default locatorSlice.reducer;

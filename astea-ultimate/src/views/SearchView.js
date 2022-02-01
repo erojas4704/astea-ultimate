@@ -1,9 +1,9 @@
 import "./SearchView.css";
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { resetSearch, search } from "../actions/locator";
-import { search } from "../reducers/locatorSlice";
+import { resetSearch, search } from "../reducers/locatorSlice";
 
 import OrderListing from "../components/OrderListing";
 import HistoryInput from "../components/HistoryInput";
@@ -49,6 +49,10 @@ const SearchView = () => {
     const [filtered, setFiltered] = useState([]);
     const orderSummaries = useSelector(state => state.locator.summaries);
 
+    useEffect(() => {
+        dispatch(resetSearch());
+    }, []);
+
 
     //TODO maybe a search hook that simplifies all this crap
 
@@ -86,7 +90,7 @@ const SearchView = () => {
             <form onSubmit={handleSubmit} className="form-inline">
                 <div className="input-group ">
                     <input type="text"
-                        autocomplete="off"
+                        autoComplete="off"
                         className="form-control rounded-pill m-1"
                         name="search"
                         id="search"

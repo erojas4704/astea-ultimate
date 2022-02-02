@@ -182,7 +182,6 @@ class Astea {
 
 //TODO put this function somewhere it makes sense
 async function parseSearchResults(data) {
-    debugger;
     if (data["s:Envelope"]["s:Body"][0]["s:Fault"]) {
         throw new AsteaError(data["s:Envelope"]["s:Body"][0]["s:Fault"][0], 500); //TODO move to an extractError function that parses this in the astea request hoc
     }

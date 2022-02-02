@@ -1,4 +1,5 @@
 const Definitions = require("../astea/Definitions");
+const moment = require("moment");
 /**
  * This file should help produce Astea JSON queries, which seem to be treated differently than XML queries.
  * These are used in Astea dialog boxes. Hopefully this will help us work faster.
@@ -271,11 +272,24 @@ function jsonAsteaQuery(session, entity, params, pageNumber = 1, sortAscending =
     }
 }
 
+function isEnoughSpecifity(criteria){
+    if(criteria.inHistory && criteria.inHistory === "N") return true;
+    if(criteria.openDateFrom) return true;
+    if(criteria.id && criteria.id.length > 4) return true;
+    if(criteria.name && criteria.name.length > 4) return true;
+    return false;
+}
+
 function extractAsteaQuery(criteria, useSecondary = false, conditionLabel = "where_cond1") {
     //Go through all the fields in criteria.
     //Translate the key to the Astea key.
     //Join them by AND conditions and surround them in % symbols. Match them by LIKE.
     if (criteria["all"]) criteria = { ...processAllKey(criteria["all"]), ...criteria };
+
+    //If we do not have enough specificity, we'll narrow down our search to only orders from the last 120 days.
+    if(!isEnoughSpecifity(criteria))
+        criteria.openDateFrom = moment().subtract(120, "days").format("YYYY-MM-DD");
+    
     //TODO extractAsteaQuery(all, joinWith="OR");
     delete criteria["all"];
 
@@ -311,7 +325,7 @@ function processAllKey(value) {
     const rxpOrderId = /(((?:SV|RP)\d{1,10})(?:@@\d)?)/i.exec(value);
     const rxpTagNo = /\d{1,3}-\d{7}(?:-\d{1,2}-\d{1,2})?/.exec(value);
     if (rxpOrderId) {
-        console.log(rxpOrderId, rxpOrderId[2]);
+        // console.log(rxpOrderId, rxpOrderId[2]);
         return { id: rxpOrderId[2] };
     } else if (rxpTagNo) {
         return { tag: rxpTagNo[0] };

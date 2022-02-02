@@ -35,12 +35,11 @@ const asteaRequest = async (url, body, options = {}) => {
     if (options.HostName) url = `${url}?${options.HostName}`; //Extract Method FormatURL
     const reqHeaders = options.headers ? { ...headers, ...options.headers } : headers; //Headers overrides
 
-
     const resp = await axios.post(url, body, { headers: reqHeaders });
-    if (resp.data.ExceptionDetail)
-        return { error: new AsteaError(resp.data) };
     if (!resp.data)
         return { error: new AsteaError("No data returned from Astea") };
+    if (resp.data.ExceptionDetail)
+        return { error: new AsteaError(resp.data) };
 
     //TODO find the request being made from the body, then extract it from the response dynamically.
     //TODO make smartParse() function that handles all odd cases with data
@@ -161,10 +160,6 @@ class Astea {
      * @returns {Promise<Object>} A promise that resolves to the search results.
      */
     static async locatorSearch(session, criteria, page = 1) {
-        if(criteria.inHistory !== "N" && !criteria.openDateFrom){
-            //If we do not specify history, we'll narrow down our search to only orders from the last 120 days.
-            criteria.openDateFrom = moment().subtract(120, "days").format("YYYY-MM-DD");
-        }
         const body = xmlAsteaQuery(session, entities.ORDER, { criteria }, page, false, true, "request_id");
 
         const { error, data } = await asteaRequest(
@@ -177,30 +172,39 @@ class Astea {
                 }
             }
         );
+        
+        if (error) throw error;
 
         const results = await parseSearchResults(data);
         return results;
-        //TBI
     }
 }
 
 //TODO put this function somewhere it makes sense
 async function parseSearchResults(data) {
+    debugger;
+    if (data["s:Envelope"]["s:Body"][0]["s:Fault"]) {
+        throw new AsteaError(data["s:Envelope"]["s:Body"][0]["s:Fault"][0], 500); //TODO move to an extractError function that parses this in the astea request hoc
+    }
+
     const resultsEncodedXML = data["s:Envelope"]["s:Body"][0]["RetrieveXMLExtResponse"][0]["RetrieveXMLExtResult"][0];
     //TODO Make these nasties a little cleaner.
+
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
     const xmlResults = await parseXMLToJSON(resultsXML);
+    const meta = {
+        totalCount: xmlResults.root.$.totalRecordCount,
+        currentPage: xmlResults.root.$.currentPage,
+        pageCount: xmlResults.root.$.pagesCount
+    }
 
-    if (!xmlResults.root.row) return [];
+
+    if (!xmlResults.root.row) return { meta, results: [] };
 
     const resultsPromises = xmlResults.root.row.map(async svRawData => await Order.parse(svRawData, false));
     return {
-        meta: {
-            totalCount: xmlResults.root.$.totalRecordCount,
-            currentPage: xmlResults.root.$.currentPage,
-            pageCount: xmlResults.root.$.pagesCount
-        },
-        results: await Promise.all(resultsPromises)
+        meta,
+        results: resultsPromises ? await Promise.all(resultsPromises) : []
     }
 }
 

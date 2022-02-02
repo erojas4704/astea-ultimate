@@ -39,6 +39,7 @@ router.get("/search", async (req, res, next) => {
                 await Astea.locatorSearch(req.session, criteria, page)
         );
     } catch (e) {
+        console.log("THERE WAS AN ERROR SHOULD RETURN ERROR NOT A BLANK ARRAY.");
         return next(e);
     }
 });

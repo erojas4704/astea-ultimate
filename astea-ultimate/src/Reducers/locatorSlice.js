@@ -69,6 +69,7 @@ export const locatorSlice = createSlice({
                 }
             })
             .addCase(search.fulfilled, (state, action) => {
+                console.log("Results", state.results, "payload", action.payload);
                 state.status = "complete";
                 state.results = mergeResults(state.results, action.payload);
                 //Sort by orderID

@@ -65,7 +65,7 @@ export default function ServiceOrderView() {
                 <h3>404 - Order not found</h3>
                 <Alert variant="danger">{error}</Alert>
             </Container>)
-    } 
+    }
     if (!order) {
         return <Spinner animation="border" variant="primary" />;
     }
@@ -107,6 +107,10 @@ export default function ServiceOrderView() {
                                             <Col className="label">Warehouse</Col>
                                             <Col className="value">{order.warehouse}</Col>
                                         </Row>
+                                        {order.customer?.phone && <Row>
+                                            <Col className="label">Phone</Col>
+                                            <Col className="value">{order.customer.phone}</Col>
+                                        </Row>}
                                         <Row>
                                             {order.tag && <>
                                                 <Col className="label">Tag</Col>

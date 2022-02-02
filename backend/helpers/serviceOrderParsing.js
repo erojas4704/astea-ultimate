@@ -29,7 +29,7 @@ const fields = {
     "tagno": "tag",
     "order_line.order_stat_uniq_id": "statusId",
     "email_id": "customer.email",
-    "phone_id": "customer.phone",
+    "phone_id": "customer.phone"
 }
 
 function parseServiceOrderData(data) {

@@ -19,7 +19,8 @@ export const search = createAsyncThunk(
                 if (!results) return []; //Need proper error handling for our API.
                 thunkAPI.dispatch({ type: "locator/search/cached", payload: results });
             });
-        const resp = {results: [], meta:{}}//await Api.search(query);
+        // const resp = {results: [], meta:{}}//await Api.search(query);
+        const resp = await Api.search(query);
         if (resp.error) throw resp.error;
         return resp.results;
     }

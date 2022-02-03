@@ -172,7 +172,7 @@ class Astea {
                 }
             }
         );
-        
+
         if (error) throw error;
 
         const results = await parseSearchResults(data);
@@ -190,7 +190,15 @@ async function parseSearchResults(data) {
     //TODO Make these nasties a little cleaner.
 
     const resultsXML = decodeFromAsteaGibberish(resultsEncodedXML);
-    const xmlResults = await parseXMLToJSON(resultsXML);
+    const xmlResults = await parseXMLToJSON(resultsXML)
+        .catch(err => {
+            console.log("Error parsing XML from Astea: ");
+            // console.log(JSON.stringify(data));
+            console.log(resultsXML);
+
+            throw err;
+        });
+
     const meta = {
         totalCount: xmlResults.root.$.totalRecordCount,
         currentPage: xmlResults.root.$.currentPage,

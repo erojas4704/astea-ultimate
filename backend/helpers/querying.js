@@ -1,3 +1,5 @@
+const { Op } = require("sequelize/dist");
+
 const searchKeys = {
     "openDate": "order_line.open_date",
     "actionGroup": "actgr.descr",
@@ -31,7 +33,7 @@ function generateSearchQuery(criteria, page = 1) {
     let catchAllAppendixSecondary = "";
 
     if (criteria.includeHistory === "true") {
-        
+
         criteria.inHistory = "Y";
         delete criteria.includeHistory; //TODO just a quick hack to get the search working
     } else if (criteria.includeHistory === "false") {
@@ -114,6 +116,21 @@ function processAllKey(value) {
     return {};
 }
 
+const comparators = {
+    "inHistory": Op.is,
+    "statusId": Op.eq
+}
+
+function extractCriteria(criteria, key) {
+    const value = criteria[key];
+    const comparator = comparators[key] || Op.iLike;
+    const prefixSuffix = comparator === Op.iLike ? ["%", "%"] : ["", ""];
+    console.log(Op.is);
+    console.log(comparator);
+
+    return { [comparator]: `${prefixSuffix[0]}${value}${prefixSuffix[1]}`};
+}
+
 
 function encodeToAsteaGibberish(string) {
     //&#xD; Carriage return
@@ -136,4 +153,4 @@ function decodeFromAsteaGibberish(string) {
     return string;
 }
 
-module.exports = { translateToAsteaKey, translateFromAsteaKey, generateSearchQuery, encodeToAsteaGibberish, decodeFromAsteaGibberish, processAllKey };
+module.exports = { extractCriteria, translateToAsteaKey, translateFromAsteaKey, generateSearchQuery, encodeToAsteaGibberish, decodeFromAsteaGibberish, processAllKey };

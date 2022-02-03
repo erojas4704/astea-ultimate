@@ -1,4 +1,6 @@
+const { query } = require("express");
 const { Op } = require("sequelize/dist");
+const { processAllKey, extractCriteria } = require("../helpers/querying");
 const { AsteaError } = require("../js/AsteaError");
 const Customer = require("../models/Customer");
 const { Interaction, Technician, Expense, Material } = require("../models/Database");
@@ -34,9 +36,39 @@ class OrderService {
      * @returns 
      */
     static async search(criteria) {
-        if(criteria.all) criteria = extractAllCriteria(criteria.all);
+        if(criteria.all) criteria = processAllKey(criteria.all);
+        console.log(processAllKey(criteria.all));
         console.log(criteria);
-        return [];
+        
+        //Splat all key
+        delete criteria.all;
+        const criteriaKeys = Object.keys(criteria);
+
+
+        const query = {
+            where: {
+                [Op.and]: criteriaKeys.map(key => {
+                    return {
+                        [key]: extractCriteria(criteria, key)
+                    }
+                })
+            }
+        }
+
+        const orders = await Order.findAll({
+            ...query,
+            include: [
+                { model: Customer, as: "customer" },
+                { model: Technician, as: "technician" }
+            ],
+            order: [
+                ['id', 'DESC']
+            ]
+        }).catch(err => {
+            console.log("Could not run local order search. ", err);
+        })
+
+        return orders;
     }
 
     /**

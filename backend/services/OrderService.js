@@ -34,6 +34,7 @@ class OrderService {
      * @returns 
      */
     static async search(criteria) {
+        //TODO function needs serious refactoring
         const query = {
             where: {
                 [Op.or]: [],
@@ -41,18 +42,21 @@ class OrderService {
             }
         }
 
+        const comparators = {
+            isInHistory: Op.is,
+            statusId: Op.eq
+        }
+
 
         const ignoreKeys = [
             "createdAt",
             "updatedAt",
             "openDate",
-            "statusId",
-            "isInHistory"
+            "statusId"
         ];
-        console.log(criteria);
-        if(criteria.includeHistory){
-            criteria.isInHistory = criteria.includeHistory === "true";
-            delete criteria.includeHistory;
+        if(criteria.inHistory){
+            criteria.isInHistory = criteria.inHistory === "true";
+            delete criteria.inHistory;
         }else{
             ignoreKeys.push("isInHistory");
         }
@@ -113,8 +117,7 @@ class OrderService {
                 ordersPrecache = [...ordersPrecache, ...technicians.reduce((acc, technician) => [...acc, ...technician.orders], [])];
                 //TODO these precached orders need 
             }
-
-            console.log(key, criteria[key], criteria.all);
+//console.log(key, criteria[key], criteria.all);
 
             if (criteria[key]) {
                 query.where[Op.and].push({

@@ -96,6 +96,24 @@ function translateFromAsteaKey(key) {
     throw new Error(`Could not convert ${key} into one of our search keys.`);
 }
 
+/**
+ * Parses a search term and splits it into the appropriate re
+ * @param {string} value Search key that should be compared against all columns that we're looking for. 
+ * @returns 
+ */
+function processAllKey(value) {
+    const rxpOrderId = /(((?:SV|RP)\d{1,10})(?:@@\d)?)/i.exec(value);
+    const rxpTagNo = /\d{1,3}-\d{7}(?:-\d{1,2}-\d{1,2})?/.exec(value);
+    if (rxpOrderId) {
+        // console.log(rxpOrderId, rxpOrderId[2]);
+        return { id: rxpOrderId[2] };
+    } else if (rxpTagNo) {
+        return { tag: rxpTagNo[0] };
+    }
+
+    return {};
+}
+
 
 function encodeToAsteaGibberish(string) {
     //&#xD; Carriage return
@@ -118,4 +136,4 @@ function decodeFromAsteaGibberish(string) {
     return string;
 }
 
-module.exports = { translateToAsteaKey, translateFromAsteaKey, generateSearchQuery, encodeToAsteaGibberish, decodeFromAsteaGibberish };
+module.exports = { translateToAsteaKey, translateFromAsteaKey, generateSearchQuery, encodeToAsteaGibberish, decodeFromAsteaGibberish, processAllKey };

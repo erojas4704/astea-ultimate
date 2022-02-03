@@ -5,7 +5,7 @@ const moment = require("moment");
  * These are used in Astea dialog boxes. Hopefully this will help us work faster.
  */
 
-const { encodeToAsteaGibberish, decodeFromAsteaGibberish } = require("../helpers/querying");
+const { encodeToAsteaGibberish, decodeFromAsteaGibberish, processAllKey } = require("../helpers/querying");
 const { parseXMLToJSON } = require("../helpers/xml");
 
 const entities = {
@@ -318,20 +318,6 @@ const criteriaParsers = {
 
 function extractSecondaryAsteaQuery(criteria) {
     return extractAsteaQuery(criteria, true, "where_cond2");
-}
-
-
-function processAllKey(value) {
-    const rxpOrderId = /(((?:SV|RP)\d{1,10})(?:@@\d)?)/i.exec(value);
-    const rxpTagNo = /\d{1,3}-\d{7}(?:-\d{1,2}-\d{1,2})?/.exec(value);
-    if (rxpOrderId) {
-        // console.log(rxpOrderId, rxpOrderId[2]);
-        return { id: rxpOrderId[2] };
-    } else if (rxpTagNo) {
-        return { tag: rxpTagNo[0] };
-    }
-
-    return {};
 }
 
 function sanitizeXML(xml) {

@@ -63,7 +63,7 @@ class Api {
             params: { cache: useCached ? "y" : null },
             cancelToken
         });
-        
+
         if (resp.error) throw resp.error;
         return resp.data;
     }
@@ -71,11 +71,30 @@ class Api {
     /** Returns a cancelable promise to search for service orders.
      * @param {Object} query - Criteria to search for.
      */
-    static async search(query, useCached=false, cancelToken = null) {
-        const resp = await axios.get('/ServiceOrder/search', {
-            params: { ...query, cache: useCached? "y" : null },
-            cancelToken
-        });
+    static async search(query, useCached = false, pageLimit = 1, cancelToken = null) {
+        const pull = async (page) => {
+            return axios.get('/ServiceOrder/search', {
+                params: { ...query, cache: useCached ? "y" : null, page },
+                cancelToken
+            });
+        }
+
+        //TODO docs and consider a callback whenever new pages come in
+        const resp = await pull(1);
+
+        console.log(`Pagecount: ${resp.data.meta.pageCount} Limit ${pageLimit}`)
+
+        if (resp.data.meta.pageCount > 1 && pageLimit > 1) {
+            const pagePromises = [];
+            for (let i = 2; i <= resp.data.meta.pageCount & i < pageLimit; i++) {
+                pagePromises.push(pull(i));
+            }
+
+            const remainingPages = await Promise.all(pagePromises);
+            resp.data.results = [...resp.data.results, ...remainingPages.flatMap(x => x.data.results)];
+        }
+
+        console.log(resp.data);
 
         if (resp.error) throw resp.error;
         return resp.data;
@@ -90,7 +109,7 @@ class Api {
             cancelToken
         });
 
-        if(resp.data.error) throw resp.data.error;
+        if (resp.data.error) throw resp.data.error;
 
         return resp.data;
     }

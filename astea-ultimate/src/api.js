@@ -81,10 +81,8 @@ class Api {
 
         //TODO docs and consider a callback whenever new pages come in
         const resp = await pull(1);
-
-        console.log(`Pagecount: ${resp.data.meta.pageCount} Limit ${pageLimit}`)
-
-        if (resp.data.meta.pageCount > 1 && pageLimit > 1) {
+        //console.log(`Pagecount: ${resp.data.meta.pageCount} Limit ${pageLimit}`)
+        if (resp.data.meta && resp.data.meta.pageCount > 1 && pageLimit > 1) {
             const pagePromises = [];
             for (let i = 2; i <= resp.data.meta.pageCount & i < pageLimit; i++) {
                 pagePromises.push(pull(i));

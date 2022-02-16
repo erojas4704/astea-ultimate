@@ -246,6 +246,22 @@ function convertToAsteaParams(searchParams) {
     return convertedParams;
 }
 
+
+const macros = {
+    ORDER: "",
+    PRODUCT: ""
+}
+/**
+ * 
+ * @param {String} macroName The name of the macro being invoked, 
+ * @param {String} sessionID 
+ * @param {Object} conditions 
+ * @param {Array} params 
+ */
+function createMacro(macro, sessionID, conditions, params){
+
+}
+
 function xmlAsteaQuery(session, entity, params, pageNumber = 1, sortAscending = true, forceSort = false, sortBy = undefined) {
     const xmlFindQuery = encodeToAsteaGibberish(asteaQuery(entity, params, pageNumber, sortAscending, forceSort, sortBy));
     return `
@@ -325,4 +341,4 @@ function sanitizeXML(xml) {
 }
 
 
-module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states, serviceModules };
+module.exports = { asteaQuery, xmlAsteaQuery, jsonAsteaQuery, params, entities, getOrderStateBody, states, serviceModules, createMacro };

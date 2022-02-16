@@ -248,8 +248,11 @@ function convertToAsteaParams(searchParams) {
 
 
 const macros = {
-    ORDER: "",
-    PRODUCT: ""
+    ORDER: {
+    },
+    PRODUCT: {
+        
+    }
 }
 /**
  * 

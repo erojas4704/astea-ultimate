@@ -1,79 +1,74 @@
 require("dotenv").config();
-const ASTEA_BASE_URL = process.env.ASTEA_BASE_URL;
-const LOGIN_URL = `${ASTEA_BASE_URL}/Web_Framework/SecurityManager.svc/dotnet`;
-const VALIDATE_URL = `${ASTEA_BASE_URL}/Web_Framework/DataViewMgr.svc/dotnet`;
-const axios = require("axios");
-const xml2js = require("xml2js");
-const { parseError } = require("../helpers/errorParser");
+const VALIDATE_ROUTE = `/DataViewMgr.svc/dotnet`
+const LOGIN_ROUTE = `/SecurityManager.svc/dotnet`;
+const client = require("../api/AsteaClient");
 const { parseXMLToJSON } = require("../helpers/xml");
 const { AsteaError } = require("../js/AsteaError");
 
 const headers = {
-  "Content-Type": `text/xml; charset=utf-8`,
-  currentprofile: "Prod",
   SOAPAction:
     "http://astea.services.wcf/ISecurityManagerContract/LoginExtendedlExt",
-  Host: "alliance.microcenter.com",
-  Expect: "100-continue",
-  "Accept-Encoding": "gzip, deflate",
 };
-/**Attempts to log in to Astea using the provided credentials.
- * If forceKick is true, we will end all current sessions and start a new one.
- * @param {string} username - The username to log in with.
- * @param {string} password - The password to log in with.
- * @param {boolean} forceKick - Whether or not to force a kick of all current sessions.
- * @returns {Promise<Object>} A promise that resolves to the sessionID and encryptedSessionID of the login, as well as the username.
- */
-async function loginToAstea(username, password, forceKick = false) {
-  const resp = await axios.post(
-    LOGIN_URL,
-    formatLoginBody2(username, password, forceKick),
-    {
-      headers,
-    }
-  );
-  const json = await parseLoginResponseXML(resp.data);
-  return json;
-}
 
-async function validateSessionID(sessionID) {
-  const resp = await axios.post(
-    VALIDATE_URL,
-    formatValidateSessionBody(sessionID),
-    {
-      headers: {
-        "Content-Type": "text/xml; charset=utf-8",
-        SOAPAction:
-          "http://astea.services.wcf/IDataViewMgrContract/RetrieveScalarValueExt",
-      },
+class AuthService {
+  static sessions = {};
+
+  static async login(username, password, forceKick = false) {
+    //Check to see if there's a session active
+    const session = this.sessions[username];
+    if (session) {
+      const isValid = await this.validateSessionId(session.sessionId);
+      if (isValid.success) {
+        console.log(
+          "We're reusing a session for " + username + " sesions",
+          this.sessions
+        );
+        return isValid;
+      } else {
+        delete this.sessions[username];
+      }
     }
-  );
-  const json = await parseXMLToJSON(resp.data);
-  if (json["s:Envelope"]["s:Body"][0]["RetrieveScalarValueExtResponse"]) {
-    return { success: true };
+    //If it is, we'll return the session ID.
+    //If not, we'll create a new session.
+    const resp = await client.post(
+      LOGIN_ROUTE,
+      formatLoginBody(username, password, forceKick),
+      {
+        headers,
+      }
+    );
+
+    const json = await parseLoginResponseXML(resp.data);
+    this.sessions[username] = {
+      sessionId: json.sessionID,
+      encryptedSessionId: json.encryptedSessionID,
+    };
+    return json;
   }
 
-  return { success: false };
+  static async validateSessionId(sessionId) {
+    const resp = await client.post(
+      VALIDATE_ROUTE,
+      formatValidateSessionBody(sessionId),
+      {
+        headers: {
+          SOAPAction:
+            "http://astea.services.wcf/IDataViewMgrContract/RetrieveScalarValueExt",
+        },
+      }
+    );
+    const json = await parseXMLToJSON(resp.data);
+    if (json["s:Envelope"]["s:Body"][0]["RetrieveScalarValueExtResponse"]) {
+      return { success: true, sessionID: sessionId };
+    }
+
+    return { success: false };
+  }
+
+  static async isUserSessionValid(username) {}
 }
 
-function formatValidateSessionBody(sessionID) {
-  return `
-        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-            <s:Header>
-                <currentprofile xmlns="http://www.astea.com">Prod</currentprofile>
-            </s:Header>
-            <s:Body>
-                <RetrieveScalarValueExt xmlns="http://astea.services.wcf/">
-                    <sessionID>${sessionID}</sessionID>
-                    <entityName>call_center</entityName>
-                    <queryName>my_incident_managment_count</queryName>
-                </RetrieveScalarValueExt>
-            </s:Body>
-        </s:Envelope>
-    `;
-}
-
-function formatLoginBody2(username, password, forceKick = false) {
+function formatLoginBody(username, password, forceKick = false) {
   return `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Header><currentprofile xmlns="http://www.astea.com">Prod</currentprofile></s:Header><s:Body><LoginExtendedlExt xmlns="http://astea.services.wcf/"><user>${username}</user><password>${password}</password><applicationProfile>Prod</applicationProfile><initialVarsXML>&lt;SessionVars xmlns:dt='urn:schemas-microsoft-com:datatypes'&gt;&lt;Variable Name='ClientCulture'&gt;en-US&lt;/Variable&gt;&lt;Variable Name='UseClientCulture'&gt;N&lt;/Variable&gt;&lt;Variable Name='UI_Language'&gt;AST&lt;/Variable&gt;&lt;Variable Name='CurrentCulture'&gt;en-US&lt;/Variable&gt;&lt;Variable Name='UserTimezone'&gt;Eastern Standard Time&lt;/Variable&gt;&lt;Variable Name='ClientDateTime' dt:dt='dateTime'&gt;2021-08-16T09:33:50.000&lt;/Variable&gt;${
     forceKick
       ? "&lt;Variable Name='LogoutOpenedSessions'&gt;Y&lt;/Variable&gt;"
@@ -128,5 +123,31 @@ async function getClientVarsFromLoginResponse(resp) {
 function getErrorFromLoginResponse(resp) {
   return resp["s:Envelope"]["s:Body"][0]["s:Fault"];
 }
+function formatValidateSessionBody(sessionID) {
+  return `
+        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+            <s:Header>
+                <currentprofile xmlns="http://www.astea.com">Prod</currentprofile>
+            </s:Header>
+            <s:Body>
+                <RetrieveScalarValueExt xmlns="http://astea.services.wcf/">
+                    <sessionID>${sessionID}</sessionID>
+                    <entityName>call_center</entityName>
+                    <queryName>my_incident_managment_count</queryName>
+                </RetrieveScalarValueExt>
+            </s:Body>
+        </s:Envelope>
+    `;
+}
 
-module.exports = { loginToAstea, validateSessionID };
+/*Convert Astea errors into english*/
+function parseError(error) {
+  const errorHash = {
+    LOGGED_IN_MORE_THAN_ONCE: "Your username is already logged in to Astea.",
+    LOGIN_FAILED: "Your username or password is incorrect.",
+  };
+
+  return errorHash[error] || error;
+}
+
+module.exports = AuthService;
